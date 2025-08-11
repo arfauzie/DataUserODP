@@ -12,7 +12,6 @@ include '../navbar.php';
 
 echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
 
-// Validasi ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -31,8 +30,6 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $id = (int)$_GET['id'];
-
-// Ambil data ODP berdasarkan ID
 $stmt = $pdo2->prepare("SELECT * FROM odp2 WHERE id = ?");
 $stmt->execute([$id]);
 $odp = $stmt->fetch();
@@ -54,40 +51,39 @@ if (!$odp) {
     exit();
 }
 
-// Ambil semua PON untuk dropdown dengan urutan angka dari nama_pon
-$pon_stmt = $pdo2->query("SELECT * FROM pon2 ORDER BY CAST(REGEXP_SUBSTR(nama_pon, '[0-9]+') AS UNSIGNED) ASC");
-$all_pons = $pon_stmt->fetchAll(PDO::FETCH_ASSOC);
+// Ambil semua data pon
+$pon_stmt = $pdo2->query("SELECT * FROM pon2 ORDER BY id ASC");
+$all_pons = $pon_stmt->fetchAll();
 
-// Proses update data
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nama_odp = trim($_POST['nama_odp']);
     $port_max = (int)$_POST['port_max'];
     $pon_id = (int)$_POST['pon_id'];
+    $latitude = trim($_POST['latitude']);
+    $longitude = trim($_POST['longitude']);
 
-    $stmt = $pdo2->prepare("UPDATE odp2 SET nama_odp = ?, pon_id = ?, port_max = ? WHERE id = ?");
-    if ($stmt->execute([$nama_odp, $pon_id, $port_max, $id])) {
+    $update_stmt = $pdo2->prepare("UPDATE odp2 SET nama_odp=?, pon_id=?, port_max=?, latitude=?, longitude=? WHERE id=?");
+    $success = $update_stmt->execute([$nama_odp, $pon_id, $port_max, $latitude, $longitude, $id]);
+
+    if ($success) {
         $oleh = $_SESSION['admin']['username'] ?? 'unknown';
         $log_keterangan = [];
 
-        if ($odp['nama_odp'] !== $nama_odp) {
-            $log_keterangan[] = "Nama ODP: {$odp['nama_odp']} ➔ $nama_odp";
-        }
-
-        if ((int)$odp['port_max'] !== $port_max) {
-            $log_keterangan[] = "Port Max: {$odp['port_max']} ➔ $port_max";
-        }
-
+        if ($odp['nama_odp'] !== $nama_odp) $log_keterangan[] = "Nama ODP: {$odp['nama_odp']} ➔ $nama_odp";
+        if ((int)$odp['port_max'] !== $port_max) $log_keterangan[] = "Port Max: {$odp['port_max']} ➔ $port_max";
         if ((int)$odp['pon_id'] !== $pon_id) {
-            $pon_lama_stmt = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id = ?");
-            $pon_lama_stmt->execute([$odp['pon_id']]);
-            $nama_pon_lama = $pon_lama_stmt->fetchColumn();
+            $old_pon = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id=?");
+            $old_pon->execute([$odp['pon_id']]);
+            $old_pon_name = $old_pon->fetchColumn();
 
-            $pon_baru_stmt = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id = ?");
-            $pon_baru_stmt->execute([$pon_id]);
-            $nama_pon_baru = $pon_baru_stmt->fetchColumn();
+            $new_pon = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id=?");
+            $new_pon->execute([$pon_id]);
+            $new_pon_name = $new_pon->fetchColumn();
 
-            $log_keterangan[] = "PON: $nama_pon_lama ➔ $nama_pon_baru";
+            $log_keterangan[] = "PON: $old_pon_name ➔ $new_pon_name";
         }
+        if ($odp['latitude'] != $latitude) $log_keterangan[] = "Latitude: {$odp['latitude']} ➔ $latitude";
+        if ($odp['longitude'] != $longitude) $log_keterangan[] = "Longitude: {$odp['longitude']} ➔ $longitude";
 
         if (!empty($log_keterangan)) {
             tambahRiwayat("Edit ODP", $oleh, implode("\n", $log_keterangan));
@@ -113,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
-                    text: 'Gagal memperbarui data ODP.',
+                    text: 'Gagal menyimpan perubahan.',
                     timer: 1500,
                     showConfirmButton: false
                 });
@@ -149,17 +145,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             background: #fff;
             border-radius: 10px;
             padding: 30px;
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
         .form-label {
             font-weight: 600;
-        }
-
-        .btn {
-            min-width: 100px;
         }
 
         @media (max-width: 768px) {
@@ -174,7 +166,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
     <div class="content">
         <div class="card-box">
-            <h2 class="mb-4 text-center">Edit ODP</h2>
+            <h3 class="text-center mb-4">Edit Data ODP</h3>
             <form method="POST">
                 <div class="mb-3">
                     <label for="pon_id" class="form-label">Pilih PON:</label>
@@ -189,20 +181,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <div class="mb-3">
                     <label for="nama_odp" class="form-label">Nama ODP:</label>
-                    <input type="text" name="nama_odp" id="nama_odp" value="<?= htmlspecialchars($odp['nama_odp']); ?>" class="form-control" required>
+                    <input type="text" name="nama_odp" id="nama_odp" class="form-control" value="<?= htmlspecialchars($odp['nama_odp']); ?>" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="port_max" class="form-label">PORT Maks:</label>
+                    <label for="port_max" class="form-label">Port Maksimal:</label>
                     <select name="port_max" id="port_max" class="form-control" required>
-                        <option value="8" <?= $odp['port_max'] == 8 ? 'selected' : ''; ?>>Maks 8 Port</option>
-                        <option value="16" <?= $odp['port_max'] == 16 ? 'selected' : ''; ?>>Maks 16 Port</option>
+                        <option value="8" <?= $odp['port_max'] == 8 ? 'selected' : ''; ?>>8 Port</option>
+                        <option value="16" <?= $odp['port_max'] == 16 ? 'selected' : ''; ?>>16 Port</option>
                     </select>
                 </div>
 
+                <div class="mb-3">
+                    <label for="latitude" class="form-label">Latitude:</label>
+                    <input type="text" name="latitude" id="latitude" class="form-control" value="<?= htmlspecialchars($odp['latitude'] ?? '') ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="longitude" class="form-label">Longitude:</label>
+                    <input type="text" name="longitude" id="longitude" class="form-control" value="<?= htmlspecialchars($odp['longitude'] ?? '') ?>">
+                </div>
                 <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-success btn-sm">Update</button>
-                    <a href="olt_bagong.php?pon_id=<?= $odp['pon_id']; ?>" class="btn btn-secondary btn-sm">Kembali</a>
+                    <button type="submit" class="btn btn-success">Simpan</button>
+                    <a href="olt_bagong.php?pon_id=<?= $odp['pon_id']; ?>" class="btn btn-secondary">Kembali</a>
                 </div>
             </form>
         </div>

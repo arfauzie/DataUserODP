@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #007bff, #00c6ff);
+            background: linear-gradient(to right, #007bff, #03d5ffff);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -62,7 +62,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 20px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
@@ -90,10 +89,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 12px;
             margin-top: 10px;
             width: 100%;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .btn-login:hover {
             background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-login:focus,
+        .btn-login:active {
+            outline: none !important;
+            box-shadow: none !important;
+            background-color: #00408f;
         }
 
         .input-group-text {

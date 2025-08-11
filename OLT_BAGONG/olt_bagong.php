@@ -164,54 +164,69 @@ if (isset($_POST['update_user'])) {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+        /* Area konten utama */
         .content {
-            margin-left: 260px;
+            margin-left: 200px;
             padding: 40px;
-            background-color: #f9f9f9;
+            background-color: #fff;
             min-height: 100vh;
+            width: calc(100% - 160px);
+            box-sizing: border-box;
+            /* biar padding dihitung di dalam */
         }
 
+        /* Box kartu (bungkus tabel / CRUD) */
         .card-box {
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 25px;
+            padding: 1px 25px 25px 25px;
             margin-bottom: 30px;
+            margin-top: 50px;
+            width: 100%;
+            overflow-x: auto;
+
         }
 
+        /* Tabel rapi */
         .table th,
         .table td {
             vertical-align: middle;
             text-align: center;
         }
 
+        /* Heading */
         h1,
         h2,
         h3 {
             font-weight: 600;
             margin-bottom: 20px;
+            padding-top: 50px;
         }
 
+        /* Tombol */
         .btn {
             margin: 2px;
         }
 
-        /* Tambahkan/replace di <style> */
+        /* Mobile view */
         @media (max-width: 768px) {
             .content {
                 margin-left: 0 !important;
-                padding: 56px 5px 10px 5px !important;
-                /* padding-top menyesuaikan tinggi navbar */
+                padding: 56px 8px 10px 8px !important;
                 min-width: 100vw;
+                width: 100% !important;
             }
 
             .card-box {
-                padding: 6px !important;
+                padding: 10px !important;
                 margin-bottom: 10px !important;
+                width: 100% !important;
+                max-width: 100% !important;
             }
 
             .table-responsive {
-                overflow-x: unset !important;
+                overflow-x: auto !important;
             }
 
             .table,
@@ -236,7 +251,7 @@ if (isset($_POST['update_user'])) {
             }
         }
 
-        /* Agar sidebar (jika ada) tidak mengganggu */
+        /* Sidebar fix di mobile */
         @media (max-width: 768px) {
             #sidebar {
                 position: static !important;
@@ -257,9 +272,10 @@ if (isset($_POST['update_user'])) {
 <body>
 
     <div class="container mt-4">
+
         <div class="content">
             <?php
-            echo "<h1><i>1.OLT BAGONG</i></h1>";
+            echo '<h1><i class="fas fa-server me-2"></i>OLT BAGONG</h1>';
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 
@@ -691,7 +707,6 @@ if (isset($_POST['update_user'])) {
             }
             ?>
         </div>
-
 
 
 

@@ -230,7 +230,7 @@ if (isset($_POST['update_user'])) {
     <div class="container mt-4">
         <div class="content">
             <?php
-            echo "<h1><i>1.OLT SOREANG</i></h1>";
+            echo "<h1><i>1.OLT BAGONG</i></h1>";
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 
@@ -278,9 +278,13 @@ if (isset($_POST['update_user'])) {
             ?>
                 <div class="card-box">
                     <h4 class="mt-5">Data PON</h4>
-                    <button class="btn btn-primary btn-lg mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
-                        <i class="fas fa-plus"></i> Tambah PON
-                    </button>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
+                            <i class="fas fa-plus"></i> Tambah PON
+                        </button>
+                        <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalCekLokasi">
+                            <i class="fas fa-map-marker-alt"></i> Masukkan Lokasi</button>
+                    </div>
 
                     <!-- Modal Tambah PON -->
                     <div class="modal fade" id="modalTambahPON" tabindex="-1">
@@ -306,52 +310,111 @@ if (isset($_POST['update_user'])) {
                         </div>
                     </div>
 
+                    <!-- Modal Cek Lokasi ODP Terdekat -->
+                    <div class="modal fade" id="modalCekLokasi" tabindex="-1">
+                        <div class="modal-dialog">
+                            <form method="POST" class="modal-content">
+                                <div class="modal-header bg-success text-white">
+                                    <h5 class="modal-title">Masukkan Koordinat Lokasi</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="text" name="latitude" class="form-control mb-2" placeholder="Latitude" required>
+                                    <input type="text" name="longitude" class="form-control mb-2" placeholder="Longitude" required>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" name="cek_odp_terdekat" class="btn btn-success">Cek ODP Terdekat</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
                     <div class="table-responsive mt-3">
                         <table class="table table-bordered table-striped">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Nama PON</th>
-                                            <th>Port</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $stmt = $pdo3->query("SELECT pon3.*, (SELECT COUNT(*) FROM odp3 WHERE odp3.pon_id = pon3.id) AS jumlah_odp FROM pon3 ORDER BY CAST(TRIM(REPLACE(nama_pon, 'PON', '')) AS UNSIGNED)");
-                                        while ($row = $stmt->fetch()) {
-                                            $port_info = $row['jumlah_odp'] . '/' . $row['port_max'];
-                                            $port_color = 'text-success';
-                                            if ($row['jumlah_odp'] >= $row['port_max']) {
-                                                $port_color = 'text-danger';
-                                            } elseif ($row['jumlah_odp'] >= $row['port_max'] * 0.75) {
-                                                $port_color = 'text-warning';
-                                            }
-                                            echo "<tr>
-                                                    <td>{$row['nama_pon']}</td>
-                                                    <td class='$port_color'><strong>$port_info</strong></td>
-                                                    <td>
-                                                        <a href='olt_soreang.php?pon_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat ODP</a>
-                                                        <a href='edit_pon.php?id={$row['id']}' class='btn btn-warning btn-sm'>
-                                                        <i class='fas fa-edit'></i> Edit
-                                                        </a>
-                                                        <button class='btn btn-danger btn-sm' onclick=\"hapusItem('pon', {$row['id']})\">
-                                                        <i class='fas fa-trash'></i> Delete
-                                                        </button>
-                                                    </td>
-                                                </tr>";
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nama PON</th>
+                                    <th>Port</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $stmt = $pdo3->query("SELECT pon3.*, (SELECT COUNT(*) FROM odp3 WHERE odp3.pon_id = pon3.id) AS jumlah_odp FROM pon3 ORDER BY CAST(TRIM(REPLACE(nama_pon, 'PON', '')) AS UNSIGNED)");
+                                while ($row = $stmt->fetch()) {
+                                    $port_info = $row['jumlah_odp'] . '/' . $row['port_max'];
+                                    $port_color = 'text-success';
+                                    if ($row['jumlah_odp'] >= $row['port_max']) {
+                                        $port_color = 'text-danger';
+                                    } elseif ($row['jumlah_odp'] >= $row['port_max'] * 0.75) {
+                                        $port_color = 'text-warning';
+                                    }
+                                    echo "<tr>
+                            <td>{$row['nama_pon']}</td>
+                            <td class='$port_color'><strong>$port_info</strong></td>
+                            <td>
+                                <a href='olt_soreang.php?pon_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat ODP</a>
+                                <a href='edit_pon.php?id={$row['id']}' class='btn btn-warning btn-sm'>
+                                    <i class='fas fa-edit'></i> Edit
+                                </a>
+                                <button class='btn btn-danger btn-sm' onclick=\"hapusItem('pon', {$row['id']})\">
+                                    <i class='fas fa-trash'></i> Delete
+                                </button>
+                            </td>
+                        </tr>";
+                                }
+                                ?>
+                            </tbody>
                         </table>
                     </div>
-
-
                 </div>
+
+                <?php
+                // Proses pencarian ODP terdekat
+                if (isset($_POST['cek_odp_terdekat'])) {
+                    $lat_user = floatval($_POST['latitude']);
+                    $lon_user = floatval($_POST['longitude']);
+
+                    $stmt = $pdo3->query("SELECT o.id, o.nama_odp, o.latitude, o.longitude, p.nama_pon,
+        (6371 * ACOS(
+            COS(RADIANS($lat_user)) * COS(RADIANS(o.latitude)) *
+            COS(RADIANS(o.longitude) - RADIANS($lon_user)) +
+            SIN(RADIANS($lat_user)) * SIN(RADIANS(o.latitude))
+        )) AS distance
+        FROM odp3 o
+        JOIN pon3 p ON o.pon_id = p.id
+        WHERE o.latitude IS NOT NULL AND o.longitude IS NOT NULL
+        ORDER BY distance ASC
+        LIMIT 1");
+
+                    $closest = $stmt->fetch();
+                    if ($closest) {
+                        $odp = $closest['nama_odp'];
+                        $pon = $closest['nama_pon'];
+                        $distance_km = floatval($closest['distance']);
+                        $distance_m = round($distance_km * 1000); // Konversi km ke meter dan dibulatkan ke bilangan bulat
+
+                        echo "<script>
+        Swal.fire({
+            icon: 'info',
+            title: 'ODP Terdekat Ditemukan!',
+            html: 'ODP: <strong>$odp</strong><br>PON: <strong>$pon</strong><br>Jarak: <strong>$distance_m meter</strong>',
+            confirmButtonText: 'OK'
+        });
+        </script>";
+                    } else {
+                        echo "<script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Data Tidak Ditemukan!',
+            text: 'Tidak ada ODP dengan koordinat yang valid.'
+        });
+        </script>";
+                    }
+                }
+                ?>
+
+
             <?php
             }
 
@@ -379,11 +442,8 @@ if (isset($_POST['update_user'])) {
                         <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahODP">
                             <i class="fas fa-plus"></i> Tambah ODP
                         </button>
-                        <a href="olt_soreang.php" class="btn btn-secondary btn-lg">
-                            Kembali
-                        </a>
+                        <a href="olt_soreang.php" class="btn btn-secondary btn-lg">Kembali</a>
                     </div>
-
 
                     <!-- Modal Tambah ODP -->
                     <div class="modal fade" id="modalTambahODP" tabindex="-1">
@@ -396,11 +456,15 @@ if (isset($_POST['update_user'])) {
                                 <div class="modal-body">
                                     <input type="hidden" name="pon_id" value="<?= $pon_id ?>">
                                     <input type="text" name="nama_odp" class="form-control mb-3" placeholder="Nama ODP" required>
-                                    <select name="port_max" class="form-control" required>
+
+                                    <select name="port_max" class="form-control mb-3" required>
                                         <option disabled selected>Pilih Maks Port</option>
                                         <option value="8">8 Port</option>
                                         <option value="16">16 Port</option>
                                     </select>
+
+                                    <input type="text" name="latitude" class="form-control mb-3" placeholder="Latitude" required>
+                                    <input type="text" name="longitude" class="form-control mb-3" placeholder="Longitude" required>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" name="tambah_odp" class="btn btn-primary">Simpan</button>
@@ -409,55 +473,84 @@ if (isset($_POST['update_user'])) {
                         </div>
                     </div>
 
-
                     <?php if ($pon_id): ?>
-                        <p><i> >> <?php echo htmlspecialchars($pon_name); ?></i></p>
+                        <p><i> >> <?= htmlspecialchars($pon_name); ?></i></p>
                     <?php endif; ?>
+
                     <div class="table-responsive mt-3">
                         <table class="table table-bordered table-striped">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Nama ODP</th>
-                                            <th>Port</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $stmt = $pdo3->prepare("SELECT odp3.*, (SELECT COUNT(*) FROM users3 WHERE users3.odp_id = odp3.id) AS jumlah_user FROM odp3 WHERE odp3.pon_id = ?");
-                                        $stmt->execute([$pon_id]);
-                                        while ($row = $stmt->fetch()) {
-                                            $port_info = $row['jumlah_user'] . '/' . $row['port_max'];
-                                            $port_color = 'text-success';
-                                            if ($row['jumlah_user'] >= $row['port_max']) {
-                                                $port_color = 'text-danger';
-                                            } elseif ($row['jumlah_user'] >= $row['port_max'] * 0.75) {
-                                                $port_color = 'text-warning';
-                                            }
-                                            echo "<tr>
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nama ODP</th>
+                                    <th>Port</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $stmt = $pdo3->prepare("SELECT odp3.*, (SELECT COUNT(*) FROM users3 WHERE users3.odp_id = odp3.id) AS jumlah_user FROM odp3 WHERE odp3.pon_id = ?");
+                                $stmt->execute([$pon_id]);
+                                while ($row = $stmt->fetch()) {
+                                    $port_info = $row['jumlah_user'] . '/' . $row['port_max'];
+                                    $port_color = 'text-success';
+                                    if ($row['jumlah_user'] >= $row['port_max']) {
+                                        $port_color = 'text-danger';
+                                    } elseif ($row['jumlah_user'] >= $row['port_max'] * 0.75) {
+                                        $port_color = 'text-warning';
+                                    }
+
+                                    $lat = $row['latitude'] ?? '-';
+                                    $lon = $row['longitude'] ?? '-';
+
+                                    echo "<tr>
                         <td>{$row['nama_odp']}</td>
                         <td class='$port_color'><strong>$port_info</strong></td>
+                        <td>$lat</td>
+                        <td>$lon</td>
                         <td>
                             <a href='olt_soreang.php?pon_id={$pon_id}&odp_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat User</a>
                             <a href='edit_odp.php?id={$row['id']}' class='btn btn-warning btn-sm'>
-                            <i class='fas fa-edit'></i> Edit</a>
+                                <i class='fas fa-edit'></i> Edit</a>
                             <button class='btn btn-danger btn-sm' onclick=\"hapusItem('odp', {$row['id']}, {$pon_id})\">
-                            <i class='fas fa-trash'></i> Delete
+                                <i class='fas fa-trash'></i> Delete
                             </button>
                         </td>
                     </tr>";
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                }
+                                ?>
+                            </tbody>
                         </table>
                     </div>
-
-
                 </div>
+
+                <?php
+                // PROSES TAMBAH ODP
+                if (isset($_POST['tambah_odp'])) {
+                    $nama_odp = $_POST['nama_odp'];
+                    $port_max = $_POST['port_max'];
+                    $latitude = $_POST['latitude'];
+                    $longitude = $_POST['longitude'];
+
+                    $stmt = $pdo3->prepare("INSERT INTO odp3 (pon_id, nama_odp, port_max, latitude, longitude) VALUES (?, ?, ?, ?, ?)");
+                    $stmt->execute([$pon_id, $nama_odp, $port_max, $latitude, $longitude]);
+
+                    echo "<script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'ODP berhasil ditambahkan!',
+            timer: 1500,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = 'olt_soreang.php?pon_id={$pon_id}';
+        });
+    </script>";
+                }
+                ?>
+
+
             <?php
             }
 

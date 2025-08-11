@@ -10,12 +10,12 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <link rel="icon" href="logo-msn2.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="logo-msn2.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
@@ -28,12 +28,15 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
         .sidebar {
             width: 230px;
             height: 100vh;
-            background-color: #212529;
+            background-color: #fff;
+            /* putih */
             position: fixed;
             top: 0;
             left: 0;
             padding-top: 20px;
             z-index: 1000;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            /* bayangan samping */
         }
 
         .sidebar img {
@@ -43,7 +46,8 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
         }
 
         .sidebar a {
-            color: white;
+            color: #212529;
+            /* teks gelap */
             text-decoration: none;
             display: block;
             padding: 12px 20px;
@@ -52,7 +56,8 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
         }
 
         .sidebar a:hover {
-            background-color: #0056ad;
+            background-color: #e7f1ff;
+            /* hover biru muda */
             border-radius: 5px;
         }
 
@@ -69,12 +74,18 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             left: 230px;
             width: calc(100% - 230px);
             height: 60px;
-            background-color: #fff;
+            background-color: #0d6efd;
+            /* bootstrap primary blue */
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             z-index: 999;
             display: flex;
             align-items: center;
             padding: 0 20px;
+            color: white;
+
+            /* border radius bawah */
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
 
         .top-bar-content {
@@ -92,7 +103,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
         .search-form {
             display: flex;
             align-items: center;
-            background-color: #e9ecef;
+            background-color: rgba(255 255 255 / 0.2);
             border-radius: 20px;
             padding: 5px 10px;
         }
@@ -103,17 +114,38 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             outline: none;
             width: 160px;
             padding: 5px;
+            color: white;
+        }
+
+        .search-form input::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-form input::-webkit-input-placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-form input:-moz-placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-form input::-moz-placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-form input:-ms-input-placeholder {
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .search-form button {
             background: none;
             border: none;
-            color: #6c757d;
+            color: white;
         }
 
         .admin-container a.dropdown-toggle {
             text-decoration: none;
-            color: #212529;
+            color: white;
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -121,7 +153,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
         }
 
         .admin-container a.dropdown-toggle:hover {
-            color: #0d6efd;
+            color: #cce5ff;
         }
 
         .profile-avatar {
@@ -147,6 +179,8 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
                 max-height: calc(100vh - 60px);
                 bottom: 0;
                 overflow-y: auto;
+                box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+                background-color: #fff;
             }
 
             .sidebar.active {
@@ -161,6 +195,11 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             .sidebar a {
                 padding: 10px 15px;
                 font-size: 0.9rem;
+                color: #212529;
+            }
+
+            .sidebar a:hover {
+                background-color: #e7f1ff;
             }
 
             .top-bar {
@@ -168,6 +207,8 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
                 width: 100%;
                 height: 50px;
                 padding: 5px 10px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
             }
 
             .menu-button {
@@ -178,6 +219,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
                 align-items: center;
                 justify-content: center;
                 padding: 0;
+                color: white;
             }
 
             .search-form {
@@ -189,16 +231,23 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
                 height: 36px;
                 font-size: 0.85rem;
                 padding: 0.25rem 0.5rem;
+                color: white;
+            }
+
+            .search-form input::placeholder {
+                color: rgba(255, 255, 255, 0.8);
             }
 
             .search-form button {
                 height: 36px;
                 width: 36px;
                 padding: 0;
+                color: white;
             }
 
             .admin-container a.dropdown-toggle {
                 font-size: 0.85rem;
+                color: white;
             }
 
             .content {
@@ -241,25 +290,25 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
 
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
-        <img src="/DataUserODP/logo-msn.png" alt="Logo PT">
+        <img src="/DataUserODP/logo-msn.png" alt="Logo PT" />
         <div class="garis-sidebar"></div>
         <a href="/DataUserODP/dashboard.php"><i class="fas fa-home me-2"></i> Dashboard</a>
         <a href="/DataUserODP/OLT_MSN/olt_msn.php"><i class="fas fa-server me-2"></i> OLT MSN</a>
         <a href="/DataUserODP/OLT_BAGONG/olt_bagong.php"><i class="fas fa-server me-2"></i> OLT Bagong</a>
         <a href="/DataUserODP/OLT_SOREANG/olt_soreang.php"><i class="fas fa-server me-2"></i> OLT Soreang</a>
-        <a href="/DataUserODP/log_view.php"><i class="fas fa-history me-2"></i></i> riwayat</a>
+        <a href="/DataUserODP/log_view.php"><i class="fas fa-history me-2"></i> Riwayat</a>
     </div>
 
     <!-- TOPBAR -->
     <div class="top-bar">
-        <button class="btn btn-outline-dark d-md-none menu-button" onclick="toggleSidebar()">
+        <button class="btn btn-outline-light d-md-none menu-button" onclick="toggleSidebar()">
             <i class="fas fa-bars"></i>
         </button>
 
         <div class="top-bar-content">
             <div class="search-container">
                 <form action="/DataUserODP/search.php" method="GET" class="search-form">
-                    <input type="text" name="query" placeholder="Cari" required>
+                    <input type="text" name="query" placeholder="Cari" required />
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </div>
@@ -299,7 +348,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             });
         });
     </script>
-
 </body>
 
 </html>
