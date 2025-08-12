@@ -1,45 +1,37 @@
 <?php
-require_once 'koneksi_log.php'; // Pastikan file ini memuat koneksi $pdo_log
+require_once __DIR__ . '/koneksi_log.php';
 
-function tambahRiwayat($aksi, $oleh, $keterangan = null)
+function tambahRiwayat($aksi, $oleh, $keterangan = '-')
 {
     global $pdo_log;
 
-    // Jika $oleh array (contoh: $_SESSION['admin']), ambil username-nya
+    if (!isset($pdo_log) || !$pdo_log) {
+        error_log("Koneksi log tidak tersedia");
+        return false;
+    }
+
+    // Pastikan $oleh string
     if (is_array($oleh)) {
-        $oleh = isset($oleh['username']) ? $oleh['username'] : 'unknown';
+        $oleh = $oleh['username'] ?? 'unknown';
     }
+    $oleh = trim((string)$oleh) ?: 'unknown';
 
-    // Pastikan $keterangan tidak menyimpan array mentah
+    // Format keterangan
     if (is_array($keterangan)) {
-        // Jika array numerik
-        if (array_keys($keterangan) === range(0, count($keterangan) - 1)) {
-            $keterangan = implode("\n", $keterangan);
-        } else {
-            // Jika array asosiatif
-            $baris = [];
-            foreach ($keterangan as $key => $value) {
-                // Pastikan value bukan array nested
-                if (is_array($value)) {
-                    $value = json_encode($value); // fallback jika ada array nested
-                }
-                $baris[] = "$key: $value";
-            }
-            $keterangan = implode("\n", $baris);
-        }
+        $keterangan = implode("\n", $keterangan);
     } elseif (is_object($keterangan)) {
-        $keterangan = json_encode($keterangan); // fallback jika object
+        $keterangan = json_encode($keterangan, JSON_UNESCAPED_UNICODE);
     }
-
-    // Amankan NULL jika kosong
-    if (empty($keterangan)) {
-        $keterangan = '-';
-    }
+    $keterangan = trim($keterangan) ?: '-';
 
     try {
-        $stmt = $pdo_log->prepare("INSERT INTO log_aktivitas (aksi, oleh, keterangan, waktu) VALUES (?, ?, ?, NOW())");
+        $stmt = $pdo_log->prepare(
+            "INSERT INTO log_aktivitas (aksi, oleh, keterangan, waktu) VALUES (?, ?, ?, NOW())"
+        );
         $stmt->execute([$aksi, $oleh, $keterangan]);
+        return true;
     } catch (PDOException $e) {
-        error_log("Gagal menulis log aktivitas: " . $e->getMessage());
+        error_log("Gagal menulis log: " . $e->getMessage());
+        return false;
     }
 }
