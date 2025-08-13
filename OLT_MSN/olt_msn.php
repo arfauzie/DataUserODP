@@ -71,31 +71,67 @@ if (isset($_POST['tambah_pon'])) {
 
 // Tambah ODP
 
+// ==========================
+//  Tambah ODP (FULL FIX)
+// ==========================
 if (isset($_POST['tambah_odp'])) {
-    $pon_id   = $_POST['pon_id'];
+    $pon_id   = isset($_POST['pon_id']) ? (int) $_POST['pon_id'] : 0;
     $nama_odp = trim($_POST['nama_odp']);
     $port_max = trim($_POST['port_max']);
+    $latitude = trim($_POST['latitude']);
+    $longitude = trim($_POST['longitude']);
 
-    $stmt = $pdo->prepare("SELECT port_max, (SELECT COUNT(*) FROM $odp_table WHERE pon_id = ?) as jumlah_odp FROM $pon_table WHERE id = ?");
+    // Validasi angka untuk latitude & longitude
+    if (!is_numeric($latitude) || !is_numeric($longitude)) {
+        echo "<script>
+            alert('Latitude & Longitude harus berupa angka!');
+            window.location='olt_msn.php?pon_id={$pon_id}';
+        </script>";
+        exit();
+    }
+
+    // Cek kapasitas maksimum ODP untuk PON ini
+    $stmt = $pdo->prepare("
+        SELECT port_max, 
+               (SELECT COUNT(*) FROM $odp_table WHERE pon_id = ?) as jumlah_odp 
+        FROM $pon_table 
+        WHERE id = ?
+    ");
     $stmt->execute([$pon_id, $pon_id]);
     $result = $stmt->fetch();
 
     if ($result && $result['jumlah_odp'] < $result['port_max']) {
-        $stmt = $pdo->prepare("INSERT INTO $odp_table (pon_id, nama_odp, port_max) VALUES (?, ?, ?)");
-        if ($stmt->execute([$pon_id, $nama_odp, $port_max])) {
+        // INSERT dengan latitude & longitude
+        $stmt = $pdo->prepare("
+            INSERT INTO $odp_table (pon_id, nama_odp, port_max, latitude, longitude) 
+            VALUES (?, ?, ?, ?, ?)
+        ");
+        if ($stmt->execute([$pon_id, $nama_odp, $port_max, $latitude, $longitude])) {
+            // Ambil nama PON untuk log
             $stmtPon = $pdo->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
             $stmtPon->execute([$pon_id]);
             $nama_pon = $stmtPon->fetchColumn() ?? '(tidak diketahui)';
 
-            $log = "Nama ODP: $nama_odp\nPort Max: $port_max\nPON: $nama_pon";
+            // Catat log
+            $log = "Nama ODP: $nama_odp\nPort Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
             tambahRiwayat("Tambah ODP", $oleh, $log);
+
             header("Location: olt_msn.php?pon_id={$pon_id}&success=odp_added");
             exit();
+        } else {
+            echo "<script>
+                alert('Gagal menambahkan ODP!');
+                window.location='olt_msn.php?pon_id={$pon_id}';
+            </script>";
         }
     } else {
-        echo "<script>alert('Gagal! Jumlah ODP sudah mencapai batas maksimum.'); window.location='olt_msn.php?pon_id={$pon_id}';</script>";
+        echo "<script>
+            alert('Gagal! Jumlah ODP sudah mencapai batas maksimum.');
+            window.location='olt_msn.php?pon_id={$pon_id}';
+        </script>";
     }
 }
+
 
 
 // Tambah User
@@ -417,16 +453,16 @@ if (isset($_POST['update_user'])) {
                     $lon_user = floatval($_POST['longitude']);
 
                     $stmt = $pdo->query("SELECT o.id, o.nama_odp, o.latitude, o.longitude, p.nama_pon,
-        (6371 * ACOS(
-            COS(RADIANS($lat_user)) * COS(RADIANS(o.latitude)) *
-            COS(RADIANS(o.longitude) - RADIANS($lon_user)) +
-            SIN(RADIANS($lat_user)) * SIN(RADIANS(o.latitude))
-        )) AS distance
-        FROM odp1 o
-        JOIN pon1 p ON o.pon_id = p.id
-        WHERE o.latitude IS NOT NULL AND o.longitude IS NOT NULL
-        ORDER BY distance ASC
-        LIMIT 1");
+            (6371 * ACOS(
+                COS(RADIANS($lat_user)) * COS(RADIANS(o.latitude)) *
+                COS(RADIANS(o.longitude) - RADIANS($lon_user)) +
+                SIN(RADIANS($lat_user)) * SIN(RADIANS(o.latitude))
+            )) AS distance
+            FROM odp1 o
+            JOIN pon1 p ON o.pon_id = p.id
+            WHERE o.latitude IS NOT NULL AND o.longitude IS NOT NULL
+            ORDER BY distance ASC
+            LIMIT 1");
 
                     $closest = $stmt->fetch();
                     if ($closest) {
@@ -436,21 +472,21 @@ if (isset($_POST['update_user'])) {
                         $distance_m = round($distance_km * 1000); // Konversi km ke meter dan dibulatkan ke bilangan bulat
 
                         echo "<script>
-        Swal.fire({
-            icon: 'info',
-            title: 'ODP Terdekat Ditemukan!',
-            html: 'ODP: <strong>$odp</strong><br>PON: <strong>$pon</strong><br>Jarak: <strong>$distance_m meter</strong>',
-            confirmButtonText: 'OK'
-        });
-        </script>";
+            Swal.fire({
+                icon: 'info',
+                title: 'ODP Terdekat Ditemukan!',
+                html: 'ODP: <strong>$odp</strong><br>PON: <strong>$pon</strong><br>Jarak: <strong>$distance_m meter</strong>',
+                confirmButtonText: 'OK'
+            });
+            </script>";
                     } else {
                         echo "<script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Data Tidak Ditemukan!',
-            text: 'Tidak ada ODP dengan koordinat yang valid.'
-        });
-        </script>";
+            Swal.fire({
+                icon: 'error',
+                title: 'Data Tidak Ditemukan!',
+                text: 'Tidak ada ODP dengan koordinat yang valid.'
+            });
+            </script>";
                     }
                 }
                 ?>
@@ -459,21 +495,22 @@ if (isset($_POST['update_user'])) {
             <?php
             }
 
+
             if ($pon_id && !$odp_id) {
                 if (isset($_GET['success']) && $_GET['success'] == 'odp_added') {
                     echo "<script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'ODP berhasil ditambahkan!',
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location = 'olt_msn.php?pon_id={$pon_id}';
-                        });
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'ODP berhasil ditambahkan!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location = 'olt_msn.php?pon_id={$pon_id}';
                     });
-                </script>";
+                });
+            </script>";
                 }
 
             ?>
@@ -546,19 +583,19 @@ if (isset($_POST['update_user'])) {
                                     $lon = $row['longitude'] ?? '-';
 
                                     echo "<tr>
-                        <td>{$row['nama_odp']}</td>
-                        <td class='$port_color'><strong>$port_info</strong></td>
-                        <td>$lat</td>
-                        <td>$lon</td>
-                        <td>
-                            <a href='olt_msn.php?pon_id={$pon_id}&odp_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat User</a>
-                            <a href='edit_odp.php?id={$row['id']}' class='btn btn-warning btn-sm'>
-                                <i class='fas fa-edit'></i> Edit</a>
-                            <button class='btn btn-danger btn-sm' onclick=\"hapusItem('odp', {$row['id']}, {$pon_id})\">
-                                <i class='fas fa-trash'></i> Delete
-                            </button>
-                        </td>
-                    </tr>";
+                            <td>{$row['nama_odp']}</td>
+                            <td class='$port_color'><strong>$port_info</strong></td>
+                            <td>$lat</td>
+                            <td>$lon</td>
+                            <td>
+                                <a href='olt_msn.php?pon_id={$pon_id}&odp_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat User</a>
+                                <a href='edit_odp.php?id={$row['id']}' class='btn btn-warning btn-sm'>
+                                    <i class='fas fa-edit'></i> Edit</a>
+                                <button class='btn btn-danger btn-sm' onclick=\"hapusItem('odp', {$row['id']}, {$pon_id})\">
+                                    <i class='fas fa-trash'></i> Delete
+                                </button>
+                            </td>
+                        </tr>";
                                 }
                                 ?>
                             </tbody>
@@ -578,16 +615,16 @@ if (isset($_POST['update_user'])) {
                     $stmt->execute([$pon_id, $nama_odp, $port_max, $latitude, $longitude]);
 
                     echo "<script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: 'ODP berhasil ditambahkan!',
-            timer: 1500,
-            showConfirmButton: false
-        }).then(() => {
-            window.location.href = 'olt_msn.php?pon_id={$pon_id}';
-        });
-    </script>";
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'ODP berhasil ditambahkan!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = 'olt_msn.php?pon_id={$pon_id}';
+            });
+        </script>";
                 }
                 ?>
 

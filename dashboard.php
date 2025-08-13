@@ -340,14 +340,14 @@ try {
                 <!-- Panel Riwayat & Summary -->
 
 
-            </div> <!-- /big-box -->
+            </div>
             <div class="panel-row">
                 <!-- left: history -->
                 <div class="panel-left">
                     <div class="history-card">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="mb-0">Riwayat Aktivitas Terbaru</h6>
-                            <a href="log_view.php" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                            <a href="log_riwayat.php" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                         </div>
 
                         <?php if (!empty($recentLogs)): ?>

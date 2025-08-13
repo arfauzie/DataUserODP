@@ -7,5 +7,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $stmt->execute([$id]);
 }
 
-header("Location: log_view.php");
+header("Location: log_riwayat.php");
 exit;
