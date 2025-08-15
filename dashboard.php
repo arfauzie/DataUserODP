@@ -388,10 +388,6 @@ try {
                                 <div>Total Users</div>
                                 <div class="value"><?= $total_users_all ?></div>
                             </div>
-                            <div class="summary-tile">
-                                <div>Total Logs</div>
-                                <div class="value"><?= $total_logs ?></div>
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -52,8 +52,13 @@ if (!$odp) {
 }
 
 // Ambil semua data pon
-$pon_stmt = $pdo->query("SELECT * FROM pon1 ORDER BY id ASC");
+$pon_stmt = $pdo->query("
+    SELECT * 
+    FROM pon1 
+    ORDER BY CAST(TRIM(REPLACE(nama_pon, 'PON', '')) AS UNSIGNED)
+");
 $all_pons = $pon_stmt->fetchAll();
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nama_odp = trim($_POST['nama_odp']);

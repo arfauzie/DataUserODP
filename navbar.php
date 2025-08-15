@@ -82,8 +82,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             align-items: center;
             padding: 0 20px;
             color: white;
-
-            /* border radius bawah */
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
         }
@@ -117,22 +115,17 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             color: white;
         }
 
-        .search-form input::placeholder {
-            color: rgba(255, 255, 255, 0.8);
+        /* FIX: saat fokus tetap biru */
+        .search-form input:focus {
+            background-color: #0d6efd;
+            /* sama dengan top-bar */
+            color: white;
         }
 
-        .search-form input::-webkit-input-placeholder {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .search-form input:-moz-placeholder {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .search-form input::-moz-placeholder {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
+        .search-form input::placeholder,
+        .search-form input::-webkit-input-placeholder,
+        .search-form input:-moz-placeholder,
+        .search-form input::-moz-placeholder,
         .search-form input:-ms-input-placeholder {
             color: rgba(255, 255, 255, 0.8);
         }
@@ -234,6 +227,12 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
                 color: white;
             }
 
+            /* FIX: mobile saat fokus tetap biru */
+            .search-form input:focus {
+                background-color: #0d6efd;
+                color: white;
+            }
+
             .search-form input::placeholder {
                 color: rgba(255, 255, 255, 0.8);
             }
@@ -281,6 +280,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             display: block;
         }
     </style>
+
 </head>
 
 <body>
