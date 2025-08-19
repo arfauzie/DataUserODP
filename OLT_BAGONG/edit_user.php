@@ -6,12 +6,8 @@ if (!isset($_SESSION['admin'])) {
 }
 
 require_once '../log_helper.php';
-require_once 'config2.php'; // pastikan $pdo2 sudah dibuat di sini (ERRMODE_EXCEPTION, dsb)
+require_once 'config2.php';
 
-// ---------------------------------------------------------
-// 1) AJAX endpoint: ambil ODP by PON (HARUS diletakkan
-//    SEBELUM ada output/HTML/echo/include navbar).
-// ---------------------------------------------------------
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
     header('Content-Type: application/json; charset=utf-8');
 
@@ -25,12 +21,9 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
     exit();
 }
 
-// ---------------------------------------------------------
-// 2) Ambil parameter dasar
-// ---------------------------------------------------------
 $id     = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$odp_id = isset($_GET['odp_id']) ? (int)$_GET['odp_id'] : 0; // opsional
-$pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : 0; // opsional
+$odp_id = isset($_GET['odp_id']) ? (int)$_GET['odp_id'] : 0;
+$pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : 0;
 
 if ($id <= 0) {
     echo "<script>
@@ -49,9 +42,6 @@ if ($id <= 0) {
     exit();
 }
 
-// ---------------------------------------------------------
-// 3) Ambil data user lama
-// ---------------------------------------------------------
 $stmt = $pdo2->prepare("SELECT * FROM users2 WHERE id = ?");
 $stmt->execute([$id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -83,9 +73,7 @@ if ($pon_id <= 0 && $odp_id > 0) {
     $pon_id = (int)$stmt->fetchColumn();
 }
 
-// ---------------------------------------------------------
-// 4) Ambil semua PON dan ODP awal (berdasarkan PON terpilih)
-// ---------------------------------------------------------
+
 $pon_stmt = $pdo2->query("
     SELECT id, nama_pon
     FROM pon2
