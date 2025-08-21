@@ -311,22 +311,30 @@ if (isset($_POST['update_user'])) {
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 
+            /* FIX: siapkan $pon_name untuk dipakai di bawah */
+            $pon_name = null;
+            if ($pon_id) {
+                $stmtPon = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id = ?");
+                $stmtPon->execute([$pon_id]);
+                $pon_name = $stmtPon->fetchColumn();
+            }
+
             if (!$pon_id && !$odp_id) {
                 // SweetAlert Notifikasi
                 if (isset($_GET['success']) && $_GET['success'] === 'pon_added') {
                     echo "<script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'PON berhasil ditambahkan!',
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location = 'olt_bagong.php';
-                        });
-                    });
-                </script>";
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'PON berhasil ditambahkan!',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location = 'olt_bagong.php';
+                });
+            });
+        </script>";
                 }
 
                 // Pesan sukses umum
@@ -345,13 +353,12 @@ if (isset($_POST['update_user'])) {
                     }
                     if (!empty($message)) {
                         echo "<script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            Swal.fire({ icon: 'success', title: 'Berhasil!', text: '$message' });
-                        });
-                    </script>";
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: '$message' });
+                });
+            </script>";
                     }
                 }
-
             ?>
                 <div class="card-box">
                     <h4 class="mt-5">Data PON</h4>
@@ -406,6 +413,29 @@ if (isset($_POST['update_user'])) {
                         </div>
                     </div>
 
+                    <!-- FIX BARU: Modal Hasil ODP Terdekat -->
+                    <div class="modal fade" id="modalHasilODP" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-info text-white">
+                                    <h5 class="modal-title">ODP Terdekat</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-2"><strong>ODP:</strong> <span id="hasilOdpNama"></span></div>
+                                    <div class="mb-2"><strong>PON:</strong> <span id="hasilPonNama"></span></div>
+                                    <div class="mb-2"><strong>Jarak:</strong> <span id="hasilJarak"></span> meter</div>
+                                    <div class="mb-2"><strong>Port:</strong> <span id="hasilPort"></span></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#" id="btnMasukOdp" class="btn btn-primary">Masuk ke ODP</a>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END Modal Hasil ODP Terdekat -->
+
                     <div class="table-responsive mt-3">
                         <table class="table table-bordered table-striped">
                             <thead class="table-light">
@@ -447,70 +477,85 @@ if (isset($_POST['update_user'])) {
                 </div>
 
                 <?php
-                // Proses pencarian ODP terdekat
+                // Proses pencarian ODP terdekat -> FIX: tampilkan via Bootstrap Modal + info port
                 if (isset($_POST['cek_odp_terdekat'])) {
                     $lat_user = floatval($_POST['latitude']);
                     $lon_user = floatval($_POST['longitude']);
 
-                    $stmt = $pdo2->query("SELECT o.id, o.nama_odp, o.latitude, o.longitude, p.nama_pon,
-            (6371 * ACOS(
-                COS(RADIANS($lat_user)) * COS(RADIANS(o.latitude)) *
-                COS(RADIANS(o.longitude) - RADIANS($lon_user)) +
-                SIN(RADIANS($lat_user)) * SIN(RADIANS(o.latitude))
-            )) AS distance
+                    $stmt = $pdo2->query("
+            SELECT 
+                o.id AS odp_id,
+                o.pon_id,
+                o.nama_odp,
+                o.latitude,
+                o.longitude,
+                o.port_max,
+                p.nama_pon,
+                (SELECT COUNT(*) FROM users2 u WHERE u.odp_id = o.id) AS jumlah_user,
+                (6371 * ACOS(
+                    COS(RADIANS($lat_user)) * COS(RADIANS(o.latitude)) *
+                    COS(RADIANS(o.longitude) - RADIANS($lon_user)) +
+                    SIN(RADIANS($lat_user)) * SIN(RADIANS(o.latitude))
+                )) AS distance
             FROM odp2 o
             JOIN pon2 p ON o.pon_id = p.id
             WHERE o.latitude IS NOT NULL AND o.longitude IS NOT NULL
             ORDER BY distance ASC
-            LIMIT 1");
+            LIMIT 1
+        ");
 
                     $closest = $stmt->fetch();
                     if ($closest) {
-                        $odp = $closest['nama_odp'];
-                        $pon = $closest['nama_pon'];
-                        $distance_km = floatval($closest['distance']);
-                        $distance_m = round($distance_km * 1000); // Konversi km ke meter dan dibulatkan ke bilangan bulat
+                        $odp          = $closest['nama_odp'];
+                        $pon          = $closest['nama_pon'];
+                        $distance_km  = floatval($closest['distance']);
+                        $distance_m   = round($distance_km * 1000); // meter
+                        $port_info    = intval($closest['jumlah_user']) . '/' . intval($closest['port_max']);
+                        $link_odp     = "olt_bagong.php?pon_id=" . urlencode($closest['pon_id']) . "&odp_id=" . urlencode($closest['odp_id']);
 
+                        // Tampilkan modal & isi datanya
                         echo "<script>
-            Swal.fire({
-                icon: 'info',
-                title: 'ODP Terdekat Ditemukan!',
-                html: 'ODP: <strong>$odp</strong><br>PON: <strong>$pon</strong><br>Jarak: <strong>$distance_m meter</strong>',
-                confirmButtonText: 'OK'
-            });
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.getElementById('hasilOdpNama').textContent = " . json_encode($odp) . ";
+                    document.getElementById('hasilPonNama').textContent = " . json_encode($pon) . ";
+                    document.getElementById('hasilJarak').textContent  = " . json_encode($distance_m) . ";
+                    document.getElementById('hasilPort').textContent   = " . json_encode($port_info) . ";
+                    document.getElementById('btnMasukOdp').setAttribute('href', " . json_encode($link_odp) . ");
+                    var modalEl = document.getElementById('modalHasilODP');
+                    var myModal = new bootstrap.Modal(modalEl);
+                    myModal.show();
+                });
             </script>";
                     } else {
                         echo "<script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Data Tidak Ditemukan!',
-                text: 'Tidak ada ODP dengan koordinat yang valid.'
-            });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Data Tidak Ditemukan!',
+                    text: 'Tidak ada ODP dengan koordinat yang valid.'
+                });
             </script>";
                     }
                 }
                 ?>
 
-
             <?php
-            }
-
+            } // endif !$pon_id && !$odp_id
 
             if ($pon_id && !$odp_id) {
                 if (isset($_GET['success']) && $_GET['success'] == 'odp_added') {
                     echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: 'ODP berhasil ditambahkan!',
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location = 'olt_bagong.php?pon_id={$pon_id}';
-                    });
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'ODP berhasil ditambahkan!',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location = 'olt_bagong.php?pon_id={$pon_id}';
                 });
-            </script>";
+            });
+        </script>";
                 }
 
             ?>
