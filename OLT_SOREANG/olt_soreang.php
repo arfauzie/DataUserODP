@@ -231,6 +231,45 @@ if (isset($_POST['update_user'])) {
             /* abu juga di dalam konten */
         }
 
+        .custom-breadcrumb {
+            background: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            display: inline-block;
+        }
+
+        .custom-breadcrumb ol {
+            list-style: none;
+            display: flex;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .custom-breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-breadcrumb li:not(:last-child)::after {
+            content: "›";
+            margin-left: 8px;
+            margin-right: 4px;
+            color: #999;
+        }
+
+        .custom-breadcrumb li:last-child {
+            font-weight: 600;
+            color: #5b4bdb;
+            /* warna ungu untuk yang aktif */
+        }
+
+
+
         /* Bungkus utama */
         .main-wrapper {
             display: flex;
@@ -368,79 +407,104 @@ if (isset($_POST['update_user'])) {
             ?>
                 <div class="card-box">
                     <h4 class="mt-5">Data PON</h4>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center mb-3 gap-2">
                         <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
                             <i class="fas fa-plus"></i> Tambah PON
                         </button>
                         <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalCekLokasi">
-                            <i class="fas fa-map-marker-alt"></i> Masukkan Lokasi</button>
+                            <i class="fas fa-map-marker-alt"></i> Masukkan Lokasi
+                        </button>
                     </div>
 
-                    <!-- Modal Tambah PON -->
-                    <div class="modal fade" id="modalTambahPON" tabindex="-1">
-                        <div class="modal-dialog">
-                            <form method="POST" class="modal-content">
-                                <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title">Tambah PON</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal fade" id="modalTambahPON" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="POST" class="modal-content border-0 shadow rounded-3">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-semibold">Tambah Data PON</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <input type="text" name="nama_pon" class="form-control mb-3" placeholder="Nama PON" required>
-                                    <select name="port_max" class="form-control" required>
-                                        <option disabled selected>Pilih Maks Port</option>
-                                        <option value="2">2 Port</option>
-                                        <option value="4">4 Port</option>
-                                        <option value="8">8 Port</option>
-                                    </select>
+                                    <div class="mb-3">
+                                        <label for="nama_pon" class="form-label">Nama PON</label>
+                                        <input type="text" id="nama_pon" name="nama_pon" class="form-control" placeholder="Nama PON" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="port_max" class="form-label">Maksimal Port</label>
+                                        <select id="port_max" name="port_max" class="form-control" required>
+                                            <option disabled selected>Pilih Maks Port</option>
+                                            <option value="2">2 Port</option>
+                                            <option value="4">4 Port</option>
+                                            <option value="8">8 Port</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
                                     <button type="submit" name="tambah_pon" class="btn btn-primary">Simpan</button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    <!-- Modal Cek Lokasi ODP Terdekat -->
-                    <div class="modal fade" id="modalCekLokasi" tabindex="-1">
-                        <div class="modal-dialog">
-                            <form method="POST" class="modal-content">
-                                <div class="modal-header bg-success text-white">
-                                    <h5 class="modal-title">Masukkan Koordinat Lokasi</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal fade" id="modalCekLokasi" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="POST" class="modal-content border-0 shadow rounded-3">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-semibold">Masukkan Koordinat Lokasi</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <input type="text" name="latitude" class="form-control mb-2" placeholder="Latitude" required>
-                                    <input type="text" name="longitude" class="form-control mb-2" placeholder="Longitude" required>
+                                    <div class="mb-3">
+                                        <label for="latitude" class="form-label">Latitude</label>
+                                        <input type="text" id="latitude" name="latitude" class="form-control" placeholder="Masukkan Latitude" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="longitude" class="form-label">Longitude</label>
+                                        <input type="text" id="longitude" name="longitude" class="form-control" placeholder="Masukkan Longitude" required>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
                                     <button type="submit" name="cek_odp_terdekat" class="btn btn-success">Cek ODP Terdekat</button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    <!-- FIX BARU: Modal Hasil ODP Terdekat -->
                     <div class="modal fade" id="modalHasilODP" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header bg-info text-white">
-                                    <h5 class="modal-title">ODP Terdekat</h5>
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow rounded-3">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-semibold">ODP Terdekat</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="mb-2"><strong>ODP:</strong> <span id="hasilOdpNama"></span></div>
-                                    <div class="mb-2"><strong>PON:</strong> <span id="hasilPonNama"></span></div>
-                                    <div class="mb-2"><strong>Jarak:</strong> <span id="hasilJarak"></span> meter</div>
-                                    <div class="mb-2"><strong>Port:</strong> <span id="hasilPort"></span></div>
+                                    <table class="w-100">
+                                        <tr>
+                                            <td style="width:100px; font-weight:bold;">ODP</td>
+                                            <td>: <span id="hasilOdpNama"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:bold;">PON</td>
+                                            <td>: <span id="hasilPonNama"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:bold;">Jarak</td>
+                                            <td>: <span id="hasilJarak"></span> meter</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:bold;">Port</td>
+                                            <td>: <span id="hasilPort"></span></td>
+                                        </tr>
+                                    </table>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer border-0">
                                     <a href="#" id="btnMasukOdp" class="btn btn-primary">Masuk ke ODP</a>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- END Modal Hasil ODP Terdekat -->
 
                     <div class="table-responsive mt-3">
                         <table class="table table-striped">
@@ -575,27 +639,43 @@ if (isset($_POST['update_user'])) {
                     </div>
 
                     <!-- Modal Tambah ODP -->
-                    <div class="modal fade" id="modalTambahODP" tabindex="-1">
-                        <div class="modal-dialog">
-                            <form method="POST" class="modal-content">
-                                <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title">Tambah ODP</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal fade" id="modalTambahODP" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="POST" class="modal-content border-0 shadow rounded-3">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-semibold">Tambah Data ODP</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" name="pon_id" value="<?= $pon_id ?>">
-                                    <input type="text" name="nama_odp" class="form-control mb-3" placeholder="Nama ODP" required>
 
-                                    <select name="port_max" class="form-control mb-3" required>
-                                        <option disabled selected>Pilih Maks Port</option>
-                                        <option value="8">8 Port</option>
-                                        <option value="16">16 Port</option>
-                                    </select>
+                                    <div class="mb-3">
+                                        <label for="nama_odp" class="form-label">Nama ODP</label>
+                                        <input type="text" id="nama_odp" name="nama_odp" class="form-control" placeholder="Masukkan Nama ODP" required>
+                                    </div>
 
-                                    <input type="text" name="latitude" class="form-control mb-3" placeholder="Latitude" required>
-                                    <input type="text" name="longitude" class="form-control mb-3" placeholder="Longitude" required>
+                                    <div class="mb-3">
+                                        <label for="port_max" class="form-label">Maksimal Port</label>
+                                        <select id="port_max" name="port_max" class="form-select" required>
+                                            <option disabled selected>Pilih Maks Port</option>
+                                            <option value="8">8 Port</option>
+                                            <option value="16">16 Port</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="latitude" class="form-label">Latitude</label>
+                                            <input type="text" id="latitude" name="latitude" class="form-control" placeholder="latitud" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="longitude" class="form-label">Longitude</label>
+                                            <input type="text" id="longitude" name="longitude" class="form-control" placeholder="longitude" required>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
                                     <button type="submit" name="tambah_odp" class="btn btn-primary">Simpan</button>
                                 </div>
                             </form>
@@ -603,7 +683,11 @@ if (isset($_POST['update_user'])) {
                     </div>
 
                     <?php if ($pon_id): ?>
-                        <p><i> >> <?= htmlspecialchars($pon_name); ?></i></p>
+                        <nav aria-label="breadcrumb" class="custom-breadcrumb">
+                            <ol>
+                                <li><?= htmlspecialchars($pon_name); ?></li>
+                            </ol>
+                        </nav>
                     <?php endif; ?>
 
                     <div class="table-responsive mt-3">
@@ -711,36 +795,55 @@ if (isset($_POST['update_user'])) {
                     </div>
 
                     <!-- Modal Tambah User -->
-                    <div class="modal fade" id="modalTambahUser" tabindex="-1">
-                        <div class="modal-dialog">
-                            <form method="POST" class="modal-content">
-                                <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title">Tambah User</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal fade" id="modalTambahUser" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="POST" class="modal-content border-0 shadow rounded-3">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-semibold">Tambah User</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" name="odp_id" value="<?= $odp_id ?>">
-                                    <input type="text" name="nama_user" class="form-control mb-3" placeholder="Nama User" required>
-                                    <input type="text" name="nomor_internet" class="form-control mb-3" placeholder="Nomor Internet">
-                                    <textarea name="alamat" class="form-control" placeholder="Alamat" required></textarea>
+
+                                    <div class="mb-3">
+                                        <label for="nama_user" class="form-label">Nama User</label>
+                                        <input type="text" id="nama_user" name="nama_user" class="form-control" placeholder="Masukkan Nama User" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="nomor_internet" class="form-label">Nomor Internet</label>
+                                        <input type="text" id="nomor_internet" name="nomor_internet" class="form-control" placeholder="Nomor Internet">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="alamat" class="form-label">Alamat</label>
+                                        <textarea id="alamat" name="alamat" class="form-control" rows="3" placeholder="Masukkan alamat lengkap" required></textarea>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
                                     <button type="submit" name="tambah_user" class="btn btn-primary">Simpan</button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
+                    <?php if ($pon_id || $odp_id): ?>
+                        <nav aria-label="breadcrumb" class="custom-breadcrumb">
+                            <ol>
+                                <?php if ($pon_id): ?>
+                                    <li>
+                                        <?= htmlspecialchars($pon_name); ?>
+                                    </li>
+                                <?php endif; ?>
 
-                    <?php if ($odp_id || $pon_id): ?>
-                        <p>
-                            <?php if ($pon_id): ?>
-                                <i>>> <?php echo htmlspecialchars($pon_name); ?></i>
-                            <?php endif; ?>
-                            <?php if ($odp_id): ?>
-                                &nbsp;&nbsp;<i>>> ODP <?php echo htmlspecialchars($odp_name); ?></i>
-                            <?php endif; ?>
-                        </p>
+                                <?php if ($odp_id): ?>
+                                    <li>
+                                        <?= "ODP " . htmlspecialchars($odp_name); ?>
+                                    </li>
+                                <?php endif; ?>
+                            </ol>
+                        </nav>
                     <?php endif; ?>
 
                     <div class="table-responsive mt-3">
