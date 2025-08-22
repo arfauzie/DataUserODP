@@ -200,103 +200,109 @@ if (isset($_POST['update_user'])) {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        /* Area konten utama */
-        .content {
-            margin-left: 200px;
-            padding: 40px;
-            background-color: #fff;
-            min-height: 100vh;
-            width: calc(100% - 160px);
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            /* biar padding dihitung di dalam */
         }
 
-        /* Box kartu (bungkus tabel / CRUD) */
+        /* Background abu full */
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            background-color: #f8fcff;
+            /* abu full */
+        }
+
+        /* Konten utama */
+        .content {
+            position: relative;
+            margin-left: 200px;
+            /* biar ga nabrak sidebar */
+            padding: 40px;
+            min-height: 100vh;
+            width: calc(100% - 200px);
+            /* isi sisa layar setelah sidebar */
+            flex: 1;
+            overflow-x: hidden;
+            background-color: #f8fcff;
+            /* abu juga di dalam konten */
+        }
+
+        /* Bungkus utama */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Card */
         .card-box {
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 1px 25px 25px 25px;
-            margin-bottom: 30px;
-            margin-top: 50px;
+            padding: 20px;
+            margin-bottom: 20px;
             width: 100%;
             overflow-x: auto;
-
         }
 
-        /* Tabel rapi */
+        /* ===== Tabel ===== */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
         .table th,
         .table td {
-            vertical-align: middle;
+            padding: 10px 15px;
             text-align: center;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
+            font-size: 14px;
         }
 
-        /* Heading */
-        h1,
-        h2,
-        h3 {
-            font-weight: 600;
-            margin-bottom: 20px;
-            padding-top: 50px;
+        .table th {
+            background-color: #fff;
+            font-weight: bold;
+            color: #333;
+            border-top: none;
         }
 
-        /* Tombol */
-        .btn {
-            margin: 2px;
+        .table tbody tr:hover {
+            background-color: #e5e5e5;
         }
 
-        /* Mobile view */
+        .table tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .table td:first-child,
+        .table th:first-child {
+            border-left: none !important;
+        }
+
+        .table td:last-child,
+        .table th:last-child {
+            border-right: none !important;
+        }
+
         @media (max-width: 768px) {
+            .main-wrapper {
+                flex-direction: column;
+            }
+
             .content {
-                margin-left: 0 !important;
-                padding: 56px 8px 10px 8px !important;
-                min-width: 100vw;
-                width: 100% !important;
-            }
-
-            .card-box {
-                padding: 10px !important;
-                margin-bottom: 10px !important;
-                width: 100% !important;
-                max-width: 100% !important;
-            }
-
-            .table-responsive {
-                overflow-x: auto !important;
-            }
-
-            .table,
-            .table th,
-            .table td {
-                font-size: 11px !important;
-                padding: 3px 4px !important;
-                white-space: normal !important;
-                word-break: break-word !important;
-            }
-
-            .btn {
-                font-size: 11px !important;
-                padding: 2px 6px !important;
-            }
-
-            h1,
-            h2,
-            h3 {
-                font-size: 1rem !important;
-                margin-bottom: 7px !important;
-            }
-        }
-
-        /* Sidebar fix di mobile */
-        @media (max-width: 768px) {
-            #sidebar {
-                position: static !important;
-                width: 100% !important;
-                min-height: auto !important;
-                height: auto !important;
-                display: block !important;
-                margin-bottom: 10px;
-                z-index: 100;
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
             }
         }
     </style>
@@ -437,7 +443,7 @@ if (isset($_POST['update_user'])) {
                     <!-- END Modal Hasil ODP Terdekat -->
 
                     <div class="table-responsive mt-3">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-striped">
                             <thead class="table-light">
                                 <tr>
                                     <th>Nama PON</th>
@@ -601,7 +607,7 @@ if (isset($_POST['update_user'])) {
                     <?php endif; ?>
 
                     <div class="table-responsive mt-3">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-striped">
                             <thead class="table-light">
                                 <tr>
                                     <th>Nama ODP</th>
@@ -738,29 +744,28 @@ if (isset($_POST['update_user'])) {
                     <?php endif; ?>
 
                     <div class="table-responsive mt-3">
-                        <table class="table table-bordered table-striped">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Nama User</th>
-                                            <th>Nomor Internet</th>
-                                            <th>Alamat</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $stmt = $pdo2->prepare("SELECT * FROM users2 WHERE odp_id = ?");
-                                        $stmt->execute([$odp_id]);
-                                        while ($row = $stmt->fetch()) {
-                                            $user_json = htmlspecialchars(json_encode([
-                                                'nama_user' => $row['nama_user'],
-                                                'nomor_internet' => $row['nomor_internet'],
-                                                'alamat' => $row['alamat'],
-                                                'id' => $row['id']
-                                            ]));
-                                            echo "<tr>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nama User</th>
+                                        <th>Nomor Internet</th>
+                                        <th>Alamat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $stmt = $pdo2->prepare("SELECT * FROM users2 WHERE odp_id = ?");
+                                    $stmt->execute([$odp_id]);
+                                    while ($row = $stmt->fetch()) {
+                                        $user_json = htmlspecialchars(json_encode([
+                                            'nama_user' => $row['nama_user'],
+                                            'nomor_internet' => $row['nomor_internet'],
+                                            'alamat' => $row['alamat'],
+                                            'id' => $row['id']
+                                        ]));
+                                        echo "<tr>
                                             <td>{$row['nama_user']}</td>
                                             <td>" . (!empty($row['nomor_internet']) ? $row['nomor_internet'] : 'Belum ada') . "</td>
                                             <td>{$row['alamat']}</td>
@@ -773,12 +778,12 @@ if (isset($_POST['update_user'])) {
                                                 </button>
                                             </td>
                                         </tr>";
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </table>
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
                 </div>
             <?php
