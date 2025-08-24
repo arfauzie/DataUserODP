@@ -345,12 +345,11 @@ if (isset($_POST['update_user'])) {
             }
         }
     </style>
-
 </head>
 
 <body>
-    <div class="container mt-4">
 
+    <div class="container mt-4">
         <div class="content">
             <?php
             echo '<h1><i class="fas fa-server me-2"></i>OLT MSN</h1>';
@@ -409,10 +408,10 @@ if (isset($_POST['update_user'])) {
                 <div class="card-box">
                     <h4 class="mt-5">Data PON</h4>
                     <div class="d-flex align-items-center mb-3 gap-2">
-                        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
                             <i class="fas fa-plus"></i> Tambah PON
                         </button>
-                        <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalCekLokasi">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCekLokasi">
                             <i class="fas fa-map-marker-alt"></i> Masukkan Lokasi
                         </button>
                     </div>
@@ -628,14 +627,15 @@ if (isset($_POST['update_user'])) {
             });
         </script>";
                 }
+
             ?>
                 <div class="card-box">
                     <h4 class="mt-5">Data ODP</h4>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahODP">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahODP">
                             <i class="fas fa-plus"></i> Tambah ODP
                         </button>
-                        <a href="olt_msn.php" class="btn btn-secondary btn-lg">Kembali</a>
+                        <a href="olt_msn.php" class="btn btn-secondary">Kembali</a>
                     </div>
 
                     <!-- Modal Tambah ODP -->
@@ -690,6 +690,7 @@ if (isset($_POST['update_user'])) {
                         </nav>
                     <?php endif; ?>
 
+
                     <div class="table-responsive mt-3">
                         <table class="table table-striped">
                             <thead class="table-light">
@@ -737,22 +738,19 @@ if (isset($_POST['update_user'])) {
                         </table>
                     </div>
                 </div>
-            <?php
-            }
-            ?>
 
-            <?php
-            // PROSES TAMBAH ODP
-            if (isset($_POST['tambah_odp'])) {
-                $nama_odp = $_POST['nama_odp'];
-                $port_max = $_POST['port_max'];
-                $latitude = $_POST['latitude'];
-                $longitude = $_POST['longitude'];
+                <?php
+                // PROSES TAMBAH ODP
+                if (isset($_POST['tambah_odp'])) {
+                    $nama_odp = $_POST['nama_odp'];
+                    $port_max = $_POST['port_max'];
+                    $latitude = $_POST['latitude'];
+                    $longitude = $_POST['longitude'];
 
-                $stmt = $pdo->prepare("INSERT INTO odp1 (pon_id, nama_odp, port_max, latitude, longitude) VALUES (?, ?, ?, ?, ?)");
-                $stmt->execute([$pon_id, $nama_odp, $port_max, $latitude, $longitude]);
+                    $stmt = $pdo->prepare("INSERT INTO odp1 (pon_id, nama_odp, port_max, latitude, longitude) VALUES (?, ?, ?, ?, ?)");
+                    $stmt->execute([$pon_id, $nama_odp, $port_max, $latitude, $longitude]);
 
-                echo "<script>
+                    echo "<script>
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
@@ -763,12 +761,12 @@ if (isset($_POST['update_user'])) {
                 window.location.href = 'olt_msn.php?pon_id={$pon_id}';
             });
         </script>";
-            }
-            ?>
+                }
+                ?>
 
 
             <?php
-
+            }
 
             if ($odp_id) {
                 if (isset($_GET['success']) && $_GET['success'] == 'user_added') {
@@ -791,10 +789,10 @@ if (isset($_POST['update_user'])) {
                 <div class="card-box">
                     <h4 class="mt-5">Data User</h4>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahUser">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahUser">
                             <i class="fas fa-plus"></i> Tambah User
                         </button>
-                        <a href="olt_msn.php?pon_id=<?= $pon_id ?>" class="btn btn-secondary btn-lg">Kembali</a>
+                        <a href="olt_msn.php?pon_id=<?= $pon_id ?>" class="btn btn-secondary">Kembali</a>
                     </div>
 
                     <div class="modal fade" id="modalTambahUser" tabindex="-1" aria-hidden="true">
@@ -848,6 +846,8 @@ if (isset($_POST['update_user'])) {
                         </nav>
                     <?php endif; ?>
 
+
+
                     <div class="table-responsive mt-3">
                         <div class="table-responsive">
                             <table class="table table-striped">
@@ -888,6 +888,7 @@ if (isset($_POST['update_user'])) {
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
                 </div>
             <?php
@@ -895,21 +896,25 @@ if (isset($_POST['update_user'])) {
             ?>
         </div>
 
+
+
+
         <!-- Notifikasi -->
         <div id="notif-container" class="position-fixed top-50 start-50 translate-middle text-center" style="z-index: 1050;"></div>
         <script>
+            // Tambahkan JavaScript ini di bagian bawah halaman Anda
             document.addEventListener('DOMContentLoaded', function() {
                 const forms = document.querySelectorAll('form');
                 forms.forEach(function(form) {
                     form.addEventListener('submit', function() {
-                        const submitBtn = form.querySelector('button[name="tambah_pon"]');
+                        const submitBtn = form.querySelector('button[type="tambah_pon"]');
                         if (submitBtn) {
                             submitBtn.disabled = true;
-                            submitBtn.innerText = "Menyimpan..."; // biar ada feedback
                         }
                     });
                 });
             });
+
 
             function hapusItem(type, id, odp_id, pon_id) {
                 Swal.fire({
@@ -926,6 +931,10 @@ if (isset($_POST['update_user'])) {
                 });
             }
 
+
+
+
+
             function confirmDelete(id, name, type) {
                 $('#deleteItemName').text(name);
                 $('#deleteLink').attr('href', `delete_${type}.php?id=${id}`);
@@ -941,6 +950,7 @@ if (isset($_POST['update_user'])) {
                         },
                         success: function(response) {
                             $('#deleteModal').modal('hide');
+
                             let notifContainer = document.getElementById('notif-container');
                             let alertClass = response.success ? 'alert-success' : 'alert-danger';
                             let message = response.success ?
@@ -948,11 +958,12 @@ if (isset($_POST['update_user'])) {
                                 `Gagal menghapus ${type.toUpperCase()} dengan ID ${id}.`;
 
                             let alertHtml = `
-                    <div class="alert ${alertClass} alert-dismissible fade show shadow-lg p-3 mb-2 bg-body rounded" role="alert">
-                        <strong>${message}</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `;
+            <div class="alert ${alertClass} alert-dismissible fade show shadow-lg p-3 mb-2 bg-body rounded" role="alert">
+                <strong>${message}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            `;
+
                             notifContainer.innerHTML = alertHtml;
                             setTimeout(() => {
                                 notifContainer.innerHTML = '';
@@ -960,13 +971,14 @@ if (isset($_POST['update_user'])) {
                         },
                         error: function() {
                             $('#deleteModal').modal('hide');
+
                             let notifContainer = document.getElementById('notif-container');
                             notifContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show shadow-lg p-3 mb-2 bg-body rounded" role="alert">
-                        <strong>Terjadi kesalahan saat menghapus data.</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `;
+            <div class="alert alert-danger alert-dismissible fade show shadow-lg p-3 mb-2 bg-body rounded" role="alert">
+                <strong>Terjadi kesalahan saat menghapus data.</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            `;
                             setTimeout(() => {
                                 notifContainer.innerHTML = '';
                             }, 3000);
@@ -975,7 +987,6 @@ if (isset($_POST['update_user'])) {
                 });
             }
         </script>
-
 
 
 </body>

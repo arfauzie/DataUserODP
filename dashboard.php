@@ -82,7 +82,7 @@ try {
         }
 
         body {
-            background-color: #f8f9fa;
+            background-color: #f8fcff;
             font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
             margin: 0;
         }
@@ -347,7 +347,7 @@ try {
                     <div class="history-card">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="mb-0">Riwayat Aktivitas Terbaru</h6>
-                            <a href="log_riwayat.php" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                            <a href="riwayat.php" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                         </div>
 
                         <?php if (!empty($recentLogs)): ?>

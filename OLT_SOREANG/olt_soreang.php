@@ -408,10 +408,10 @@ if (isset($_POST['update_user'])) {
                 <div class="card-box">
                     <h4 class="mt-5">Data PON</h4>
                     <div class="d-flex align-items-center mb-3 gap-2">
-                        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
                             <i class="fas fa-plus"></i> Tambah PON
                         </button>
-                        <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalCekLokasi">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCekLokasi">
                             <i class="fas fa-map-marker-alt"></i> Masukkan Lokasi
                         </button>
                     </div>
@@ -632,10 +632,10 @@ if (isset($_POST['update_user'])) {
                 <div class="card-box">
                     <h4 class="mt-5">Data ODP</h4>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahODP">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahODP">
                             <i class="fas fa-plus"></i> Tambah ODP
                         </button>
-                        <a href="olt_soreang.php" class="btn btn-secondary btn-lg">Kembali</a>
+                        <a href="olt_soreang.php" class="btn btn-secondary">Kembali</a>
                     </div>
 
                     <!-- Modal Tambah ODP -->
@@ -788,10 +788,10 @@ if (isset($_POST['update_user'])) {
                 <div class="card-box">
                     <h4 class="mt-5">Data User</h4>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalTambahUser">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahUser">
                             <i class="fas fa-plus"></i> Tambah User
                         </button>
-                        <a href="olt_soreang.php?pon_id=<?= $pon_id ?>" class="btn btn-secondary btn-lg">Kembali</a>
+                        <a href="olt_soreang.php?pon_id=<?= $pon_id ?>" class="btn btn-secondary">Kembali</a>
                     </div>
 
                     <!-- Modal Tambah User -->
