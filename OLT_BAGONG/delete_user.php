@@ -20,7 +20,7 @@ require_once '../log_helper.php'; // fungsi tambahRiwayat
 <body>
     <?php
     if (isset($_GET['id'])) {
-        $id = $_GET['id'];
+        $id = (int) $_GET['id'];
 
         // Ambil data user sebelum dihapus
         $stmt = $pdo2->prepare("SELECT * FROM users2 WHERE id = ?");
@@ -29,58 +29,53 @@ require_once '../log_helper.php'; // fungsi tambahRiwayat
 
         if (!$user) {
             echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Tidak ditemukan!',
-                    text: 'Data user tidak ditemukan!',
-                    showConfirmButton: true
-                }).then(() => {
-                    window.location = 'olt_bagong.php';
-                });
+            Swal.fire({
+                icon: 'error',
+                title: 'Tidak ditemukan!',
+                text: 'Data user tidak ditemukan!',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location = 'olt_bagong.php';
             });
         </script>";
             exit();
         }
 
         // Ambil nama admin dari session
-        $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
+        $oleh = isset($_SESSION['admin']['username']) ? $_SESSION['admin']['username'] : 'admin';
 
-        // Siapkan keterangan log TANPA ID apapun
-        $log_keterangan = [];
-        $log_keterangan[] = "Nama User: " . ($user['nama_user'] ?? '(kosong)');
-        $log_keterangan[] = "Nomor Internet: " . ($user['nomor_internet'] ?? '(kosong)');
-        $log_keterangan[] = "Alamat: " . ($user['alamat'] ?? '(kosong)');
-        // ODP ID tidak dimasukkan ke log
+        // Siapkan log dengan format konsisten
+        $nama_user      = $user['nama_user'] ?? '(kosong)';
+        $nomor_internet = $user['nomor_internet'] ?? '(kosong)';
+        $alamat         = $user['alamat'] ?? '(kosong)';
+
+        $log_keterangan = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat";
 
         // Eksekusi hapus
         $stmt = $pdo2->prepare("DELETE FROM users2 WHERE id = ?");
         if ($stmt->execute([$id])) {
-            tambahRiwayat("Hapus User", $oleh, implode("\n", $log_keterangan));
+            tambahRiwayat("Hapus User", $oleh, $log_keterangan);
+
             echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'User berhasil dihapus!',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    window.location = 'olt_bagong.php';
-                });
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'User berhasil dihapus!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location = 'olt_bagong.php';
             });
         </script>";
         } else {
             echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Gagal menghapus user!',
-                    showConfirmButton: true
-                }).then(() => {
-                    window.location = 'olt_bagong.php';
-                });
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal menghapus user!',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location = 'olt_bagong.php';
             });
         </script>";
         }

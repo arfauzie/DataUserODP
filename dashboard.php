@@ -52,17 +52,17 @@ foreach ($databases as $nama_db => $data) {
     }
 }
 
-// Ambil 5 log terbaru dari tabel log_aktivitas
 try {
-    $stmtLogs = $pdo_log->query("SELECT id, aksi, oleh, keterangan, waktu FROM log_aktivitas ORDER BY waktu DESC LIMIT 5");
+    $stmtLogs = $pdo_log->query("SELECT aksi, oleh, keterangan, waktu FROM log_riwayat ORDER BY waktu DESC LIMIT 3");
     $recentLogs = $stmtLogs->fetchAll(PDO::FETCH_ASSOC);
     // total log count (untuk ringkasan kecil)
-    $stmtCount = $pdo_log->query("SELECT COUNT(*) FROM log_aktivitas");
+    $stmtCount = $pdo_log->query("SELECT COUNT(*) FROM log_riwayat");
     $total_logs = (int)$stmtCount->fetchColumn();
 } catch (PDOException $e) {
     $recentLogs = [];
     $total_logs = 0;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="id">

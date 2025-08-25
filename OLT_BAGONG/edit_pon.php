@@ -30,11 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
     $port_max = (int)$_POST['port_max'];
 
     $perubahan = [];
+
+    // Bandingkan field untuk log
     if ($nama_pon !== $pon['nama_pon']) {
         $perubahan[] = "Nama PON: '{$pon['nama_pon']}' ➝ '{$nama_pon}'";
     }
     if ($port_max != $pon['port_max']) {
-        $perubahan[] = "Port Max: '{$pon['port_max']}' ➝ '{$port_max}'";
+        $perubahan[] = "Port Maksimum: '{$pon['port_max']}' ➝ '{$port_max}'";
     }
 
     if (!empty($perubahan)) {
@@ -42,9 +44,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
         $stmt->execute([$nama_pon, $port_max, $id]);
 
         // Tambah log riwayat
-        $oleh = $_SESSION['admin']['username'] ?? 'unknown';
-        $keterangan = implode(', ', $perubahan);
-        tambahRiwayat('Edit PON', $oleh, $keterangan);
+        $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
+        $log_keterangan = implode(" | ", $perubahan);
+        tambahRiwayat("Edit PON", $oleh, $log_keterangan);
 
         $successMessage = "Data berhasil diperbarui!";
         echo "<script>
@@ -76,7 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -127,11 +128,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
 </head>
 
 <body>
-
     <div class="content">
         <div class="card-box">
             <h2 class="mb-4 text-center">Edit PON</h2>
-
             <?php if (isset($error)) : ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php elseif (isset($pon)) : ?>
@@ -140,7 +139,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
                         <label class="form-label">Nama PON:</label>
                         <input type="text" name="nama_pon" value="<?= htmlspecialchars($pon['nama_pon']); ?>" class="form-control" required>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">PORT Maks:</label>
                         <select name="port_max" class="form-control" required>
@@ -149,7 +147,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
                             <option value="8" <?= ($pon['port_max'] == 8 ? 'selected' : '') ?>>Maks 8 Port</option>
                         </select>
                     </div>
-
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-primary">Update</button>
                         <a href="olt_bagong.php" class="btn btn-secondary">Kembali</a>
@@ -158,7 +155,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
             <?php endif; ?>
         </div>
     </div>
-
 </body>
 
 </html>

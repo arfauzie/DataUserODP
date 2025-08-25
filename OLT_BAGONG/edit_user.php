@@ -6,8 +6,11 @@ if (!isset($_SESSION['admin'])) {
 }
 
 require_once '../log_helper.php';
-require_once 'config2.php';
+require_once 'config2.php'; // koneksi $pdo2 (ERRMODE_EXCEPTION)
 
+// ---------------------------------------------------------
+// 1) Endpoint AJAX: ambil daftar ODP berdasarkan PON
+// ---------------------------------------------------------
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
     header('Content-Type: application/json; charset=utf-8');
 
@@ -21,12 +24,16 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
     exit();
 }
 
+// ---------------------------------------------------------
+// 2) Ambil parameter utama
+// ---------------------------------------------------------
 $id     = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $odp_id = isset($_GET['odp_id']) ? (int)$_GET['odp_id'] : 0;
 $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : 0;
 
 if ($id <= 0) {
-    echo "<script>
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 icon: 'error',
@@ -38,16 +45,20 @@ if ($id <= 0) {
                 window.location.href = 'olt_bagong.php';
             });
         });
-    </script>";
+        </script>";
     exit();
 }
 
+// ---------------------------------------------------------
+// 3) Ambil data user lama
+// ---------------------------------------------------------
 $stmt = $pdo2->prepare("SELECT * FROM users2 WHERE id = ?");
 $stmt->execute([$id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
-    echo "<script>
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 icon: 'error',
@@ -59,11 +70,11 @@ if (!$user) {
                 window.location.href = 'olt_bagong.php';
             });
         });
-    </script>";
+        </script>";
     exit();
 }
 
-// Derivasi pon_id dari odp_id user bila tidak dikirim
+// Derivasi pon_id dari odp_id jika kosong
 if ($odp_id <= 0) {
     $odp_id = (int)($user['odp_id'] ?? 0);
 }
@@ -73,7 +84,9 @@ if ($pon_id <= 0 && $odp_id > 0) {
     $pon_id = (int)$stmt->fetchColumn();
 }
 
-
+// ---------------------------------------------------------
+// 4) Ambil semua PON + ODP (berdasarkan PON terpilih)
+// ---------------------------------------------------------
 $pon_stmt = $pdo2->query("
     SELECT id, nama_pon
     FROM pon2
@@ -113,8 +126,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $msg = "ODP tidak sesuai dengan PON yang dipilih.";
             echo "<script>alert(" . json_encode($msg) . ");</script>";
         } else {
-            // Cek kapasitas bila pindah ODP
             $pindahOdp = ((int)$user['odp_id'] !== $odp_id_new);
+
+            // Jika pindah ODP → cek kapasitas
             if ($pindahOdp) {
                 $cek = $pdo2->prepare("
                     SELECT o.port_max, COUNT(u.id) AS jumlah_user
@@ -131,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $msg = "ODP tujuan sudah penuh. Pilih ODP lain.";
                     echo "<script>alert(" . json_encode($msg) . ");</script>";
                 } else {
-                    // Lanjut simpan
+                    // Eksekusi update dengan ODP baru
                     $upd = $pdo2->prepare("
                         UPDATE users2
                         SET nama_user = ?, nomor_internet = ?, alamat = ?, odp_id = ?
@@ -176,10 +190,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         }
 
                         if (!empty($log_parts)) {
-                            tambahRiwayat("Edit User", $oleh, "Edit User\n" . implode("\n", $log_parts));
+                            tambahRiwayat("Edit User", $oleh, implode("\n", $log_parts));
                         }
 
-                        // Redirect sesuai lokasi baru
+                        // Redirect
                         $redir_pon = (int)$target['pon_id'];
                         $redir_odp = $odp_id_new;
                         echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
@@ -197,22 +211,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 });
                             </script>";
                         exit();
-                    } else {
-                        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Gagal!',
-                                        text: 'Gagal memperbarui data user.',
-                                        showConfirmButton: true
-                                    });
-                                });
-                            </script>";
                     }
                 }
             } else {
-                // Tidak pindah ODP → langsung update field text
+                // Tidak pindah ODP → hanya update data teks
                 $upd = $pdo2->prepare("
                     UPDATE users2
                     SET nama_user = ?, nomor_internet = ?, alamat = ?
@@ -226,17 +228,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     if ($user['nama_user'] !== $nama_user) $log_parts[] = "Nama: {$user['nama_user']} → $nama_user";
                     if ($user['nomor_internet'] !== $nomor_internet) $log_parts[] = "Nomor Internet: {$user['nomor_internet']} → $nomor_internet";
                     if ($user['alamat'] !== $alamat) $log_parts[] = "Alamat: {$user['alamat']} → $alamat";
+
                     if (!empty($log_parts)) {
-                        tambahRiwayat("Edit User", $oleh, "Edit User\n" . implode("\n", $log_parts));
+                        tambahRiwayat("Edit User", $oleh, implode("\n", $log_parts));
                     }
 
-                    echo "<script>
-                        alert('Data user berhasil diperbarui.');
-                        window.location.href='olt_bagong.php?pon_id={$pon_id}&odp_id={$odp_id}';
-                    </script>";
+                    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Data user berhasil diperbarui.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.href = 'olt_bagong.php?pon_id={$pon_id}&odp_id={$odp_id}';
+                                });
+                            });
+                        </script>";
                     exit();
-                } else {
-                    echo "<script>alert('Gagal memperbarui data user.');</script>";
                 }
             }
         }
@@ -246,12 +257,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 // ---------------------------------------------------------
-// 6) Tampilkan halaman (navbar dll) SETELAH semua proses di atas
+// 6) Tampilkan halaman form edit
 // ---------------------------------------------------------
 include '../navbar.php';
-
-// SweetAlert (opsional)
-echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -347,14 +355,14 @@ echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
 
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-success btn-sm">Update</button>
-                    <a href="olt_bagong.php?pon_id=<?= (int)$pon_id ?>&odp_id=<?= (int)$odp_id ?>" class="btn btn-secondary">Kembali</a>
+                    <a href="olt_bagong.php?pon_id=<?= (int)$pon_id ?>&odp_id=<?= (int)$odp_id ?>" class="btn btn-secondary btn-sm">Kembali</a>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Saat PON berubah, muat ODP via AJAX (endpoint file ini sendiri)
+        // Saat PON berubah, muat ODP via AJAX
         document.getElementById('pon_id').addEventListener('change', function() {
             var ponId = this.value;
             var odpSelect = document.getElementById('odp_id');
@@ -368,10 +376,8 @@ echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
             fetch('?ajax=get_odp&pon_id=' + encodeURIComponent(ponId), {
                     cache: 'no-store'
                 })
-                .then(function(resp) {
-                    return resp.json();
-                })
-                .then(function(data) {
+                .then(resp => resp.json())
+                .then(data => {
                     odpSelect.innerHTML = '';
                     if (!Array.isArray(data) || data.length === 0) {
                         var op = document.createElement('option');
@@ -387,7 +393,7 @@ echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
                         odpSelect.appendChild(op);
                     });
                 })
-                .catch(function() {
+                .catch(() => {
                     odpSelect.innerHTML = '<option value="">Gagal memuat ODP</option>';
                 });
         });

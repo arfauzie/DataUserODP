@@ -59,7 +59,6 @@ $pon_stmt = $pdo->query("
 ");
 $all_pons = $pon_stmt->fetchAll();
 
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nama_odp = trim($_POST['nama_odp']);
     $port_max = (int)$_POST['port_max'];
@@ -74,8 +73,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $oleh = $_SESSION['admin']['username'] ?? 'unknown';
         $log_keterangan = [];
 
-        if ($odp['nama_odp'] !== $nama_odp) $log_keterangan[] = "Nama ODP: {$odp['nama_odp']} ➔ $nama_odp";
-        if ((int)$odp['port_max'] !== $port_max) $log_keterangan[] = "Port Max: {$odp['port_max']} ➔ $port_max";
+        // cek perubahan nama
+        if ($odp['nama_odp'] !== $nama_odp) {
+            $log_keterangan[] = "Nama ODP: {$odp['nama_odp']} ➔ $nama_odp";
+        }
+
+        // cek perubahan port
+        if ((int)$odp['port_max'] !== $port_max) {
+            $log_keterangan[] = "Port Max: {$odp['port_max']} ➔ $port_max";
+        }
+
+        // cek perubahan pon
         if ((int)$odp['pon_id'] !== $pon_id) {
             $old_pon = $pdo->prepare("SELECT nama_pon FROM pon1 WHERE id=?");
             $old_pon->execute([$odp['pon_id']]);
@@ -87,11 +95,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $log_keterangan[] = "PON: $old_pon_name ➔ $new_pon_name";
         }
-        if ($odp['latitude'] != $latitude) $log_keterangan[] = "Latitude: {$odp['latitude']} ➔ $latitude";
-        if ($odp['longitude'] != $longitude) $log_keterangan[] = "Longitude: {$odp['longitude']} ➔ $longitude";
 
+        // cek perubahan latitude
+        if ($odp['latitude'] != $latitude) {
+            $log_keterangan[] = "Latitude: {$odp['latitude']} ➔ $latitude";
+        }
+
+        // cek perubahan longitude
+        if ($odp['longitude'] != $longitude) {
+            $log_keterangan[] = "Longitude: {$odp['longitude']} ➔ $longitude";
+        }
+
+        // buat header log
+        $log_header = "Edit ODP ({$odp['nama_odp']})";
+
+        // simpan log
         if (!empty($log_keterangan)) {
-            tambahRiwayat("Edit ODP", $oleh, implode("\n", $log_keterangan));
+            tambahRiwayat($log_header, $oleh, implode("\n", $log_keterangan));
+        } else {
+            tambahRiwayat($log_header, $oleh, "Tidak ada perubahan data");
         }
 
         echo "<script>

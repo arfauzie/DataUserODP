@@ -3,12 +3,12 @@ include 'navbar.php';        // Sidebar + Topbar
 require_once 'koneksi_log.php';
 
 // Ambil semua log
-$stmt = $pdo_log->query("SELECT * FROM log_aktivitas ORDER BY waktu DESC");
+$stmt = $pdo_log->query("SELECT * FROM log_riwayat ORDER BY waktu DESC");
 $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Hapus semua riwayat
 if (isset($_GET['hapus']) && $_GET['hapus'] == 'semua') {
-    $hapus = $pdo_log->prepare("DELETE FROM log_aktivitas");
+    $hapus = $pdo_log->prepare("DELETE FROM log_riwayat");
     $hapus->execute();
     echo "<script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -19,7 +19,7 @@ if (isset($_GET['hapus']) && $_GET['hapus'] == 'semua') {
                 timer: 2000,
                 showConfirmButton: false
             }).then(() => {
-                window.location.href = 'log_riwayat.php';
+                window.location.href = 'riwayat.php';
             });
         });
     </script>";
@@ -101,6 +101,7 @@ if (isset($_GET['hapus']) && $_GET['hapus'] == 'semua') {
                         <tr>
                             <th>No</th>
                             <th>Aksi</th>
+                            <th>Tabel</th>
                             <th>Oleh</th>
                             <th>Keterangan</th>
                             <th>Waktu</th>
@@ -114,17 +115,20 @@ if (isset($_GET['hapus']) && $_GET['hapus'] == 'semua') {
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($log['aksi']) ?></td>
+                                    <td><?= htmlspecialchars($log['tabel']) ?></td>
                                     <td><?= htmlspecialchars($log['oleh']) ?></td>
                                     <td><?= nl2br(htmlspecialchars($log['keterangan'])) ?></td>
                                     <td><?= htmlspecialchars($log['waktu']) ?></td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger" onclick="hapusLog(<?= $log['id'] ?>)">🗑️</button>
+                                        <button class="btn btn-sm btn-danger" onclick="hapusLog(<?= $log['id'] ?>)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="6" class="text-muted">Tidak ada riwayat.</td>
+                                <td colspan="7" class="text-muted">Tidak ada riwayat.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -145,7 +149,7 @@ if (isset($_GET['hapus']) && $_GET['hapus'] == 'semua') {
                 confirmButtonText: 'Ya, hapus semua'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'log_riwayat.php?hapus=semua';
+                    window.location.href = 'riwayat.php?hapus=semua';
                 }
             });
         }

@@ -51,15 +51,23 @@ $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin
 
 // Tambah PON
 
+// Tambah PON
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
 
     $stmt = $pdo->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (?, ?, ?)");
     if ($stmt->execute([$olt_id, $nama_pon, $port_max])) {
-        $last_id = $pdo->lastInsertId(); // Ambil ID PON yang baru
-        $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max";
+        $last_id = $pdo->lastInsertId(); // Ambil ID PON baru
+        // Ambil nama OLT (supaya log lebih jelas)
+        $stmtOlt = $pdo->prepare("SELECT nama_olt FROM olt WHERE id = ?");
+        $stmtOlt->execute([$olt_id]);
+        $nama_olt = $stmtOlt->fetchColumn() ?? "(tidak diketahui)";
+
+        // Log detail
+        $log = "Nama PON: $nama_pon\nPort Max: $port_max\nOLT: $nama_olt (ID: $olt_id)\nPON ID: $last_id";
         tambahRiwayat("Tambah PON", $oleh, $log);
+
         header("Location: olt_msn.php?success=pon_added");
         exit();
     } else {
@@ -67,6 +75,7 @@ if (isset($_POST['tambah_pon'])) {
         exit();
     }
 }
+
 
 
 // Tambah ODP

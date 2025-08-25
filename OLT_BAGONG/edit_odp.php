@@ -52,7 +52,11 @@ if (!$odp) {
 }
 
 // Ambil semua data pon
-$pon_stmt = $pdo2->query("SELECT * FROM pon2 ORDER BY id ASC");
+$pon_stmt = $pdo2->query("
+    SELECT * 
+    FROM pon2
+    ORDER BY CAST(TRIM(REPLACE(nama_pon, 'PON', '')) AS UNSIGNED)
+");
 $all_pons = $pon_stmt->fetchAll();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -69,24 +73,47 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $oleh = $_SESSION['admin']['username'] ?? 'unknown';
         $log_keterangan = [];
 
-        if ($odp['nama_odp'] !== $nama_odp) $log_keterangan[] = "Nama ODP: {$odp['nama_odp']} ➔ $nama_odp";
-        if ((int)$odp['port_max'] !== $port_max) $log_keterangan[] = "Port Max: {$odp['port_max']} ➔ $port_max";
+        // cek perubahan nama
+        if ($odp['nama_odp'] !== $nama_odp) {
+            $log_keterangan[] = "Nama ODP: {$odp['nama_odp']} ➔ $nama_odp";
+        }
+
+        // cek perubahan port
+        if ((int)$odp['port_max'] !== $port_max) {
+            $log_keterangan[] = "Port Max: {$odp['port_max']} ➔ $port_max";
+        }
+
+        // cek perubahan pon
         if ((int)$odp['pon_id'] !== $pon_id) {
-            $old_pon = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id=?");
+            $old_pon = $pdo2->prepare("SELECT nama_pon FROM pon2WHERE id=?");
             $old_pon->execute([$odp['pon_id']]);
             $old_pon_name = $old_pon->fetchColumn();
 
-            $new_pon = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id=?");
+            $new_pon = $pdo2->prepare("SELECT nama_pon FROM pon2WHERE id=?");
             $new_pon->execute([$pon_id]);
             $new_pon_name = $new_pon->fetchColumn();
 
             $log_keterangan[] = "PON: $old_pon_name ➔ $new_pon_name";
         }
-        if ($odp['latitude'] != $latitude) $log_keterangan[] = "Latitude: {$odp['latitude']} ➔ $latitude";
-        if ($odp['longitude'] != $longitude) $log_keterangan[] = "Longitude: {$odp['longitude']} ➔ $longitude";
 
+        // cek perubahan latitude
+        if ($odp['latitude'] != $latitude) {
+            $log_keterangan[] = "Latitude: {$odp['latitude']} ➔ $latitude";
+        }
+
+        // cek perubahan longitude
+        if ($odp['longitude'] != $longitude) {
+            $log_keterangan[] = "Longitude: {$odp['longitude']} ➔ $longitude";
+        }
+
+        // buat header log
+        $log_header = "Edit ODP ({$odp['nama_odp']})";
+
+        // simpan log
         if (!empty($log_keterangan)) {
-            tambahRiwayat("Edit ODP", $oleh, implode("\n", $log_keterangan));
+            tambahRiwayat($log_header, $oleh, implode("\n", $log_keterangan));
+        } else {
+            tambahRiwayat($log_header, $oleh, "Tidak ada perubahan data");
         }
 
         echo "<script>
@@ -201,6 +228,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <label for="longitude" class="form-label">Longitude:</label>
                     <input type="text" name="longitude" id="longitude" class="form-control" value="<?= htmlspecialchars($odp['longitude'] ?? '') ?>">
                 </div>
+
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-success">Simpan</button>
                     <a href="olt_bagong.php?pon_id=<?= $odp['pon_id']; ?>" class="btn btn-secondary">Kembali</a>
