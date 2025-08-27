@@ -101,7 +101,7 @@ if (isset($_GET['hapus']) && $_GET['hapus'] == 'semua') {
                         <tr>
                             <th>No</th>
                             <th>Aksi</th>
-                            <th>Tabel</th>
+
                             <th>Oleh</th>
                             <th>Keterangan</th>
                             <th>Waktu</th>
@@ -115,7 +115,7 @@ if (isset($_GET['hapus']) && $_GET['hapus'] == 'semua') {
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($log['aksi']) ?></td>
-                                    <td><?= htmlspecialchars($log['tabel']) ?></td>
+
                                     <td><?= htmlspecialchars($log['oleh']) ?></td>
                                     <td><?= nl2br(htmlspecialchars($log['keterangan'])) ?></td>
                                     <td><?= htmlspecialchars($log['waktu']) ?></td>
@@ -126,7 +126,7 @@ if (isset($_GET['hapus']) && $_GET['hapus'] == 'semua') {
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php else: ?>
+                        <?php else : ?>
                             <tr>
                                 <td colspan="7" class="text-muted">Tidak ada riwayat.</td>
                             </tr>

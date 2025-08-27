@@ -48,25 +48,25 @@ if ($odp_id) {
 // Ambil nama admin untuk log
 $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-
-// Tambah PON
-
 // Tambah PON
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
 
-    $stmt = $pdo->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (?, ?, ?)");
-    if ($stmt->execute([$olt_id, $nama_pon, $port_max])) {
-        $last_id = $pdo->lastInsertId(); // Ambil ID PON baru
-        // Ambil nama OLT (supaya log lebih jelas)
-        $stmtOlt = $pdo->prepare("SELECT nama_olt FROM olt WHERE id = ?");
-        $stmtOlt->execute([$olt_id]);
-        $nama_olt = $stmtOlt->fetchColumn() ?? "(tidak diketahui)";
+    // insert PON dengan olt_id fix = 1
+    $stmt = $pdo->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (1, ?, ?)");
+    if ($stmt->execute([$nama_pon, $port_max])) {
+        $last_id = $pdo->lastInsertId();
 
-        // Log detail
-        $log = "Nama PON: $nama_pon\nPort Max: $port_max\nOLT: $nama_olt (ID: $olt_id)\nPON ID: $last_id";
-        tambahRiwayat("Tambah PON", $oleh, $log);
+        // log riwayat
+        $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 1";
+        $hasilLog = tambahRiwayat("Tambah PON", $oleh, $log);
+
+        if (!$hasilLog) {
+            error_log("❌ Log Tambah PON gagal disimpan. Oleh='$oleh'");
+        } else {
+            error_log("✅ Log Tambah PON tersimpan. Oleh='$oleh'");
+        }
 
         header("Location: olt_msn.php?success=pon_added");
         exit();
@@ -77,12 +77,7 @@ if (isset($_POST['tambah_pon'])) {
 }
 
 
-
 // Tambah ODP
-
-// ==========================
-//  Tambah ODP (FULL FIX)
-// ==========================
 if (isset($_POST['tambah_odp'])) {
     $pon_id   = isset($_POST['pon_id']) ? (int) $_POST['pon_id'] : 0;
     $nama_odp = trim($_POST['nama_odp']);
@@ -141,10 +136,7 @@ if (isset($_POST['tambah_odp'])) {
     }
 }
 
-
-
 // Tambah User
-
 if (isset($_POST['tambah_user'])) {
     $odp_id         = $_POST['odp_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -172,9 +164,7 @@ if (isset($_POST['tambah_user'])) {
     }
 }
 
-
 // Update User
-
 if (isset($_POST['update_user'])) {
     $user_id        = $_POST['user_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -433,6 +423,9 @@ if (isset($_POST['update_user'])) {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                 </div>
                                 <div class="modal-body">
+                                    <!-- hidden untuk OLT ID -->
+                                    <input type="hidden" name="olt_id" value="1">
+
                                     <div class="mb-3">
                                         <label for="nama_pon" class="form-label">Nama PON</label>
                                         <input type="text" id="nama_pon" name="nama_pon" class="form-control" placeholder="Nama PON" required>

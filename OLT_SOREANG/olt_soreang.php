@@ -17,7 +17,7 @@ try {
     die("Koneksi gagal: " . $e->getMessage());
 }
 
-$olt_id      = 1;
+$olt_id      = 3;
 $pon_table   = "pon3";
 $odp_table   = "odp3";
 $users_table = "users3";
