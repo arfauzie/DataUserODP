@@ -53,21 +53,11 @@ if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
 
-    // insert PON dengan olt_id fix = 1
     $stmt = $pdo->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (1, ?, ?)");
     if ($stmt->execute([$nama_pon, $port_max])) {
         $last_id = $pdo->lastInsertId();
-
-        // log riwayat
         $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 1";
         $hasilLog = tambahRiwayat("Tambah PON", $oleh, $log);
-
-        if (!$hasilLog) {
-            error_log("❌ Log Tambah PON gagal disimpan. Oleh='$oleh'");
-        } else {
-            error_log("✅ Log Tambah PON tersimpan. Oleh='$oleh'");
-        }
-
         header("Location: olt_msn.php?success=pon_added");
         exit();
     } else {
