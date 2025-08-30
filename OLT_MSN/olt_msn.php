@@ -48,7 +48,7 @@ if ($odp_id) {
 // Ambil nama admin untuk log
 $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-// Tambah PON
+// Tambah PONn
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
@@ -57,7 +57,12 @@ if (isset($_POST['tambah_pon'])) {
     if ($stmt->execute([$nama_pon, $port_max])) {
         $last_id = $pdo->lastInsertId();
         $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 1";
-        $hasilLog = tambahRiwayat("Tambah PON", $oleh, $log);
+
+        // Tambah log, tapi cek hasilnya
+        if (!tambahRiwayat("Tambah PON", $oleh ?: 'admin_default', $log)) {
+            die("❌ Log gagal masuk! Cek kolom 'oleh' di DB. Nilai sekarang: " . var_export($oleh, true));
+        }
+
         header("Location: olt_msn.php?success=pon_added");
         exit();
     } else {
@@ -65,6 +70,7 @@ if (isset($_POST['tambah_pon'])) {
         exit();
     }
 }
+
 
 
 // Tambah ODP
