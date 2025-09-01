@@ -60,7 +60,7 @@ if (isset($_POST['tambah_pon'])) {
 
         // Tambah log, tapi cek hasilnya
         if (!tambahRiwayat("Tambah PON", $oleh ?: 'admin_default', $log)) {
-            die("❌ Log gagal masuk! Cek kolom 'oleh' di DB. Nilai sekarang: " . var_export($oleh, true));
+            die("Log gagal masuk! Cek kolom 'oleh' di DB. Nilai sekarang: " . var_export($oleh, true));
         }
 
         header("Location: olt_msn.php?success=pon_added");
