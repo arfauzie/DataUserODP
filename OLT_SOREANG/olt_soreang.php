@@ -672,7 +672,7 @@ if (isset($_POST['update_user'])) {
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="latitude" class="form-label">Latitude</label>
-                                            <input type="text" id="latitude" name="latitude" class="form-control" placeholder="latitud" required>
+                                            <input type="text" id="latitude" name="latitude" class="form-control" placeholder="latitude" required>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="longitude" class="form-label">Longitude</label>
