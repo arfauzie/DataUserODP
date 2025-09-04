@@ -351,7 +351,7 @@ if (isset($_POST['update_user'])) {
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 
-            /* FIX: siapkan $pon_name untuk dipakai di bawah */
+            /*siapkan $pon_name untuk dipakai di bawah */
             $pon_name = null;
             if ($pon_id) {
                 $stmtPon = $pdo->prepare("SELECT nama_pon FROM pon1 WHERE id = ?");
