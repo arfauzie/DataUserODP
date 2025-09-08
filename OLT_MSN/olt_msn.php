@@ -894,9 +894,6 @@ if (isset($_POST['update_user'])) {
             ?>
         </div>
 
-
-
-
         <!-- Notifikasi -->
         <div id="notif-container" class="position-fixed top-50 start-50 translate-middle text-center" style="z-index: 1050;"></div>
         <script>
@@ -928,10 +925,6 @@ if (isset($_POST['update_user'])) {
                     }
                 });
             }
-
-
-
-
 
             function confirmDelete(id, name, type) {
                 $('#deleteItemName').text(name);
@@ -985,8 +978,6 @@ if (isset($_POST['update_user'])) {
                 });
             }
         </script>
-
-
 </body>
 
 </html>
