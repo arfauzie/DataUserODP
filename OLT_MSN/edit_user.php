@@ -84,9 +84,6 @@ if ($pon_id <= 0 && $odp_id > 0) {
     $pon_id = (int)$stmt->fetchColumn();
 }
 
-// ---------------------------------------------------------
-// 4) Ambil semua PON + ODP (berdasarkan PON terpilih)
-// ---------------------------------------------------------
 $pon_stmt = $pdo->query("
     SELECT id, nama_pon
     FROM pon1
