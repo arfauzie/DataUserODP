@@ -45,7 +45,7 @@ if ($id <= 0) {
     exit();
 }
 
-// 3) Ambil data user lama
+// Ambil data user lama
 $stmt = $pdo->prepare("SELECT * FROM users1 WHERE id = ?");
 $stmt->execute([$id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
