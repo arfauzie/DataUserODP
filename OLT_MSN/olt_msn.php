@@ -132,7 +132,7 @@ if (isset($_POST['tambah_odp'])) {
     }
 }
 
-// Tambah Usere
+// Tambah User
 if (isset($_POST['tambah_user'])) {
     $odp_id         = $_POST['odp_id'];
     $nama_user      = trim($_POST['nama_user']);
