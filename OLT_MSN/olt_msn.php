@@ -112,7 +112,6 @@ if (isset($_POST['tambah_odp'])) {
             $stmtPon->execute([$pon_id]);
             $nama_pon = $stmtPon->fetchColumn() ?? '(tidak diketahui)';
 
-            // Catat log
             $log = "Nama ODP: $nama_odp\nPort Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
             tambahRiwayat("Tambah ODP", $oleh, $log);
 
