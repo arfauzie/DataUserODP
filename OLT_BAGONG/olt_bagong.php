@@ -48,24 +48,20 @@ if ($odp_id) {
 // Ambil nama admin untuk log
 $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-
-// Tambah PON
-
+// Tambah PONn
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
 
-    $stmt = $pdo2->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (?, ?, ?)");
-    if ($stmt->execute([$olt_id, $nama_pon, $port_max])) {
-        $last_id = $pdo2->lastInsertId(); // Ambil ID PON baru
-        // Ambil nama OLT (supaya log lebih jelas)
-        $stmtOlt = $pdo2->prepare("SELECT nama_olt FROM olt WHERE id = ?");
-        $stmtOlt->execute([$olt_id]);
-        $nama_olt = $stmtOlt->fetchColumn() ?? "(tidak diketahui)";
+    $stmt = $pdo2->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (1, ?, ?)");
+    if ($stmt->execute([$nama_pon, $port_max])) {
+        $last_id = $pdo2->lastInsertId();
+        $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 1";
 
-        // Log detail
-        $log = "Nama PON: $nama_pon\nPort Max: $port_max\nOLT: $nama_olt (ID: $olt_id)\nPON ID: $last_id";
-        tambahRiwayat("Tambah PON", $oleh, $log);
+        // Tambah log, tapi cek hasilnya
+        if (!tambahRiwayat("Tambah PON", $oleh ?: 'admin_default', $log)) {
+            die("Log gagal masuk! Cek kolom 'oleh' di DB. Nilai sekarang: " . var_export($oleh, true));
+        }
 
         header("Location: olt_bagong.php?success=pon_added");
         exit();
@@ -78,10 +74,6 @@ if (isset($_POST['tambah_pon'])) {
 
 
 // Tambah ODP
-
-// ==========================
-//  Tambah ODP (FULL FIX)
-// ==========================
 if (isset($_POST['tambah_odp'])) {
     $pon_id   = isset($_POST['pon_id']) ? (int) $_POST['pon_id'] : 0;
     $nama_odp = trim($_POST['nama_odp']);
@@ -119,8 +111,6 @@ if (isset($_POST['tambah_odp'])) {
             $stmtPon = $pdo2->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
             $stmtPon->execute([$pon_id]);
             $nama_pon = $stmtPon->fetchColumn() ?? '(tidak diketahui)';
-
-            // Catat log
             $log = "Nama ODP: $nama_odp\nPort Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
             tambahRiwayat("Tambah ODP", $oleh, $log);
 
@@ -140,10 +130,7 @@ if (isset($_POST['tambah_odp'])) {
     }
 }
 
-
-
 // Tambah User
-
 if (isset($_POST['tambah_user'])) {
     $odp_id         = $_POST['odp_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -171,9 +158,7 @@ if (isset($_POST['tambah_user'])) {
     }
 }
 
-
 // Update User
-
 if (isset($_POST['update_user'])) {
     $user_id        = $_POST['user_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -364,7 +349,7 @@ if (isset($_POST['update_user'])) {
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 
-            /* FIX: siapkan $pon_name untuk dipakai di bawah */
+            /*siapkan $pon_name untuk dipakai di bawah */
             $pon_name = null;
             if ($pon_id) {
                 $stmtPon = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id = ?");
@@ -419,9 +404,6 @@ if (isset($_POST['update_user'])) {
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
                             <i class="fas fa-plus"></i> Tambah PON
                         </button>
-                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCekLokasi">
-                            <i class="fas fa-map-marker-alt"></i> Masukkan Lokasi
-                        </button>
                     </div>
 
                     <div class="modal fade" id="modalTambahPON" tabindex="-1" aria-hidden="true">
@@ -451,66 +433,6 @@ if (isset($_POST['update_user'])) {
                                     <button type="submit" name="tambah_pon" class="btn btn-primary">Simpan</button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-
-                    <div class="modal fade" id="modalCekLokasi" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <form method="POST" class="modal-content border-0 shadow rounded-3">
-                                <div class="modal-header border-0">
-                                    <h5 class="modal-title fw-semibold">Masukkan Koordinat Lokasi</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="latitude" class="form-label">Latitude</label>
-                                        <input type="text" id="latitude" name="latitude" class="form-control" placeholder="Masukkan Latitude" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="longitude" class="form-label">Longitude</label>
-                                        <input type="text" id="longitude" name="longitude" class="form-control" placeholder="Masukkan Longitude" required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer border-0">
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                                    <button type="submit" name="cek_odp_terdekat" class="btn btn-success">Cek ODP Terdekat</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="modal fade" id="modalHasilODP" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content border-0 shadow rounded-3">
-                                <div class="modal-header border-0">
-                                    <h5 class="modal-title fw-semibold">ODP Terdekat</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <table class="w-100">
-                                        <tr>
-                                            <td style="width:100px; font-weight:bold;">ODP</td>
-                                            <td>: <span id="hasilOdpNama"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight:bold;">PON</td>
-                                            <td>: <span id="hasilPonNama"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight:bold;">Jarak</td>
-                                            <td>: <span id="hasilJarak"></span> meter</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight:bold;">Port</td>
-                                            <td>: <span id="hasilPort"></span></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="modal-footer border-0">
-                                    <a href="#" id="btnMasukOdp" class="btn btn-primary">Masuk ke ODP</a>
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -553,68 +475,6 @@ if (isset($_POST['update_user'])) {
                         </table>
                     </div>
                 </div>
-
-                <?php
-                // Proses pencarian ODP terdekat -> FIX: tampilkan via Bootstrap Modal + info port
-                if (isset($_POST['cek_odp_terdekat'])) {
-                    $lat_user = floatval($_POST['latitude']);
-                    $lon_user = floatval($_POST['longitude']);
-
-                    $stmt = $pdo2->query("
-            SELECT 
-                o.id AS odp_id,
-                o.pon_id,
-                o.nama_odp,
-                o.latitude,
-                o.longitude,
-                o.port_max,
-                p.nama_pon,
-                (SELECT COUNT(*) FROM users2 u WHERE u.odp_id = o.id) AS jumlah_user,
-                (6371 * ACOS(
-                    COS(RADIANS($lat_user)) * COS(RADIANS(o.latitude)) *
-                    COS(RADIANS(o.longitude) - RADIANS($lon_user)) +
-                    SIN(RADIANS($lat_user)) * SIN(RADIANS(o.latitude))
-                )) AS distance
-            FROM odp2 o
-            JOIN pon2 p ON o.pon_id = p.id
-            WHERE o.latitude IS NOT NULL AND o.longitude IS NOT NULL
-            ORDER BY distance ASC
-            LIMIT 1
-        ");
-
-                    $closest = $stmt->fetch();
-                    if ($closest) {
-                        $odp          = $closest['nama_odp'];
-                        $pon          = $closest['nama_pon'];
-                        $distance_km  = floatval($closest['distance']);
-                        $distance_m   = round($distance_km * 1000); // meter
-                        $port_info    = intval($closest['jumlah_user']) . '/' . intval($closest['port_max']);
-                        $link_odp     = "olt_bagong.php?pon_id=" . urlencode($closest['pon_id']) . "&odp_id=" . urlencode($closest['odp_id']);
-
-                        // Tampilkan modal & isi datanya
-                        echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    document.getElementById('hasilOdpNama').textContent = " . json_encode($odp) . ";
-                    document.getElementById('hasilPonNama').textContent = " . json_encode($pon) . ";
-                    document.getElementById('hasilJarak').textContent  = " . json_encode($distance_m) . ";
-                    document.getElementById('hasilPort').textContent   = " . json_encode($port_info) . ";
-                    document.getElementById('btnMasukOdp').setAttribute('href', " . json_encode($link_odp) . ");
-                    var modalEl = document.getElementById('modalHasilODP');
-                    var myModal = new bootstrap.Modal(modalEl);
-                    myModal.show();
-                });
-            </script>";
-                    } else {
-                        echo "<script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Data Tidak Ditemukan!',
-                    text: 'Tidak ada ODP dengan koordinat yang valid.'
-                });
-            </script>";
-                    }
-                }
-                ?>
 
             <?php
             } // endif !$pon_id && !$odp_id
@@ -904,9 +764,6 @@ if (isset($_POST['update_user'])) {
             ?>
         </div>
 
-
-
-
         <!-- Notifikasi -->
         <div id="notif-container" class="position-fixed top-50 start-50 translate-middle text-center" style="z-index: 1050;"></div>
         <script>
@@ -938,10 +795,6 @@ if (isset($_POST['update_user'])) {
                     }
                 });
             }
-
-
-
-
 
             function confirmDelete(id, name, type) {
                 $('#deleteItemName').text(name);
@@ -995,8 +848,6 @@ if (isset($_POST['update_user'])) {
                 });
             }
         </script>
-
-
 </body>
 
 </html>

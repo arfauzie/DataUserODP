@@ -85,11 +85,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // cek perubahan pon
         if ((int)$odp['pon_id'] !== $pon_id) {
-            $old_pon = $pdo2->prepare("SELECT nama_pon FROM pon2WHERE id=?");
+            $old_pon = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id=?");
             $old_pon->execute([$odp['pon_id']]);
             $old_pon_name = $old_pon->fetchColumn();
 
-            $new_pon = $pdo2->prepare("SELECT nama_pon FROM pon2WHERE id=?");
+            $new_pon = $pdo2->prepare("SELECT nama_pon FROM pon2 WHERE id=?");
             $new_pon->execute([$pon_id]);
             $new_pon_name = $new_pon->fetchColumn();
 
