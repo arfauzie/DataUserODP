@@ -345,7 +345,7 @@ if (isset($_POST['update_user'])) {
     <div class="container mt-4">
         <div class="content">
             <?php
-            echo '<h1><i class="fas fa-server me-2"></i>OLT BAGONG</h1>';
+            echo '<h1><i class="fas fa-server me-2"></i>OLT </h1>';
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 
