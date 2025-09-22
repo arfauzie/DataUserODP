@@ -400,10 +400,12 @@ if (isset($_POST['update_user'])) {
             ?>
                 <div class="card-box">
                     <h4 class="mt-5">Data PON</h4>
-                    <div class="d-flex align-items-center mb-3 gap-2">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
-                            <i class="fas fa-plus"></i> Tambah PON
-                        </button>
+                    <div class="card-box2">
+                        <div class="d-flex align-items-center mb-3 gap-2">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
+                                <i class="fas fa-plus"></i> Tambah PON
+                            </button>
+                        </div>
                     </div>
 
                     <div class="modal fade" id="modalTambahPON" tabindex="-1" aria-hidden="true">

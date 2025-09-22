@@ -53,10 +53,10 @@ if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
 
-    $stmt = $pdo2->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (1, ?, ?)");
+    $stmt = $pdo2->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (2, ?, ?)");
     if ($stmt->execute([$nama_pon, $port_max])) {
         $last_id = $pdo2->lastInsertId();
-        $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 1";
+        $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 2";
 
         // Tambah log, tapi cek hasilnya
         if (!tambahRiwayat("Tambah PON", $oleh ?: 'admin_default', $log)) {
@@ -111,7 +111,7 @@ if (isset($_POST['tambah_odp'])) {
             $stmtPon = $pdo2->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
             $stmtPon->execute([$pon_id]);
             $nama_pon = $stmtPon->fetchColumn() ?? '(tidak diketahui)';
-            $log = "Nama ODP: $nama_odp\nPort Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
+            $log = "Nama ODP: $nama_odp\n Port Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
             tambahRiwayat("Tambah ODP", $oleh, $log);
 
             header("Location: olt_bagong.php?pon_id={$pon_id}&success=odp_added");
@@ -345,7 +345,7 @@ if (isset($_POST['update_user'])) {
     <div class="container mt-4">
         <div class="content">
             <?php
-            echo '<h1><i class="fas fa-server me-2"></i>OLT </h1>';
+            echo '<h1><i class="fas fa-server me-2"></i>OLT BAGONG</h1>';
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 

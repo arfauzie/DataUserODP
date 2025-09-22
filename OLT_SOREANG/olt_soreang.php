@@ -56,7 +56,7 @@ if (isset($_POST['tambah_pon'])) {
     $stmt = $pdo3->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (3, ?, ?)");
     if ($stmt->execute([$nama_pon, $port_max])) {
         $last_id = $pdo3->lastInsertId();
-        $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 1";
+        $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 3";
 
         // Tambah log, tapi cek hasilnya
         if (!tambahRiwayat("Tambah PON", $oleh ?: 'admin_default', $log)) {
@@ -345,7 +345,7 @@ if (isset($_POST['update_user'])) {
     <div class="container mt-4">
         <div class="content">
             <?php
-            echo '<h1><i class="fas fa-server me-2"></i>OLT SOREANG</h1>';
+            echo '<h1><i class="fas fa-server me-2"></i>OLT SOREANG </h1>';
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 
