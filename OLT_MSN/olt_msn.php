@@ -48,7 +48,7 @@ if ($odp_id) {
 // Ambil nama admin untuk log
 $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-// Tambah PONn
+// Tambah PON
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
