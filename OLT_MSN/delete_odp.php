@@ -6,11 +6,10 @@ if (!isset($_SESSION['admin'])) {
 }
 
 require_once 'config.php';
-require_once '../log_helper.php'; // Pastikan path benar
-
+require_once 'log_helper.php'; // helper baru yang menerima $pdo sebagai parameter
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -21,74 +20,69 @@ require_once '../log_helper.php'; // Pastikan path benar
 <body>
     <?php
     if (isset($_GET['id'])) {
-        $odp_id = $_GET['id'];
+        $odp_id = (int)$_GET['id'];
 
-        // Ambil data ODP sebelum dihapus untuk log
+        // Ambil data ODP sebelum dihapus
         $stmt = $pdo->prepare("SELECT * FROM odp1 WHERE id = ?");
         $stmt->execute([$odp_id]);
-        $odp = $stmt->fetch();
+        $odp = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($odp) {
             $pon_id   = $odp['pon_id'];
             $nama_odp = $odp['nama_odp'];
             $port_odp = $odp['port_max'];
 
-            // Siapkan log keterangan (string, bukan array)
-            $log_keterangan = "Nama ODP: $nama_odp | Port Maksimum: $port_odp";
+            $log_keterangan = "Hapus ODP: Nama ODP = $nama_odp | Port Maksimum = $port_odp | PON ID = $pon_id";
 
-            // Ambil nama admin dari session
-            $oleh = isset($_SESSION['admin']['username']) ? $_SESSION['admin']['username'] : 'admin';
+            $oleh = $_SESSION['admin']['username'] ?? 'admin';
 
             // Hapus ODP
             $stmt = $pdo->prepare("DELETE FROM odp1 WHERE id = ?");
             if ($stmt->execute([$odp_id])) {
-                // Simpan log riwayat
-                tambahRiwayat("Hapus ODP", $oleh, $log_keterangan);
+                // Tambahkan log menggunakan helper baru
+                tambahRiwayat($pdo, "Hapus ODP", $oleh, $log_keterangan);
 
                 echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'ODP berhasil dihapus!',
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location = 'olt_msn.php?pon_id=$pon_id';
-                    });
-                });
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'ODP berhasil dihapus!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => { window.location = 'olt_msn.php?pon_id=$pon_id'; });
             </script>";
             } else {
                 echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: 'Gagal menghapus ODP!',
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location = 'olt_msn.php?pon_id=$pon_id';
-                    });
-                });
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal menghapus ODP!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => { window.location = 'olt_msn.php?pon_id=$pon_id'; });
             </script>";
             }
         } else {
-            // Jika data tidak ditemukan
             echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Tidak ditemukan!',
-                    text: 'Data ODP tidak ditemukan.',
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(() => {
-                    window.location = 'olt_msn.php';
-                });
-            });
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tidak ditemukan!',
+            text: 'Data ODP tidak ditemukan.',
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => { window.location = 'olt_msn.php'; });
         </script>";
         }
+    } else {
+        echo "<script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Error!',
+        text: 'ID ODP tidak valid.',
+        timer: 2000,
+        showConfirmButton: false
+    }).then(() => { window.location = 'olt_msn.php'; });
+    </script>";
     }
     ?>
 </body>

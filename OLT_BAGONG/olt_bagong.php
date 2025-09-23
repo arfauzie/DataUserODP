@@ -8,11 +8,11 @@ if (!isset($_SESSION['admin'])) {
 
 include 'config2.php';
 include '../navbar.php';
-include '../log_helper.php';
+include 'log_helper.php';
 
 try {
-    $pdo2 = new PDO("mysql:host=localhost;dbname=msn_db", "root", "");
-    $pdo2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = new PDO("mysql:host=localhost;dbname=msn_db", "root", "");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Koneksi gagal: " . $e->getMessage());
 }
@@ -48,7 +48,7 @@ if ($odp_id) {
 // Ambil nama admin untuk log
 $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-// Tambah PONn
+// Tambah PON
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
@@ -111,7 +111,7 @@ if (isset($_POST['tambah_odp'])) {
             $stmtPon = $pdo2->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
             $stmtPon->execute([$pon_id]);
             $nama_pon = $stmtPon->fetchColumn() ?? '(tidak diketahui)';
-            $log = "Nama ODP: $nama_odp\n Port Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
+            $log = "Nama ODP: $nama_odp\nPort Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
             tambahRiwayat("Tambah ODP", $oleh, $log);
 
             header("Location: olt_bagong.php?pon_id={$pon_id}&success=odp_added");
@@ -404,6 +404,9 @@ if (isset($_POST['update_user'])) {
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
                             <i class="fas fa-plus"></i> Tambah PON
                         </button>
+                        <a href="riwayat2.php" class="btn btn-warning">
+                            <i class="fas fa-history"></i> Riwayat
+                        </a>
                     </div>
 
                     <div class="modal fade" id="modalTambahPON" tabindex="-1" aria-hidden="true">

@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin'])) {
 
 include 'config.php';
 include '../navbar.php';
-include '../log_helper.php';
+include 'log_helper.php';
 
 try {
     $pdo = new PDO("mysql:host=localhost;dbname=msn_db", "root", "");
@@ -59,9 +59,10 @@ if (isset($_POST['tambah_pon'])) {
         $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 1";
 
         // Tambah log, tapi cek hasilnya
-        if (!tambahRiwayat("Tambah PON", $oleh ?: 'admin_default', $log)) {
-            die("Log gagal masuk! Cek kolom 'oleh' di DB. Nilai sekarang: " . var_export($oleh, true));
+        if (!tambahRiwayat($pdo, "Tambah PON", $oleh ?: 'admin_default', $log)) {
+            die("Log gagal masuk!");
         }
+
 
         header("Location: olt_msn.php?success=pon_added");
         exit();
@@ -111,8 +112,9 @@ if (isset($_POST['tambah_odp'])) {
             $stmtPon = $pdo->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
             $stmtPon->execute([$pon_id]);
             $nama_pon = $stmtPon->fetchColumn() ?? '(tidak diketahui)';
-            $log = "Nama ODP: $nama_odp\nPort Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
-            tambahRiwayat("Tambah ODP", $oleh, $log);
+            $log = "Nama ODP: $nama_odp | Port Max: $port_max | PON: $nama_pon | Lat: $latitude | Long: $longitude";
+            tambahRiwayat($pdo, "Tambah ODP", $oleh, $log);
+
 
             header("Location: olt_msn.php?pon_id={$pon_id}&success=odp_added");
             exit();
@@ -149,7 +151,7 @@ if (isset($_POST['tambah_user'])) {
             $nama_odp = $stmtOdp->fetchColumn() ?? '(tidak diketahui)';
 
             $log = "Nama User: $nama_user\nNomor Internet: $nomor_internet\nAlamat: $alamat\nODP: $nama_odp";
-            tambahRiwayat("Tambah User", $oleh, $log);
+            tambahRiwayat($pdo, "Tambah User", $oleh, $log);
             header("Location: olt_msn.php?pon_id=$pon_id&odp_id=$odp_id&success=user_added");
             exit();
         }
@@ -168,7 +170,7 @@ if (isset($_POST['update_user'])) {
     $stmt = $pdo->prepare("UPDATE $users_table SET nama_user = ?, nomor_internet = ?, alamat = ? WHERE id = ?");
     if ($stmt->execute([$nama_user, $nomor_internet, $alamat, $user_id])) {
         $log = "Nama User: $nama_user\nNomor Internet: $nomor_internet\nAlamat: $alamat";
-        tambahRiwayat("Update User", $oleh, $log);
+        tambahRiwayat($pdo, "Update User", $oleh, $log);
         echo "<script>alert('Data berhasil diperbarui!'); window.location='olt_msn.php?odp_id=" . $_GET['odp_id'] . "';</script>";
     } else {
         echo "<script>alert('Gagal memperbarui data!');</script>";
@@ -405,6 +407,9 @@ if (isset($_POST['update_user'])) {
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPON">
                                 <i class="fas fa-plus"></i> Tambah PON
                             </button>
+                            <a href="riwayat.php" class="btn btn-warning">
+                                <i class="fas fa-history"></i> Riwayat
+                            </a>
                         </div>
                     </div>
 

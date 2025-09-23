@@ -5,7 +5,7 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
-require_once '../log_helper.php';
+require_once 'log_helper.php';
 require_once 'config.php';
 
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
