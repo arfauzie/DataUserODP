@@ -2,7 +2,6 @@
 include 'config.php';
 include '../navbar.php';
 
-// mapping OLT biar tampil sesuai sidebar
 $olt_mapping = [
     'olt_msn'     => 'OLT MSN',
     'olt_bagong'  => 'OLT Bagong',
