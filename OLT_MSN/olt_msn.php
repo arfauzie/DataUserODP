@@ -150,7 +150,7 @@ if (isset($_POST['tambah_user'])) {
             $stmtOdp->execute([$odp_id]);
             $nama_odp = $stmtOdp->fetchColumn() ?? '(tidak diketahui)';
 
-            $log = "Nama User: $nama_user\nNomor Internet: $nomor_internet\nAlamat: $alamat\nODP: $nama_odp";
+            $log = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat | ODP: $nama_odp";
             tambahRiwayat($pdo, "Tambah User", $oleh, $log);
             header("Location: olt_msn.php?pon_id=$pon_id&odp_id=$odp_id&success=user_added");
             exit();
@@ -169,7 +169,7 @@ if (isset($_POST['update_user'])) {
 
     $stmt = $pdo->prepare("UPDATE $users_table SET nama_user = ?, nomor_internet = ?, alamat = ? WHERE id = ?");
     if ($stmt->execute([$nama_user, $nomor_internet, $alamat, $user_id])) {
-        $log = "Nama User: $nama_user\nNomor Internet: $nomor_internet\nAlamat: $alamat";
+        $log = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat";
         tambahRiwayat($pdo, "Update User", $oleh, $log);
         echo "<script>alert('Data berhasil diperbarui!'); window.location='olt_msn.php?odp_id=" . $_GET['odp_id'] . "';</script>";
     } else {
