@@ -11,8 +11,8 @@ include '../navbar.php';
 include 'log_helper.php';
 
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=msn_db", "root", "");
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo2 = new PDO("mysql:host=localhost;dbname=msn_db", "root", "");
+    $pdo2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Koneksi gagal: " . $e->getMessage());
 }
@@ -59,9 +59,10 @@ if (isset($_POST['tambah_pon'])) {
         $log = "ID PON: $last_id\nNama PON: $nama_pon\nJumlah Port: $port_max\nOLT ID: 2";
 
         // Tambah log, tapi cek hasilnya
-        if (!tambahRiwayat("Tambah PON", $oleh ?: 'admin_default', $log)) {
-            die("Log gagal masuk! Cek kolom 'oleh' di DB. Nilai sekarang: " . var_export($oleh, true));
+        if (!tambahRiwayat($pdo2, "Tambah PON", $oleh ?: 'admin_default', $log)) {
+            die("Log gagal masuk!");
         }
+
 
         header("Location: olt_bagong.php?success=pon_added");
         exit();
@@ -111,8 +112,9 @@ if (isset($_POST['tambah_odp'])) {
             $stmtPon = $pdo2->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
             $stmtPon->execute([$pon_id]);
             $nama_pon = $stmtPon->fetchColumn() ?? '(tidak diketahui)';
-            $log = "Nama ODP: $nama_odp\nPort Max: $port_max\nPON: $nama_pon\nLat: $latitude\nLon: $longitude";
-            tambahRiwayat("Tambah ODP", $oleh, $log);
+            $log = "Nama ODP: $nama_odp | Port Max: $port_max | PON: $nama_pon | Lat: $latitude | Long: $longitude";
+            tambahRiwayat($pdo2, "Tambah ODP", $oleh, $log);
+
 
             header("Location: olt_bagong.php?pon_id={$pon_id}&success=odp_added");
             exit();
@@ -148,8 +150,8 @@ if (isset($_POST['tambah_user'])) {
             $stmtOdp->execute([$odp_id]);
             $nama_odp = $stmtOdp->fetchColumn() ?? '(tidak diketahui)';
 
-            $log = "Nama User: $nama_user\nNomor Internet: $nomor_internet\nAlamat: $alamat\nODP: $nama_odp";
-            tambahRiwayat("Tambah User", $oleh, $log);
+            $log = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat | ODP: $nama_odp";
+            tambahRiwayat($pdo2, "Tambah User", $oleh, $log);
             header("Location: olt_bagong.php?pon_id=$pon_id&odp_id=$odp_id&success=user_added");
             exit();
         }
@@ -167,15 +169,14 @@ if (isset($_POST['update_user'])) {
 
     $stmt = $pdo2->prepare("UPDATE $users_table SET nama_user = ?, nomor_internet = ?, alamat = ? WHERE id = ?");
     if ($stmt->execute([$nama_user, $nomor_internet, $alamat, $user_id])) {
-        $log = "Nama User: $nama_user\nNomor Internet: $nomor_internet\nAlamat: $alamat";
-        tambahRiwayat("Update User", $oleh, $log);
+        $log = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat";
+        tambahRiwayat($pdo2, "Update User", $oleh, $log);
         echo "<script>alert('Data berhasil diperbarui!'); window.location='olt_bagong.php?odp_id=" . $_GET['odp_id'] . "';</script>";
     } else {
         echo "<script>alert('Gagal memperbarui data!');</script>";
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="id">

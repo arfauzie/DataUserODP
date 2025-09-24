@@ -5,8 +5,8 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
-require_once 'config2.php';          // koneksi ke database pon2
-require_once '../log_helper.php';   // untuk tambahRiwayat
+require_once 'config2.php';          // koneksi ke database $pdo2
+require_once 'log_helper.php';      // untuk tambahRiwayat
 include '../navbar.php';
 
 // Validasi ID
@@ -16,7 +16,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $id = (int)$_GET['id'];
     $stmt = $pdo2->prepare("SELECT * FROM pon2 WHERE id = ?");
     $stmt->execute([$id]);
-    $pon = $stmt->fetch();
+    $pon = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$pon) {
         $error = "Data tidak ditemukan.";
@@ -43,10 +43,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
         $stmt = $pdo2->prepare("UPDATE pon2 SET nama_pon = ?, port_max = ? WHERE id = ?");
         $stmt->execute([$nama_pon, $port_max, $id]);
 
-        // Tambah log riwayat
+        // Ambil nama admin
         $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
+
+        // Simpan log menggunakan $pdo2 sebagai parameter pertama
         $log_keterangan = implode(" | ", $perubahan);
-        tambahRiwayat("Edit PON", $oleh, $log_keterangan);
+        tambahRiwayat($pdo2, "Edit PON", $oleh, $log_keterangan);
 
         $successMessage = "Data berhasil diperbarui!";
         echo "<script>

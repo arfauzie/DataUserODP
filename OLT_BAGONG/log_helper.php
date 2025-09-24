@@ -1,7 +1,6 @@
 <?php
-function tambahRiwayat($aksi, $oleh, $keterangan)
+function tambahRiwayat($pdo, $aksi, $oleh, $keterangan)
 {
-    global $pdo;
     $stmt = $pdo->prepare("INSERT INTO riwayat2 (aksi, oleh, keterangan, waktu) VALUES (?, ?, ?, NOW())");
     return $stmt->execute([$aksi, $oleh, $keterangan]);
 }
@@ -12,9 +11,8 @@ function getRiwayat($pdo)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function deleteRiwayat($id)
+function deleteRiwayat($pdo, $id)
 {
-    global $pdo;
     $stmt = $pdo->prepare("DELETE FROM riwayat2 WHERE id = ?");
     return $stmt->execute([$id]);
 }

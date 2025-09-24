@@ -5,7 +5,7 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
-require_once '../log_helper.php';
+require_once 'log_helper.php';
 require_once 'config2.php'; // koneksi $pdo2 (ERRMODE_EXCEPTION)
 
 // ---------------------------------------------------------
@@ -190,8 +190,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         }
 
                         if (!empty($log_parts)) {
-                            tambahRiwayat("Edit User", $oleh, implode("\n", $log_parts));
+                            tambahRiwayat($pdo2, "Edit User", $oleh, implode("\n", $log_parts));
                         }
+
+
 
                         // Redirect
                         $redir_pon = (int)$target['pon_id'];
@@ -230,7 +232,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     if ($user['alamat'] !== $alamat) $log_parts[] = "Alamat: {$user['alamat']} → $alamat";
 
                     if (!empty($log_parts)) {
-                        tambahRiwayat("Edit User", $oleh, implode("\n", $log_parts));
+                        tambahRiwayat($pdo2, "Edit User", $oleh, implode("\n", $log_parts));
                     }
 
                     echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>

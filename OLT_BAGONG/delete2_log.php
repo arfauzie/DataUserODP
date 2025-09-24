@@ -1,20 +1,45 @@
 <?php
 session_start();
+require_once 'config2.php';
+
 if (!isset($_SESSION['admin'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
 
-require_once 'config2.php';
-
-if (isset($_GET['id'])) {
-    $id = (int) $_GET['id'];
-
-    $stmt = $pdo2->prepare("DELETE FROM riwayat2 WHERE id = ?");
-    if ($stmt->execute([$id])) {
-        header("Location: riwayat2.php?success=deleted");
-    } else {
-        header("Location: riwayat2.php?error=failed");
+// Hapus semua log
+if (isset($_POST['hapus_semua'])) {
+    try {
+        $pdo->exec("TRUNCATE TABLE riwayat2");
+        header("Location: riwayat2.php?status=success");
+        exit;
+    } catch (Exception $e) {
+        header("Location: riwayat2.php?status=error");
+        exit;
     }
-    exit();
 }
+
+// Hapus log tertentu berdasarkan aksi + keterangan + waktu
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aksi'], $_POST['keterangan'], $_POST['waktu'])) {
+    $aksi = $_POST['aksi'];
+    $keterangan = $_POST['keterangan'];
+    $waktu = $_POST['waktu'];
+
+    $stmt = $pdo->prepare("DELETE FROM riwayat2 WHERE aksi = :aksi AND keterangan = :keterangan AND waktu = :waktu LIMIT 1");
+    $result = $stmt->execute([
+        ':aksi' => $aksi,
+        ':keterangan' => $keterangan,
+        ':waktu' => $waktu
+    ]);
+
+    if ($result) {
+        header("Location: riwayat2.php?status=success");
+    } else {
+        header("Location: riwayat2.php?status=error");
+    }
+    exit;
+}
+
+// Redirect jika akses langsung
+header("Location: riwayat2.php");
+exit;

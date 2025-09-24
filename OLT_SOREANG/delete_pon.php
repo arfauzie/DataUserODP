@@ -6,10 +6,10 @@ if (!isset($_SESSION['admin'])) {
 }
 
 require_once 'config3.php';
-require_once '../log_helper.php'; // Pastikan path benar
+require_once 'log_helper.php';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -20,81 +20,84 @@ require_once '../log_helper.php'; // Pastikan path benar
 <body>
     <?php
     if (isset($_GET['id'])) {
-        $id = (int) $_GET['id'];
+        $pon_id = (int) $_GET['id'];
 
         // Ambil data PON sebelum dihapus
         $stmt = $pdo3->prepare("SELECT * FROM pon3 WHERE id = ?");
-        $stmt->execute([$id]);
+        $stmt->execute([$pon_id]);
         $pon = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$pon) {
-            echo "<script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Tidak ditemukan!',
-                text: 'Data PON tidak ditemukan!',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                location.href = 'olt_soreang.php';
-            });
-        </script>";
-            exit();
-        }
+        if ($pon) {
+            // Cek apakah ada ODP terkait
+            $stmt = $pdo3->prepare("SELECT COUNT(*) FROM odp3 WHERE pon_id = ?");
+            $stmt->execute([$pon_id]);
+            $odp_count = $stmt->fetchColumn();
 
-        // Cek apakah ada ODP terkait
-        $stmt = $pdo3->prepare("SELECT COUNT(*) FROM odp3 WHERE pon_id = ?");
-        $stmt->execute([$id]);
-        $odp_count = $stmt->fetchColumn();
-
-        if ($odp_count > 0) {
-            echo "<script>
+            if ($odp_count > 0) {
+                echo "<script>
             Swal.fire({
                 icon: 'warning',
                 title: 'Gagal!',
                 text: 'Tidak bisa menghapus PON yang memiliki ODP terkait!',
                 confirmButtonText: 'OK'
-            }).then(() => {
-                location.href = 'olt_soreang.php';
-            });
-        </script>";
-            exit();
-        }
+            }).then(() => { window.location = 'olt_soreang.php'; });
+            </script>";
+                exit();
+            }
 
-        // Ambil nama admin dari session
-        $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
+            // Ambil nama admin dari session
+            $oleh = $_SESSION['admin']['username'] ?? 'admin';
 
-        // Siapkan log tanpa ID
-        $log_keterangan  = "Nama PON: " . ($pon['nama_pon'] ?? '(kosong)') . "\n";
-        $log_keterangan .= "Jumlah Port: " . ($pon['port_max'] ?? '(tidak tersedia)');
+            // Siapkan log
+            $log_keterangan  = "Nama PON: " . ($pon['nama_pon'] ?? '(kosong)') . " | ";
+            $log_keterangan .= "Jumlah Port: " . ($pon['port_max'] ?? '(tidak tersedia)');
 
-        // Hapus PON
-        $stmt = $pdo3->prepare("DELETE FROM pon3 WHERE id = ?");
-        if ($stmt->execute([$id])) {
-            tambahRiwayat("Hapus PON", $oleh, $log_keterangan);
+            // Hapus PON
+            $stmt = $pdo3->prepare("DELETE FROM pon3 WHERE id = ?");
+            if ($stmt->execute([$pon_id])) {
+                // Tambahkan log dengan helper baru
+                tambahRiwayat($pdo3, "Hapus PON", $oleh, $log_keterangan);
 
-            echo "<script>
+                echo "<script>
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
                 text: 'PON berhasil dihapus!',
                 timer: 1500,
                 showConfirmButton: false
-            }).then(() => {
-                location.href = 'olt_soreang.php';
-            });
-        </script>";
-        } else {
-            echo "<script>
+            }).then(() => { window.location = 'olt_soreang.php'; });
+            </script>";
+            } else {
+                echo "<script>
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal!',
                 text: 'Gagal menghapus PON!',
                 confirmButtonText: 'OK'
-            }).then(() => {
-                location.href = 'olt_soreang.php';
-            });
+            }).then(() => { window.location = 'olt_soreang.php'; });
+            </script>";
+            }
+        } else {
+            echo "<script>
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tidak ditemukan!',
+            text: 'Data PON tidak ditemukan.',
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => { window.location = 'olt_soreang.php'; });
         </script>";
         }
+    } else {
+        echo "<script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Error!',
+        text: 'ID PON tidak valid.',
+        timer: 2000,
+        showConfirmButton: false
+    }).then(() => { window.location = 'olt_soreang.php'; });
+    </script>";
     }
     ?>
 </body>

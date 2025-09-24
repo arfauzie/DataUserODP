@@ -133,7 +133,7 @@ $riwayat = getRiwayat($pdo2);
                             // Buat form sementara untuk POST
                             const form = document.createElement('form');
                             form.method = 'POST';
-                            form.action = 'delete_log.php';
+                            form.action = 'delete2_log.php';
 
                             ['aksi', 'keterangan', 'waktu'].forEach(key => {
                                 const input = document.createElement('input');

@@ -5,13 +5,13 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
-require_once '../log_helper.php';
-require_once '../koneksi_log.php';
+require_once 'log_helper.php';
 require_once 'config3.php';
 include '../navbar.php';
 
 echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
 
+// Validasi ID ODP
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -30,9 +30,11 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $id = (int)$_GET['id'];
+
+// Ambil data ODP
 $stmt = $pdo3->prepare("SELECT * FROM odp3 WHERE id = ?");
 $stmt->execute([$id]);
-$odp = $stmt->fetch();
+$odp = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$odp) {
     echo "<script>
@@ -51,10 +53,10 @@ if (!$odp) {
     exit();
 }
 
-// Ambil semua data pon
+// Ambil semua data PON
 $pon_stmt = $pdo3->query("
     SELECT * 
-    FROM pon3
+    FROM pon3 
     ORDER BY CAST(TRIM(REPLACE(nama_pon, 'PON', '')) AS UNSIGNED)
 ");
 $all_pons = $pon_stmt->fetchAll();
@@ -83,13 +85,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $log_keterangan[] = "Port Max: {$odp['port_max']} ➔ $port_max";
         }
 
-        // cek perubahan pon
+        // cek perubahan PON
         if ((int)$odp['pon_id'] !== $pon_id) {
-            $old_pon = $pdo3->prepare("SELECT nama_pon FROM pon3WHERE id=?");
+            $old_pon = $pdo3->prepare("SELECT nama_pon FROM pon3 WHERE id=?");
             $old_pon->execute([$odp['pon_id']]);
             $old_pon_name = $old_pon->fetchColumn();
 
-            $new_pon = $pdo3->prepare("SELECT nama_pon FROM pon3WHERE id=?");
+            $new_pon = $pdo3->prepare("SELECT nama_pon FROM pon3 WHERE id=?");
             $new_pon->execute([$pon_id]);
             $new_pon_name = $new_pon->fetchColumn();
 
@@ -106,14 +108,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $log_keterangan[] = "Longitude: {$odp['longitude']} ➔ $longitude";
         }
 
-        // buat header log
+        // header log
         $log_header = "Edit ODP ({$odp['nama_odp']})";
 
         // simpan log
         if (!empty($log_keterangan)) {
-            tambahRiwayat($log_header, $oleh, implode("\n", $log_keterangan));
+            tambahRiwayat($pdo3, $log_header, $oleh, implode("\n", $log_keterangan));
         } else {
-            tambahRiwayat($log_header, $oleh, "Tidak ada perubahan data");
+            tambahRiwayat($pdo3, $log_header, $oleh, "Tidak ada perubahan data");
         }
 
         echo "<script>
