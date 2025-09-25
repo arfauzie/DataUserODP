@@ -12,7 +12,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_MSN/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_BAGONG/config2.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_SOREANG/config3.php';
 
-// koneksi log (pastikan file log_koneksi.php berada di folder yang sama)
+// koneksi log (pastikan file koneksi_log.php berada di folder yang sama)
 require_once __DIR__ . '/koneksi_log.php'; // ini membuat $pdo_log
 
 // Ambil ringkasan OLT
@@ -52,10 +52,12 @@ foreach ($databases as $nama_db => $data) {
     }
 }
 
+// ambil log
 try {
     $stmtLogs = $pdo_log->query("SELECT aksi, oleh, keterangan, waktu FROM log_riwayat ORDER BY waktu DESC LIMIT 3");
     $recentLogs = $stmtLogs->fetchAll(PDO::FETCH_ASSOC);
-    // total log count (untuk ringkasan kecil)
+
+    // total log count
     $stmtCount = $pdo_log->query("SELECT COUNT(*) FROM log_riwayat");
     $total_logs = (int)$stmtCount->fetchColumn();
 } catch (PDOException $e) {
@@ -63,7 +65,14 @@ try {
     $total_logs = 0;
 }
 
+// mapping link tiap OLT (fix, tanpa strtolower)
+$olt_links = [
+    'OLT_MSN'     => '/DataUserODP/OLT_MSN/olt_msn.php',
+    'OLT_BAGONG'  => '/DataUserODP/OLT_BAGONG/olt_bagong.php',
+    'OLT_SOREANG' => '/DataUserODP/OLT_SOREANG/olt_soreang.php'
+];
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 
