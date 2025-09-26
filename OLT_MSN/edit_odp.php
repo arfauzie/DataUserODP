@@ -64,7 +64,7 @@ $all_pons = $pon_stmt->fetchAll();
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nama_odp = trim($_POST['nama_odp']);
     $port_max = (int)$_POST['port_max'];
-    $pon_id = (int)$_POST['pon_id'];
+    $pon_id   = (int)$_POST['pon_id'];
     $latitude = trim($_POST['latitude']);
     $longitude = trim($_POST['longitude']);
 
@@ -72,7 +72,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $success = $update_stmt->execute([$nama_odp, $pon_id, $port_max, $latitude, $longitude, $id]);
 
     if ($success) {
-        $oleh = $_SESSION['admin']['username'] ?? 'unknown';
+        // Ambil admin (string/array)
+        $oleh = is_array($_SESSION['admin'])
+            ? ($_SESSION['admin']['username'] ?? 'admin')
+            : $_SESSION['admin'];
+
         $log_keterangan = [];
 
         // cek perubahan nama
@@ -89,11 +93,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ((int)$odp['pon_id'] !== $pon_id) {
             $old_pon = $pdo->prepare("SELECT nama_pon FROM pon1 WHERE id=?");
             $old_pon->execute([$odp['pon_id']]);
-            $old_pon_name = $old_pon->fetchColumn();
+            $old_pon_name = $old_pon->fetchColumn() ?: '(kosong)';
 
             $new_pon = $pdo->prepare("SELECT nama_pon FROM pon1 WHERE id=?");
             $new_pon->execute([$pon_id]);
-            $new_pon_name = $new_pon->fetchColumn();
+            $new_pon_name = $new_pon->fetchColumn() ?: '(kosong)';
 
             $log_keterangan[] = "PON: $old_pon_name ➔ $new_pon_name";
         }
@@ -112,10 +116,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $log_header = "Edit ODP ({$odp['nama_odp']})";
 
         // simpan log
-        if (!empty($log_keterangan)) {
-            tambahRiwayat($pdo, $log_header, $oleh, implode("\n", $log_keterangan));
+        $log_text = !empty($log_keterangan) ? implode("\n", $log_keterangan) : "Tidak ada perubahan data";
+
+        if (function_exists('tambahRiwayatMSN')) {
+            tambahRiwayatMSN($pdo, $log_header, $oleh, $log_text);
         } else {
-            tambahRiwayat($pdo, $log_header, $oleh, "Tidak ada perubahan data");
+            tambahRiwayatMSN($pdo, $log_header, $oleh, $log_text);
         }
 
         echo "<script>
@@ -210,7 +216,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <div class="mb-3">
                     <label for="nama_odp" class="form-label">Nama ODP:</label>
-                    <input type="text" name="nama_odp" id="nama_odp" class="form-control" value="<?= htmlspecialchars($odp['nama_odp']); ?>" required>
+                    <input type="text" name="nama_odp" id="nama_odp" class="form-control"
+                        value="<?= htmlspecialchars($odp['nama_odp']); ?>" required>
                 </div>
 
                 <div class="mb-3">
@@ -223,12 +230,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <div class="mb-3">
                     <label for="latitude" class="form-label">Latitude:</label>
-                    <input type="text" name="latitude" id="latitude" class="form-control" value="<?= htmlspecialchars($odp['latitude'] ?? '') ?>">
+                    <input type="text" name="latitude" id="latitude" class="form-control"
+                        value="<?= htmlspecialchars($odp['latitude'] ?? '') ?>">
                 </div>
 
                 <div class="mb-3">
                     <label for="longitude" class="form-label">Longitude:</label>
-                    <input type="text" name="longitude" id="longitude" class="form-control" value="<?= htmlspecialchars($odp['longitude'] ?? '') ?>">
+                    <input type="text" name="longitude" id="longitude" class="form-control"
+                        value="<?= htmlspecialchars($odp['longitude'] ?? '') ?>">
                 </div>
 
                 <div class="d-flex justify-content-between">

@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin'])) {
 }
 
 require_once 'config3.php';          // koneksi ke database $pdo3
-require_once 'log_helper.php';      // untuk tambahRiwayat
+require_once 'log_helper.php';      // untuk tambahRiwayatSoreang
 include '../navbar.php';
 
 // Validasi ID
@@ -46,9 +46,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
         // Ambil nama admin
         $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-        // Simpan log menggunakan $pdo3 sebagai parameter pertama
+        // Simpan log menggunakan tambahRiwayatSoreang
         $log_keterangan = implode(" | ", $perubahan);
-        tambahRiwayat($pdo3, "Edit PON", $oleh, $log_keterangan);
+        tambahRiwayatSoreang($pdo3, "Edit PON", $oleh, $log_keterangan);
 
         $successMessage = "Data berhasil diperbarui!";
         echo "<script>

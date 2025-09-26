@@ -180,10 +180,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         }
 
                         if (!empty($log_parts)) {
-                            tambahRiwayat($pdo3, "Edit User", $oleh, implode("\n", $log_parts));
+                            tambahRiwayatSoreang($pdo3, "Edit User", $oleh, implode("\n", $log_parts));
                         }
-
-
 
                         // Redirect
                         $redir_pon = (int)$target['pon_id'];
@@ -222,7 +220,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     if ($user['alamat'] !== $alamat) $log_parts[] = "Alamat: {$user['alamat']} → $alamat";
 
                     if (!empty($log_parts)) {
-                        tambahRiwayat($pdo3, "Edit User", $oleh, implode("\n", $log_parts));
+                        tambahRiwayatSoreang($pdo3, "Edit User", $oleh, implode("\n", $log_parts));
                     }
 
                     echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>

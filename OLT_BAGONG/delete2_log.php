@@ -10,7 +10,7 @@ if (!isset($_SESSION['admin'])) {
 // Hapus semua log
 if (isset($_POST['hapus_semua'])) {
     try {
-        $pdo->exec("TRUNCATE TABLE riwayat2");
+        $pdo2->exec("TRUNCATE TABLE riwayat2");
         header("Location: riwayat2.php?status=success");
         exit;
     } catch (Exception $e) {
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aksi'], $_POST['keter
     $keterangan = $_POST['keterangan'];
     $waktu = $_POST['waktu'];
 
-    $stmt = $pdo->prepare("DELETE FROM riwayat2 WHERE aksi = :aksi AND keterangan = :keterangan AND waktu = :waktu LIMIT 1");
+    $stmt = $pdo2->prepare("DELETE FROM riwayat2 WHERE aksi = :aksi AND keterangan = :keterangan AND waktu = :waktu LIMIT 1");
     $result = $stmt->execute([
         ':aksi' => $aksi,
         ':keterangan' => $keterangan,

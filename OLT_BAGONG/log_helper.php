@@ -1,18 +1,28 @@
 <?php
-function tambahRiwayat($pdo, $aksi, $oleh, $keterangan)
+function tambahRiwayatBagong($pdo2, $aksi, $oleh, $keterangan)
 {
-    $stmt = $pdo->prepare("INSERT INTO riwayat2 (aksi, oleh, keterangan, waktu) VALUES (?, ?, ?, NOW())");
+    $stmt = $pdo2->prepare("INSERT INTO riwayat2 (aksi, oleh, keterangan, waktu) VALUES (?, ?, ?, NOW())");
     return $stmt->execute([$aksi, $oleh, $keterangan]);
 }
 
-function getRiwayat($pdo)
+function getRiwayatBagong($pdo2, $limit = null)
 {
-    $stmt = $pdo->query("SELECT * FROM riwayat2 ORDER BY waktu DESC");
+    $sql = "SELECT * FROM riwayat2 ORDER BY waktu DESC";
+    if ($limit !== null) {
+        $sql .= " LIMIT :limit";
+    }
+
+    $stmt = $pdo2->prepare($sql);
+    if ($limit !== null) {
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    }
+
+    $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function deleteRiwayat($pdo, $id)
+function deleteRiwayatBagong($pdo2, $id)
 {
-    $stmt = $pdo->prepare("DELETE FROM riwayat2 WHERE id = ?");
+    $stmt = $pdo2->prepare("DELETE FROM riwayat2 WHERE id = ?");
     return $stmt->execute([$id]);
 }

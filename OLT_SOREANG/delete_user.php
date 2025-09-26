@@ -29,18 +29,20 @@ require_once 'log_helper.php'; // fungsi tambahRiwayat
 
         if (!$user) {
             echo "<script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Tidak ditemukan!',
-            text: 'Data user tidak ditemukan!',
-            confirmButtonText: 'OK'
-        }).then(() => { window.location = 'olt_soreang.php'; });
-        </script>";
+            Swal.fire({
+                icon: 'error',
+                title: 'Tidak ditemukan!',
+                text: 'Data user tidak ditemukan!',
+                confirmButtonText: 'OK'
+            }).then(() => { window.location = 'olt_soreang.php'; });
+            </script>";
             exit();
         }
 
-        // Ambil nama admin dari session
-        $oleh = $_SESSION['admin']['username'] ?? 'admin';
+        // Ambil nama admin dari session (handle array/string)
+        $oleh = is_array($_SESSION['admin'])
+            ? ($_SESSION['admin']['username'] ?? 'admin')
+            : $_SESSION['admin'];
 
         // Siapkan log dengan format konsisten
         $nama_user      = $user['nama_user'] ?? '(kosong)';
@@ -51,38 +53,42 @@ require_once 'log_helper.php'; // fungsi tambahRiwayat
         // Eksekusi hapus
         $stmt = $pdo3->prepare("DELETE FROM users3 WHERE id = ?");
         if ($stmt->execute([$user_id])) {
-            //Tambahkan $pdo3 sebagai argumen pertama
-            tambahRiwayat($pdo3, "Hapus User", $oleh, $log_keterangan);
+            // Tambahkan log dengan helper baru (fallback ke lama)
+            if (function_exists('tambahRiwayatSoreang')) {
+                tambahRiwayatSoreang($pdo3, "Hapus User", $oleh, $log_keterangan);
+            } else {
+                tambahRiwayatSoreang($pdo3, "Hapus User", $oleh, $log_keterangan);
+            }
 
             echo "<script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: 'User berhasil dihapus!',
-            timer: 1500,
-            showConfirmButton: false
-        }).then(() => { window.location = 'olt_soreang.php'; });
-        </script>";
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'User berhasil dihapus!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => { window.location = 'olt_soreang.php'; });
+            </script>";
         } else {
             echo "<script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: 'Gagal menghapus user!',
-            confirmButtonText: 'OK'
-        }).then(() => { window.location = 'olt_soreang.php'; });
-        </script>";
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal menghapus user!',
+                confirmButtonText: 'OK'
+            }).then(() => { window.location = 'olt_soreang.php'; });
+            </script>";
         }
     } else {
         echo "<script>
-    Swal.fire({
-        icon: 'warning',
-        title: 'Error!',
-        text: 'ID user tidak valid.',
-        timer: 2000,
-        showConfirmButton: false
-    }).then(() => { window.location = 'olt_soreang.php'; });
-    </script>";
+        Swal.fire({
+            icon: 'warning',
+            title: 'Error!',
+            text: 'ID user tidak valid.',
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => { window.location = 'olt_soreang.php'; });
+        </script>";
     }
     ?>
 </body>

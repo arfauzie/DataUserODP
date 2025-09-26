@@ -7,18 +7,20 @@ if (!isset($_SESSION['admin'])) {
 
 include 'navbar.php';
 
-// koneksi OLT (sesuaikan path jika berbeda)
+// koneksi OLT (masing-masing config)
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_MSN/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_BAGONG/config2.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_SOREANG/config3.php';
 
-// koneksi log (pastikan file koneksi_log.php berada di folder yang sama)
-require_once __DIR__ . '/koneksi_log.php'; // ini membuat $pdo_log
+// helper log tiap OLT
+require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_MSN/log_helper.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_BAGONG/log_helper.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_SOREANG/log_helper.php';
 
 // Ambil ringkasan OLT
 $databases = [
-    'OLT_MSN' => ['pdo' => $pdo, 'tables' => ['pon1', 'odp1', 'users1']],
-    'OLT_BAGONG' => ['pdo' => $pdo2, 'tables' => ['pon2', 'odp2', 'users2']],
+    'OLT_MSN'     => ['pdo' => $pdo,  'tables' => ['pon1', 'odp1', 'users1']],
+    'OLT_BAGONG'  => ['pdo' => $pdo2, 'tables' => ['pon2', 'odp2', 'users2']],
     'OLT_SOREANG' => ['pdo' => $pdo3, 'tables' => ['pon3', 'odp3', 'users3']],
 ];
 
@@ -33,45 +35,64 @@ foreach ($databases as $nama_db => $data) {
         foreach ($data['tables'] as $table) {
             $stmt = $conn->query("SELECT COUNT(*) FROM $table");
             $count = (int)$stmt->fetchColumn();
-            if (strpos($table, 'pon') !== false) $total_pon += $count;
-            if (strpos($table, 'odp') !== false) $total_odp += $count;
+            if (strpos($table, 'pon') !== false)   $total_pon   += $count;
+            if (strpos($table, 'odp') !== false)   $total_odp   += $count;
             if (strpos($table, 'users') !== false) $total_users += $count;
         }
 
         $olt_totals[$nama_db] = [
-            'pon' => $total_pon,
-            'odp' => $total_odp,
+            'pon'   => $total_pon,
+            'odp'   => $total_odp,
             'users' => $total_users
         ];
 
-        $total_pon_all += $total_pon;
-        $total_odp_all += $total_odp;
+        $total_pon_all   += $total_pon;
+        $total_odp_all   += $total_odp;
         $total_users_all += $total_users;
     } catch (PDOException $e) {
         $olt_totals[$nama_db] = ['pon' => 0, 'odp' => 0, 'users' => 0];
     }
 }
 
-// ambil log
-try {
-    $stmtLogs = $pdo_log->query("SELECT aksi, oleh, keterangan, waktu FROM log_riwayat ORDER BY waktu DESC LIMIT 3");
-    $recentLogs = $stmtLogs->fetchAll(PDO::FETCH_ASSOC);
+// Ambil log dari masing-masing OLT
+$logs = [];
 
-    // total log count
-    $stmtCount = $pdo_log->query("SELECT COUNT(*) FROM log_riwayat");
-    $total_logs = (int)$stmtCount->fetchColumn();
-} catch (PDOException $e) {
-    $recentLogs = [];
-    $total_logs = 0;
+try {
+    $riwayat_msn = getRiwayatMSN($pdo, 20); // ambil 20 dulu
+    foreach ($riwayat_msn as $row) {
+        $row['olt'] = 'MSN';
+        $logs[] = $row;
+    }
+} catch (Exception $e) {
 }
 
-// mapping link tiap OLT (fix, tanpa strtolower)
-$olt_links = [
-    'OLT_MSN'     => '/DataUserODP/OLT_MSN/olt_msn.php',
-    'OLT_BAGONG'  => '/DataUserODP/OLT_BAGONG/olt_bagong.php',
-    'OLT_SOREANG' => '/DataUserODP/OLT_SOREANG/olt_soreang.php'
-];
+try {
+    $riwayat_bagong = getRiwayatBagong($pdo2, 20);
+    foreach ($riwayat_bagong as $row) {
+        $row['olt'] = 'BAGONG';
+        $logs[] = $row;
+    }
+} catch (Exception $e) {
+}
+
+try {
+    $riwayat_soreang = getRiwayatSoreang($pdo3, 20);
+    foreach ($riwayat_soreang as $row) {
+        $row['olt'] = 'SOREANG';
+        $logs[] = $row;
+    }
+} catch (Exception $e) {
+}
+
+// urutkan berdasarkan waktu terbaru
+usort($logs, function ($a, $b) {
+    return strtotime($b['waktu']) <=> strtotime($a['waktu']);
+});
+
+// ambil 5 log terbaru
+$recentLogs = array_slice($logs, 0, 5);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -96,7 +117,6 @@ $olt_links = [
             margin: 0;
         }
 
-        /* konten utama menyesuaikan sidebar */
         .content {
             margin-left: var(--sidebar-width);
             padding: var(--page-padding);
@@ -112,15 +132,12 @@ $olt_links = [
             }
         }
 
-        /* header biru full */
         .page-header {
             background: linear-gradient(90deg, #0555e9d6, #2004beff);
             padding: 60px var(--page-padding);
             color: white;
             margin: 0;
-            border-radius: 0;
             width: calc(100% + var(--page-padding) * 2);
-            box-sizing: border-box;
             margin-left: calc(-1 * var(--page-padding));
             margin-right: calc(-1 * var(--page-padding));
         }
@@ -131,13 +148,6 @@ $olt_links = [
             margin: 10px 0 4px 0;
         }
 
-        .page-header .subtitle {
-            font-size: 14px;
-            opacity: 0.9;
-            margin: 0;
-        }
-
-        /* area kartu OLT */
         .container-big {
             padding-left: 0;
             padding-right: 0;
@@ -149,7 +159,6 @@ $olt_links = [
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
             padding: 20px;
             margin-top: -28px;
-            /* naik ke header */
         }
 
         .small-box {
@@ -170,7 +179,6 @@ $olt_links = [
             margin: 0 0 6px 0;
             font-size: 1.05rem;
             font-weight: 700;
-            color: #fff;
         }
 
         .small-box .inner p {
@@ -210,7 +218,6 @@ $olt_links = [
             background: linear-gradient(135deg, #3498db, #1e3799);
         }
 
-        /* History & Summary area */
         .panel-row {
             margin-top: 22px;
             display: flex;
@@ -235,11 +242,6 @@ $olt_links = [
             padding: 14px;
         }
 
-        .history-card h6 {
-            margin: 0 0 8px 0;
-            font-weight: 600;
-        }
-
         .history-list {
             list-style: none;
             padding: 0;
@@ -258,15 +260,14 @@ $olt_links = [
             border-bottom: 0;
         }
 
-        .history-time {
-            font-size: 12px;
-            color: #888;
-            min-width: 100px;
+        .history-empty {
+            text-align: center;
+            color: #777;
+            padding: 18px 0;
         }
 
         .summary-grid {
             display: grid;
-            grid-template-columns: 1fr;
             gap: 12px;
         }
 
@@ -276,7 +277,6 @@ $olt_links = [
             padding: 12px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             font-weight: 600;
         }
 
@@ -284,17 +284,6 @@ $olt_links = [
             font-size: 1.2rem;
             color: #0b61d6;
             font-weight: 700;
-        }
-
-        /* tabel ringkasan (dashboard small table) */
-        .history-card .table {
-            margin-bottom: 0;
-        }
-
-        .history-empty {
-            text-align: center;
-            color: #777;
-            padding: 18px 0;
         }
 
         @media (max-width: 900px) {
@@ -308,17 +297,14 @@ $olt_links = [
             }
         }
     </style>
-
 </head>
 
 <body>
     <div class="content">
-        <!-- header -->
         <div class="page-header">
             <div class="title">Dashboard</div>
         </div>
 
-        <!-- Kartu OLT -->
         <div class="container-big">
             <div class="big-box">
                 <div class="row g-3">
@@ -345,11 +331,8 @@ $olt_links = [
                         </div>
                     <?php endforeach; ?>
                 </div>
-
-                <!-- Panel Riwayat & Summary -->
-
-
             </div>
+
             <div class="panel-row">
                 <!-- left: history -->
                 <div class="panel-left">
@@ -364,8 +347,10 @@ $olt_links = [
                                 <?php foreach ($recentLogs as $log): ?>
                                     <li class="history-item">
                                         <div style="flex:1">
-                                            <div style="font-weight:600; font-size:0.95rem; margin-bottom:4px;"><?= htmlspecialchars($log['aksi']) ?></div>
-                                            <div style="font-size:0.9rem; color:#444; white-space:pre-wrap;"><?= htmlspecialchars($log['keterangan']) ?></div>
+                                            <div style="font-weight:600; font-size:0.95rem; margin-bottom:4px;">
+                                                [<?= htmlspecialchars($log['olt']) ?>] <?= htmlspecialchars($log['aksi']) ?>
+                                            </div>
+                                            <div style="font-size:0.9rem; color:#444;"><?= htmlspecialchars($log['keterangan']) ?></div>
                                         </div>
                                         <div style="text-align:right; min-width:120px;">
                                             <div style="font-size:0.9rem; font-weight:600;"><?= htmlspecialchars($log['oleh']) ?></div>
@@ -400,12 +385,10 @@ $olt_links = [
                         </div>
                     </div>
                 </div>
-            </div> <!-- /panel-row -->
-        </div> <!-- /container-big -->
-    </div> <!-- /content -->
-
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>

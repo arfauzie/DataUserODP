@@ -9,7 +9,7 @@ include '../navbar.php';
 require_once 'config2.php';
 require_once 'log_helper.php';
 
-$riwayat = getRiwayat($pdo2);
+$riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ $riwayat = getRiwayat($pdo2);
 
 <head>
     <meta charset="UTF-8">
-    <title>Riwayat OLT MSN</title>
+    <title>Riwayat OLT BAGONG</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -34,27 +34,42 @@ $riwayat = getRiwayat($pdo2);
             font-weight: 600;
         }
 
-        /* Card box untuk tabel */
         .card {
             background-color: #fff;
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
         }
 
+        /* Styling tabel ala transaction log */
         .table {
-            text-align: center;
+            border-collapse: separate;
+            border-spacing: 0 6px;
         }
 
-        .table th,
-        .table td {
-            vertical-align: middle;
-            text-align: center;
-            word-break: break-word;
-        }
-
-        .table-hover tbody tr:hover {
+        .table thead th {
             background-color: #f1f3f5;
+            border: none;
+            font-weight: 600;
+            color: #495057;
+            text-align: left;
+        }
+
+        .table tbody tr {
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .table tbody td {
+            border: none;
+            vertical-align: middle;
+            font-size: 14px;
+            color: #343a40;
+            padding: 12px;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
         }
 
         .btn-sm {
@@ -65,18 +80,19 @@ $riwayat = getRiwayat($pdo2);
 
 <body>
     <div class="content-wrapper">
-        <h2 class="mb-4">Riwayat Aktivitas OLT MSN</h2>
+        <h2 class="mb-4">Riwayat Aktivitas OLT BAGONG</h2>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <a href="olt_bagong.php" class="btn btn-secondary">Kembali</a>
-            <form method="post" action="delete_log.php" onsubmit="return confirm('Hapus semua riwayat?');">
-                <button type="submit" name="hapus_semua" class="btn btn-danger">Hapus Semua</button>
+            <form id="hapusSemuaForm" method="post" action="delete2_log.php" style="margin:0;">
+                <input type="hidden" name="hapus_semua" value="1">
+                <button type="button" id="hapusSemuaBtn" class="btn btn-danger">Hapus Semua</button>
             </form>
         </div>
 
         <div class="card">
-            <table class="table table-bordered table-hover">
-                <thead class="table-dark">
+            <table class="table">
+                <thead>
                     <tr>
                         <th style="width: 15%;">Aksi</th>
                         <th style="width: 35%;">Keterangan</th>
@@ -88,11 +104,11 @@ $riwayat = getRiwayat($pdo2);
                 <tbody>
                     <?php foreach ($riwayat as $row): ?>
                         <tr>
-                            <td class="text-center"><?= htmlspecialchars($row['aksi']) ?></td>
-                            <td class="text-center"><?= nl2br(htmlspecialchars($row['keterangan'])) ?></td>
-                            <td class="text-center"><?= htmlspecialchars($row['oleh'] ?? '-') ?></td>
-                            <td class="text-center"><?= htmlspecialchars($row['waktu']) ?></td>
-                            <td class="text-center">
+                            <td><?= htmlspecialchars($row['aksi']) ?></td>
+                            <td><?= nl2br(htmlspecialchars($row['keterangan'])) ?></td>
+                            <td><?= htmlspecialchars($row['oleh'] ?? '-') ?></td>
+                            <td><?= htmlspecialchars($row['waktu']) ?></td>
+                            <td>
                                 <button
                                     type="button"
                                     class="btn btn-danger btn-sm delete-btn"
@@ -108,12 +124,14 @@ $riwayat = getRiwayat($pdo2);
             </table>
         </div>
     </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // 🔹 Hapus per-baris
             const buttons = document.querySelectorAll(".delete-btn");
             buttons.forEach(btn => {
                 btn.addEventListener("click", function(e) {
-                    e.preventDefault(); // cegah submit form default
+                    e.preventDefault();
 
                     const aksi = this.dataset.aksi;
                     const keterangan = this.dataset.keterangan;
@@ -130,7 +148,6 @@ $riwayat = getRiwayat($pdo2);
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Buat form sementara untuk POST
                             const form = document.createElement('form');
                             form.method = 'POST';
                             form.action = 'delete2_log.php';
@@ -139,7 +156,7 @@ $riwayat = getRiwayat($pdo2);
                                 const input = document.createElement('input');
                                 input.type = 'hidden';
                                 input.name = key;
-                                input.value = eval(key); // isi dari dataset
+                                input.value = eval(key);
                                 form.appendChild(input);
                             });
 
@@ -150,7 +167,30 @@ $riwayat = getRiwayat($pdo2);
                 });
             });
 
-            // ✅ SweetAlert hasil hapus
+            // 🔹 Hapus semua log
+            const hapusSemuaBtn = document.getElementById("hapusSemuaBtn");
+            const hapusSemuaForm = document.getElementById("hapusSemuaForm");
+            if (hapusSemuaBtn) {
+                hapusSemuaBtn.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Hapus Semua?',
+                        text: "Semua riwayat akan dihapus permanen!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus semua!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            hapusSemuaForm.submit();
+                        }
+                    });
+                });
+            }
+
+            // 🔹 SweetAlert hasil hapus
             <?php if (isset($_GET['status']) && $_GET['status'] === 'success'): ?>
                 Swal.fire({
                     icon: 'success',
