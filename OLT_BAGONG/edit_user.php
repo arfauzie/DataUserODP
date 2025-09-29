@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin'])) {
 }
 
 require_once 'log_helper.php';
-require_once 'config2.php'; // koneksi $pdo2 (ERRMODE_EXCEPTION)
+require_once 'config2.php'; // koneksi $pdo2
 
 // 1) Endpoint AJAX: ambil daftar ODP berdasarkan PON
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
