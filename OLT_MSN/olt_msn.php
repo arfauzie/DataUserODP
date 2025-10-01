@@ -38,7 +38,7 @@ if ($odp_id) {
 // siapa adminnya
 $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-/* ---------------- TAMBAH PON ---------------- */
+/* TAMBAH PON */
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
@@ -58,7 +58,7 @@ if (isset($_POST['tambah_pon'])) {
     }
 }
 
-/* ---------------- TAMBAH ODP ---------------- */
+/* TAMBAH ODP */
 if (isset($_POST['tambah_odp'])) {
     $pon_id   = (int) ($_POST['pon_id'] ?? 0);
     $nama_odp = trim($_POST['nama_odp']);
@@ -103,7 +103,7 @@ if (isset($_POST['tambah_odp'])) {
     }
 }
 
-/* ---------------- TAMBAH USER ---------------- */
+/* TAMBAH USER */
 if (isset($_POST['tambah_user'])) {
     $odp_id         = $_POST['odp_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -136,7 +136,7 @@ if (isset($_POST['tambah_user'])) {
     }
 }
 
-/* ---------------- UPDATE USER ---------------- */
+/* UPDATE USER */
 if (isset($_POST['update_user'])) {
     $user_id        = $_POST['user_id'];
     $nama_user      = trim($_POST['nama_user']);
