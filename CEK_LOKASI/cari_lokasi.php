@@ -53,6 +53,21 @@ $file_mapping = [
             padding: 8px 10px;
         }
 
+        /* 🔹 Fix modal biar auto tinggi untuk 2 ODP, tapi tetap ada scroll kalau lebih banyak */
+        .modal-dialog {
+            max-width: 600px;
+            margin: 1.75rem auto;
+        }
+
+        .modal-content {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-body {
+            overflow-y: auto;
+        }
+
         @media (max-width: 768px) {
             .content {
                 margin-left: 0;
@@ -131,10 +146,8 @@ $file_mapping = [
 
             // Urutkan berdasarkan jarak
             usort($all_odp, fn($a, $b) => $a['distance'] <=> $b['distance']);
-            // Filter hanya yang jarak <= 300 meter
-            $filtered_odp = array_filter($all_odp, fn($odp) => $odp['distance'] <= 300);
             // Ambil maksimal 2 terdekat
-            $top_odp = array_slice($filtered_odp, 0, 2);
+            $top_odp = array_slice($all_odp, 0, 2);
         ?>
 
             <!-- Modal Bootstrap -->
@@ -170,10 +183,17 @@ $file_mapping = [
                                             <strong>Jarak:</strong> <?= $odp['distance'] ?> meter
                                         </p>
                                         <a href="<?= $link ?>" class="btn btn-primary btn-sm">Lihat ODP</a>
+
+                                        <!-- Tambahan status cover -->
+                                        <?php if ($odp['distance'] <= 300): ?>
+                                            <p class="text-success fw-bold mb-0">Tercov​er</p>
+                                        <?php else: ?>
+                                            <p class="text-danger fw-bold mb-0">Tidak Tercov​er</p>
+                                        <?php endif; ?>
                                     </div>
                                 <?php endforeach ?>
                             <?php else: ?>
-                                <p class="text-center text-muted">Tidak ada ODP dalam radius 300 meter.</p>
+                                <p class="text-center text-muted">Tidak ada ODP ditemukan.</p>
                             <?php endif ?>
                         </div>
                         <div class="modal-footer">
