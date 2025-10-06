@@ -188,19 +188,15 @@ if (isset($_POST['update_user'])) {
             /* abu full */
         }
 
-        /* Konten utama */
         .content {
             position: relative;
             margin-left: 200px;
-            /* biar ga nabrak sidebar */
             padding: 40px;
             min-height: 100vh;
             width: calc(100% - 200px);
-            /* isi sisa layar setelah sidebar */
             flex: 1;
             overflow-x: hidden;
             background-color: #f8fcff;
-            /* abu juga di dalam konten */
         }
 
         .custom-breadcrumb {
