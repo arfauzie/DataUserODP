@@ -186,9 +186,9 @@ $file_mapping = [
 
                                         <!-- Tambahan status cover -->
                                         <?php if ($odp['distance'] <= 300): ?>
-                                            <p class="text-success fw-bold mb-0">Tercov​er</p>
+                                            <p>Tercov​er</p>
                                         <?php else: ?>
-                                            <p class="text-danger fw-bold mb-0">Tidak Tercov​er</p>
+                                            <p>Tidak Tercov​er</p>
                                         <?php endif; ?>
                                     </div>
                                 <?php endforeach ?>

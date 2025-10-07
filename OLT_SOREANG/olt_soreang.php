@@ -6,14 +6,15 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
+// koneksi & helper
 include 'config3.php';
 include '../navbar.php';
 include 'log_helper.php';
 
 $olt_id      = 3;
-$pon_table   = "pon3";
-$odp_table   = "odp3";
-$users_table = "users3";
+$pon_table   = "pon3 ";
+$odp_table   = "odp3 ";
+$users_table = "users3 ";
 
 $pon_id = $_GET['pon_id'] ?? null;
 $odp_id = $_GET['odp_id'] ?? null;
@@ -34,20 +35,28 @@ if ($odp_id) {
     $odp_name = $stmt->fetchColumn() ?? '';
 }
 
-// siapa adminnya
 $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-/* TAMBAH PON */
+// Tambah PON
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
 
-    $stmt = $pdo3->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (3, ?, ?)");
+    // cek duplikat nama PON
+    $stmt = $pdo3->prepare("SELECT COUNT(*) FROM $pon_table WHERE nama_pon = ?");
+    $stmt->execute([$nama_pon]);
+    $cekNama = $stmt->fetchColumn();
+
+    if ($cekNama > 0) {
+        echo "<script>alert('Nama PON sudah ada, gunakan nama lain!'); window.location='olt_soreang.php';</script>";
+        exit();
+    }
+
+    $stmt = $pdo3->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (3 , ?, ?)");
     if ($stmt->execute([$nama_pon, $port_max])) {
         $last_id = $pdo3->lastInsertId();
-        $log = "ID PON: $last_id | Nama PON: $nama_pon | Port Max: $port_max | OLT ID: 3";
-
-        tambahRiwayatSoreang($pdo3, "Tambah PON", $oleh, $log);
+        $log = "ID PON: $last_id | Nama PON: $nama_pon | Port Max: $port_max | OLT ID: 3 ";
+        tambahRiwayatMSN($pdo3, "Tambah PON", $oleh, $log);
 
         header("Location: olt_soreang.php?success=pon_added");
         exit();
@@ -57,7 +66,7 @@ if (isset($_POST['tambah_pon'])) {
     }
 }
 
-/* TAMBAH ODP */
+// Tambah ODP
 if (isset($_POST['tambah_odp'])) {
     $pon_id   = (int) ($_POST['pon_id'] ?? 0);
     $nama_odp = trim($_POST['nama_odp']);
@@ -70,6 +79,7 @@ if (isset($_POST['tambah_odp'])) {
         exit();
     }
 
+    // hitung jumlah ODP saat ini
     $stmt = $pdo3->prepare("
         SELECT port_max, 
                (SELECT COUNT(*) FROM $odp_table WHERE pon_id = ?) as jumlah_odp 
@@ -90,19 +100,21 @@ if (isset($_POST['tambah_odp'])) {
             $nama_pon = $stmtPon->fetchColumn() ?? '(unknown)';
             $log = "Nama ODP: $nama_odp | Port Max: $port_max | PON: $nama_pon | Lat: $latitude | Long: $longitude";
 
-            tambahRiwayatSoreang($pdo3, "Tambah ODP", $oleh, $log);
+            tambahRiwayatMSN($pdo3, "Tambah ODP", $oleh, $log);
 
             header("Location: olt_soreang.php?pon_id={$pon_id}&success=odp_added");
             exit();
         } else {
             echo "<script>alert('Gagal menambahkan ODP!'); window.location='olt_soreang.php?pon_id={$pon_id}';</script>";
+            exit();
         }
     } else {
         echo "<script>alert('Gagal! ODP sudah penuh.'); window.location='olt_soreang.php?pon_id={$pon_id}';</script>";
+        exit();
     }
 }
 
-/* TAMBAH USER */
+// Tambah User
 if (isset($_POST['tambah_user'])) {
     $odp_id         = $_POST['odp_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -125,17 +137,18 @@ if (isset($_POST['tambah_user'])) {
             $nama_odp = $stmtOdp->fetchColumn() ?? '(unknown)';
 
             $log = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat | ODP: $nama_odp";
-            tambahRiwayatSoreang($pdo3, "Tambah User", $oleh, $log);
+            tambahRiwayatMSN($pdo3, "Tambah User", $oleh, $log);
 
             header("Location: olt_soreang.php?pon_id=$pon_id&odp_id=$odp_id&success=user_added");
             exit();
         }
     } else {
         echo "<script>alert('Gagal! ODP penuh.'); window.location='olt_soreang.php?odp_id={$odp_id}';</script>";
+        exit();
     }
 }
 
-/* UPDATE USER */
+// Update Users
 if (isset($_POST['update_user'])) {
     $user_id        = $_POST['user_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -145,14 +158,15 @@ if (isset($_POST['update_user'])) {
     $stmt = $pdo3->prepare("UPDATE $users_table SET nama_user = ?, nomor_internet = ?, alamat = ? WHERE id = ?");
     if ($stmt->execute([$nama_user, $nomor_internet, $alamat, $user_id])) {
         $log = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat";
-        tambahRiwayatSoreang($pdo3, "Update User", $oleh, $log);
+        tambahRiwayatMSN($pdo3, "Update User", $oleh, $log);
 
         echo "<script>alert('Data berhasil diperbarui!'); window.location='olt_soreang.php?odp_id=" . $_GET['odp_id'] . "';</script>";
+        exit();
     } else {
         echo "<script>alert('Gagal memperbarui data!');</script>";
+        exit();
     }
 }
-
 ?>
 
 <!DOCTYPE html>

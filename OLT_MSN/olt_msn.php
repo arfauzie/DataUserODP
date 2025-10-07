@@ -35,19 +35,27 @@ if ($odp_id) {
     $odp_name = $stmt->fetchColumn() ?? '';
 }
 
-// siapa adminnya
 $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
 
-/* TAMBAH PON */
+// Tambah PON
 if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
+
+    // cek duplikat nama PON
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM $pon_table WHERE nama_pon = ?");
+    $stmt->execute([$nama_pon]);
+    $cekNama = $stmt->fetchColumn();
+
+    if ($cekNama > 0) {
+        echo "<script>alert('Nama PON sudah ada, gunakan nama lain!'); window.location='olt_msn.php';</script>";
+        exit();
+    }
 
     $stmt = $pdo->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (1, ?, ?)");
     if ($stmt->execute([$nama_pon, $port_max])) {
         $last_id = $pdo->lastInsertId();
         $log = "ID PON: $last_id | Nama PON: $nama_pon | Port Max: $port_max | OLT ID: 1";
-
         tambahRiwayatMSN($pdo, "Tambah PON", $oleh, $log);
 
         header("Location: olt_msn.php?success=pon_added");
@@ -58,7 +66,7 @@ if (isset($_POST['tambah_pon'])) {
     }
 }
 
-/* TAMBAH ODP */
+// Tambah ODP
 if (isset($_POST['tambah_odp'])) {
     $pon_id   = (int) ($_POST['pon_id'] ?? 0);
     $nama_odp = trim($_POST['nama_odp']);
@@ -71,6 +79,7 @@ if (isset($_POST['tambah_odp'])) {
         exit();
     }
 
+    // hitung jumlah ODP saat ini
     $stmt = $pdo->prepare("
         SELECT port_max, 
                (SELECT COUNT(*) FROM $odp_table WHERE pon_id = ?) as jumlah_odp 
@@ -97,13 +106,15 @@ if (isset($_POST['tambah_odp'])) {
             exit();
         } else {
             echo "<script>alert('Gagal menambahkan ODP!'); window.location='olt_msn.php?pon_id={$pon_id}';</script>";
+            exit();
         }
     } else {
         echo "<script>alert('Gagal! ODP sudah penuh.'); window.location='olt_msn.php?pon_id={$pon_id}';</script>";
+        exit();
     }
 }
 
-/* TAMBAH USER */
+// Tambah User
 if (isset($_POST['tambah_user'])) {
     $odp_id         = $_POST['odp_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -133,10 +144,11 @@ if (isset($_POST['tambah_user'])) {
         }
     } else {
         echo "<script>alert('Gagal! ODP penuh.'); window.location='olt_msn.php?odp_id={$odp_id}';</script>";
+        exit();
     }
 }
 
-/* UPDATE USER */
+// Update Users
 if (isset($_POST['update_user'])) {
     $user_id        = $_POST['user_id'];
     $nama_user      = trim($_POST['nama_user']);
@@ -149,12 +161,14 @@ if (isset($_POST['update_user'])) {
         tambahRiwayatMSN($pdo, "Update User", $oleh, $log);
 
         echo "<script>alert('Data berhasil diperbarui!'); window.location='olt_msn.php?odp_id=" . $_GET['odp_id'] . "';</script>";
+        exit();
     } else {
         echo "<script>alert('Gagal memperbarui data!');</script>";
+        exit();
     }
 }
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
