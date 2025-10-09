@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin'])) {
 require_once 'log_helper.php';
 require_once 'config2.php';
 
-// 1) Endpoint AJAX: ambil daftar ODP berdasarkan PON
+// Endpoint AJAX: ambil daftar ODP berdasarkan PON
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
     header('Content-Type: application/json; charset=utf-8');
 
@@ -22,7 +22,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
     exit();
 }
 
-// 2) Ambil parameter utama
+// Ambil parameter utama
 $id     = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $odp_id = isset($_GET['odp_id']) ? (int)$_GET['odp_id'] : 0;
 $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : 0;
