@@ -143,10 +143,7 @@ $file_mapping = [
                     $all_odp[] = $row;
                 }
             }
-
-            // Urutkan berdasarkan jarak
             usort($all_odp, fn($a, $b) => $a['distance'] <=> $b['distance']);
-            // Ambil maksimal 2 terdekat
             $top_odp = array_slice($all_odp, 0, 2);
         ?>
 

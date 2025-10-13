@@ -296,7 +296,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
         <a href="/DataUserODP/OLT_MSN/olt_msn.php"><i class="fas fa-server me-2"></i> OLT MSN</a>
         <a href="/DataUserODP/OLT_BAGONG/olt_bagong.php"><i class="fas fa-server me-2"></i> OLT Bagong</a>
         <a href="/DataUserODP/OLT_SOREANG/olt_soreang.php"><i class="fas fa-server me-2"></i> OLT Soreang</a>
-        <a href="/DataUserODP/CEK_LOKASI/cari_lokasi.php"><i class="fas fa-location-dot me-3"></i>Check AVG</a>
+        <a href="/DataUserODP/CHECK_AVG/check_avg.php"><i class="fas fa-location-dot me-3"></i>Check AVG</a>
     </div>
 
     <!-- TOPBAR -->
