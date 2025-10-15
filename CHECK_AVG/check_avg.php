@@ -116,7 +116,7 @@ $file_mapping = [
             foreach ($odp_tables as $index => $odp_table) {
                 $pon_table = $pon_tables[$index];
 
-                // JOIN: ODP -PON - OLT
+                // JOIN: ODP -PON   - OLT
                 $stmt = $pdo->query("
                     SELECT o.*, p.nama_pon, p.olt_id, olt.nama_olt,
                         (SELECT COUNT(*) FROM users" . ($index + 1) . " u WHERE u.odp_id = o.id) AS jumlah_user
@@ -181,7 +181,6 @@ $file_mapping = [
                                         </p>
                                         <a href="<?= $link ?>" class="btn btn-primary btn-sm">Lihat ODP</a>
 
-                                        <!-- Tambahan status cover -->
                                         <?php if ($odp['distance'] <= 300): ?>
                                             <p>Tercov​er</p>
                                         <?php else: ?>
