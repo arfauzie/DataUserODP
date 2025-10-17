@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }

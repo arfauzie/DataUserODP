@@ -1,11 +1,11 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
 
-include '../navbar.php';
+include '../Includes/navbar.php';
 require_once 'config3.php';
 require_once 'log_helper.php';
 

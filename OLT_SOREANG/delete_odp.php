@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
@@ -35,10 +35,10 @@ require_once 'log_helper.php'; // helper baru khusus OLT_MSN
             // Siapkan keterangan log
             $log_keterangan = "Nama ODP: $nama_odp | Port Maksimum: $port_odp";
 
-            // Ambil nama admin
-            $oleh = is_array($_SESSION['admin'])
-                ? ($_SESSION['admin']['username'] ?? 'admin')
-                : $_SESSION['admin'];
+            // Ambil nama role
+            $oleh = is_array($_SESSION['role'])
+                ? ($_SESSION['role']['username'] ?? 'role')
+                : $_SESSION['role'];
 
             // Hapus ODP
             $stmt = $pdo3->prepare("DELETE FROM odp3 WHERE id = ?");

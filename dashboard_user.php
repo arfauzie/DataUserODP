@@ -1,18 +1,20 @@
 <?php
 session_start();
 
+// ✅ CEK LOGIN
 if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
 
+// ✅ CEK ROLE ADMIN
 if ($_SESSION['role'] !== 'admin') {
-    header("Location: /DataUserODP/dashboard.php");
+    header("Location: /DataUserODP/dashboard_user.php");
     exit();
 }
 
-
-include __DIR__ . '/Includes/navbar.php';
+// ✅ INCLUDE NAVBAR ADMIN
+include __DIR__ . '/Includes/navbar_user.php';
 
 // ✅ KONEKSI KE SEMUA OLT
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_MSN/config.php';

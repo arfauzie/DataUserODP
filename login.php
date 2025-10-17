@@ -3,28 +3,44 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-include __DIR__ . '/OLT_MSN/config.php';
 
-if (isset($_SESSION['admin'])) {
-    header("Location: /DataUserODP/dashboard.php");
-    exit();
+// Gunakan koneksi global (bukan dari OLT)
+include __DIR__ . '/Includes/config.php';
+
+// Jika sudah login, arahkan ke dashboard sesuai role
+if (isset($_SESSION['role'])) {
+    if ($_SESSION['role'] === 'admin') {
+        header("Location: /DataUserODP/dashboard.php");
+        exit();
+    } elseif ($_SESSION['role'] === 'user') {
+        header("Location: /DataUserODP/dashboard_user.php");
+        exit();
+    }
 }
 
 $error = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
     if (!empty($username) && !empty($password)) {
-        $stmt = $pdo->prepare("SELECT * FROM admin WHERE username = ?");
+        // Ambil user dari tabel login_user
+        $stmt = $pdo->prepare("SELECT * FROM login_user WHERE username = ?");
         $stmt->execute([$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['admin'] = $user;
+            // Simpan session umum
             $_SESSION['username'] = $user['username'];
-            $_SESSION['nama_lengkap'] = $user['nama_lengkap']; // ← Digunakan di navbar
-            header("Location: /DataUserODP/dashboard.php");
+            $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
+            $_SESSION['role'] = $user['role']; // admin / user
+
+            // Arahkan sesuai role
+            if ($user['role'] === 'admin') {
+                header("Location: /DataUserODP/dashboard.php");
+            } elseif ($user['role'] === 'user') {
+                header("Location: /DataUserODP/dashboard_user.php");
+            }
             exit();
         } else {
             $error = "Username atau password salah!";
@@ -40,16 +56,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
     <meta charset="UTF-8">
-    <title>Login Admin</title>
+    <title>Login - Data User ODP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="logo-msn2.png">
+    <link rel="icon" href="/DataUserODP/asset/logo-msn2.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #007bff, #03d5ffff);
+            background: linear-gradient(to right, #007bff, #03d5ff);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -63,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             width: 100%;
             max-width: 400px;
             text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
         .login-box img {
@@ -110,16 +127,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .input-group-text {
             border-radius: 10px 0 0 10px;
         }
+
+        .alert {
+            font-size: 14px;
+        }
     </style>
 </head>
 
 <body>
     <div class="login-box">
-        <img src="logo-msn2.png" alt="Logo">
-        <h2>LOGIN ADMIN</h2>
+        <img src="/DataUserODP/logo-msn2.png" alt="Logo">
+        <h2>LOGIN</h2>
+
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
+
         <form method="POST" autocomplete="off">
             <div class="mb-3">
                 <div class="input-group">

@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
@@ -14,6 +14,7 @@ require_once 'log_helper.php'; // fungsi tambahRiwayatMSN
 <head>
     <meta charset="UTF-8">
     <title>Hapus User</title>
+    <link rel="icon" href="logo-msn2.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -39,10 +40,10 @@ require_once 'log_helper.php'; // fungsi tambahRiwayatMSN
             exit();
         }
 
-        // Ambil nama admin dari session (handle array/string)
-        $oleh = is_array($_SESSION['admin'])
-            ? ($_SESSION['admin']['username'] ?? 'admin')
-            : $_SESSION['admin'];
+        // Ambil nama role dari session (handle array/string)
+        $oleh = is_array($_SESSION['role'])
+            ? ($_SESSION['role']['username'] ?? 'role')
+            : $_SESSION['role'];
 
         // Siapkan log dengan format konsisten
         $nama_user      = $user['nama_user'] ?? '(kosong)';

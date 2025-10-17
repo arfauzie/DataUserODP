@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
@@ -45,10 +45,10 @@ require_once 'log_helper.php';
                 exit();
             }
 
-            // Ambil nama admin dari session
-            $oleh = is_array($_SESSION['admin'])
-                ? ($_SESSION['admin']['username'] ?? 'admin')
-                : $_SESSION['admin'];
+            // Ambil nama role dari session
+            $oleh = is_array($_SESSION['role'])
+                ? ($_SESSION['role']['username'] ?? 'role')
+                : $_SESSION['role'];
 
             // Siapkan log
             $log_keterangan  = "Nama PON: " . ($pon['nama_pon'] ?? '(kosong)') . " | ";

@@ -1,13 +1,13 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
 
 require_once 'log_helper.php';
 require_once 'config2.php';
-include '../navbar.php';
+include '../Includes/navbar.php';
 
 echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
 
@@ -72,10 +72,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $success = $update_stmt->execute([$nama_odp, $pon_id, $port_max, $latitude, $longitude, $id]);
 
     if ($success) {
-        // Ambil admin (string/array)
-        $oleh = is_array($_SESSION['admin'])
-            ? ($_SESSION['admin']['username'] ?? 'admin')
-            : $_SESSION['admin'];
+        // Ambil role (string/array)
+        $oleh = is_array($_SESSION['role'])
+            ? ($_SESSION['role']['username'] ?? 'role')
+            : $_SESSION['role'];
 
         $log_keterangan = [];
 

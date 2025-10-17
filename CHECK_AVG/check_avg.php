@@ -1,6 +1,6 @@
 <?php
 include 'config.php';
-include '../navbar.php';
+include '../Includes/navbar.php';
 
 $olt_mapping = [
     'olt_msn'     => 'OLT MSN',

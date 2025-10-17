@@ -1,12 +1,13 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
 
 require_once 'log_helper.php';
 require_once 'config3.php'; // koneksi $pdo3 (ERRMODE_EXCEPTION)
+include '../Includes/navbar.php';
 
 // 1) Endpoint AJAX: ambil daftar ODP berdasarkan PON
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_odp') {
@@ -145,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     if ($ok) {
                         // Logging
-                        $oleh = $_SESSION['admin']['username'] ?? 'unknown';
+                        $oleh = $_SESSION['role']['username'] ?? 'unknown';
                         $log_parts = [];
 
                         if ($user['nama_user'] !== $nama_user) {
@@ -213,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $ok = $upd->execute([$nama_user, $nomor_internet, $alamat, $id]);
 
                 if ($ok) {
-                    $oleh = $_SESSION['admin']['username'] ?? 'unknown';
+                    $oleh = $_SESSION['role']['username'] ?? 'unknown';
                     $log_parts = [];
                     if ($user['nama_user'] !== $nama_user) $log_parts[] = "Nama: {$user['nama_user']} → $nama_user";
                     if ($user['nomor_internet'] !== $nomor_internet) $log_parts[] = "Nomor Internet: {$user['nomor_internet']} → $nomor_internet";
@@ -245,9 +246,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo "<script>alert('Form belum lengkap.');</script>";
     }
 }
-
-// 6) Tampilkan halaman form edit
-include '../navbar.php';
 ?>
 <!DOCTYPE html>
 <html lang="id">

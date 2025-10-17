@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
@@ -43,8 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
         $stmt = $pdo3->prepare("UPDATE pon3 SET nama_pon = ?, port_max = ? WHERE id = ?");
         $stmt->execute([$nama_pon, $port_max, $id]);
 
-        // Ambil nama admin
-        $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
+        // Ambil nama role
+        $oleh = is_array($_SESSION['role']) ? ($_SESSION['role']['username'] ?? 'role') : $_SESSION['role'];
 
         // Simpan log menggunakan tambahRiwayatSoreang
         $log_keterangan = implode(" | ", $perubahan);

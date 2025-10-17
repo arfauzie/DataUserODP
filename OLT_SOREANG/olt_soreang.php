@@ -1,14 +1,14 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
 
 // koneksi & helper
 include 'config3.php';
-include '../navbar.php';
+include '../Includes/navbar.php';
 include 'log_helper.php';
 
 $olt_id      = 3;
@@ -35,7 +35,7 @@ if ($odp_id) {
     $odp_name = $stmt->fetchColumn() ?? '';
 }
 
-$oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
+$oleh = is_array($_SESSION['role']) ? ($_SESSION['role']['username'] ?? 'role') : $_SESSION['role'];
 
 // Tambah PON
 if (isset($_POST['tambah_pon'])) {

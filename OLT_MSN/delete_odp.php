@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
@@ -14,6 +14,8 @@ require_once 'log_helper.php'; // helper baru khusus OLT_MSN
 <head>
     <meta charset="UTF-8">
     <title>Hapus ODP</title>
+    <link rel="icon" href="logo-msn2.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -35,10 +37,10 @@ require_once 'log_helper.php'; // helper baru khusus OLT_MSN
             // Siapkan keterangan log
             $log_keterangan = "Nama ODP: $nama_odp | Port Maksimum: $port_odp";
 
-            // Ambil nama admin
-            $oleh = is_array($_SESSION['admin'])
-                ? ($_SESSION['admin']['username'] ?? 'admin')
-                : $_SESSION['admin'];
+            // Ambil nama role
+            $oleh = is_array($_SESSION['role'])
+                ? ($_SESSION['role']['username'] ?? 'role')
+                : $_SESSION['role'];
 
             // Hapus ODP
             $stmt = $pdo->prepare("DELETE FROM odp1 WHERE id = ?");

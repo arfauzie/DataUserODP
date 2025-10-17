@@ -1,13 +1,13 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: /DataUserODP/login.php");
     exit();
 }
 
 require_once 'config2.php';          // koneksi ke database $pdo2
 require_once 'log_helper.php';      // untuk tambahRiwayatMSN
-include '../navbar.php';
+include '../Includes/navbar.php';
 
 // Validasi ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -43,8 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
         $stmt = $pdo2->prepare("UPDATE pon2 SET nama_pon = ?, port_max = ? WHERE id = ?");
         $stmt->execute([$nama_pon, $port_max, $id]);
 
-        // Ambil nama admin
-        $oleh = is_array($_SESSION['admin']) ? ($_SESSION['admin']['username'] ?? 'admin') : $_SESSION['admin'];
+        // Ambil nama role
+        $oleh = is_array($_SESSION['role']) ? ($_SESSION['role']['username'] ?? 'role') : $_SESSION['role'];
 
         // Simpan log menggunakan tambahRiwayatMSN
         $log_keterangan = implode(" | ", $perubahan);

@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: login.php");
     exit();
 }
@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin'])) {
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_MSN/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_BAGONG/config2.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DataUserODP/OLT_SOREANG/config3.php';
-include 'navbar.php';
+include __DIR__ . '/Includes/navbar.php';
 
 $query = isset($_GET['query']) ? trim($_GET['query']) : null;
 
