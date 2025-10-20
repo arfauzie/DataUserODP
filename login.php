@@ -63,6 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* ================= Desktop ================= */
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(to right, #007bff, #03d5ff);
@@ -70,6 +71,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            /* agar mobile tidak menempel tepi */
         }
 
         .login-box {
@@ -80,6 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             max-width: 400px;
             text-align: center;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
         .login-box img {
@@ -96,6 +100,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .form-control {
             border-radius: 10px;
             padding: 12px 15px;
+        }
+
+        .input-group-text {
+            border-radius: 10px 0 0 10px;
         }
 
         .btn-login {
@@ -124,14 +132,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #00408f;
         }
 
-        .input-group-text {
-            border-radius: 10px 0 0 10px;
-        }
-
         .alert {
             font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* ================= Responsif Tablet ================= */
+        @media (max-width: 768px) {
+            .login-box {
+                padding: 30px 20px;
+                max-width: 90%;
+            }
+
+            .form-control {
+                padding: 10px 12px;
+            }
+
+            .btn-login {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .login-box h2 {
+                font-size: 20px;
+            }
+
+            .login-box img {
+                width: 90px;
+            }
+        }
+
+        /* ================= Responsif Mobile Kecil ================= */
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 20px 15px;
+                max-width: 95%;
+            }
+
+            .login-box img {
+                width: 80px;
+                margin-bottom: 15px;
+            }
+
+            .login-box h2 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+
+            .form-control {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+
+            .btn-login {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .alert {
+                font-size: 13px;
+                padding: 8px;
+            }
         }
     </style>
+
 </head>
 
 <body>

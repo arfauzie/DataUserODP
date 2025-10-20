@@ -7,13 +7,13 @@ if (!isset($_SESSION['role'])) {
     exit();
 }
 
-// ✅ CEK ROLE ADMIN
-if ($_SESSION['role'] !== 'admin') {
+// ✅ CEK ROLE USER
+if ($_SESSION['role'] !== 'user') {
     header("Location: /DataUserODP/dashboard_user.php");
     exit();
 }
 
-// ✅ INCLUDE NAVBAR ADMIN
+// ✅ INCLUDE NAVBAR USER
 include __DIR__ . '/Includes/navbar_user.php';
 
 // ✅ KONEKSI KE SEMUA OLT
@@ -104,7 +104,7 @@ $recentLogs = array_slice($logs, 0, 5);
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Admin</title>
+    <title>Dashboard User</title>
     <link rel="icon" href="/DataUserODP/asset/logo-msn2.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -119,11 +119,12 @@ $recentLogs = array_slice($logs, 0, 5);
             background-color: #f8fcff;
             font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
             margin: 0;
+            overflow-x: hidden;
         }
 
         .content {
             margin-left: var(--sidebar-width);
-            padding: var(--page-padding);
+            padding: calc(var(--page-padding) + 60px) var(--page-padding) var(--page-padding);
             width: calc(100% - var(--sidebar-width));
             box-sizing: border-box;
         }
@@ -132,18 +133,8 @@ $recentLogs = array_slice($logs, 0, 5);
             .content {
                 margin-left: 0;
                 width: 100%;
-                padding: 16px;
+                padding: 60px 16px 16px;
             }
-        }
-
-        .page-header {
-            background: linear-gradient(90deg, #0555e9d6, #2004beff);
-            padding: 60px var(--page-padding);
-            color: white;
-            margin: 0;
-            width: calc(100% + var(--page-padding) * 2);
-            margin-left: calc(-1 * var(--page-padding));
-            margin-right: calc(-1 * var(--page-padding));
         }
 
         .page-header .title {
@@ -152,17 +143,10 @@ $recentLogs = array_slice($logs, 0, 5);
             margin: 10px 0 4px 0;
         }
 
-        .big-box {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
-            padding: 20px;
-            margin-top: -28px;
-        }
-
+        /* === BOX OLT === */
         .small-box {
-            border-radius: 10px;
-            padding: 18px;
+            border-radius: 8px;
+            padding: 10px 12px;
             color: white;
             position: relative;
             overflow: hidden;
@@ -176,14 +160,14 @@ $recentLogs = array_slice($logs, 0, 5);
 
         .small-box .inner h5 {
             margin: 0 0 6px 0;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 700;
         }
 
         .small-box .inner p {
             margin: 0;
-            font-size: 0.8rem;
-            opacity: 0.8;
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
 
         .small-box .icon {
@@ -217,11 +201,13 @@ $recentLogs = array_slice($logs, 0, 5);
             background: linear-gradient(135deg, #3498db, #1e3799);
         }
 
+        /* === PANEL === */
         .panel-row {
             margin-top: 22px;
             display: flex;
             gap: 20px;
             align-items: flex-start;
+            flex-wrap: wrap;
         }
 
         .panel-left {
@@ -285,24 +271,62 @@ $recentLogs = array_slice($logs, 0, 5);
             font-weight: 700;
         }
 
-        @media (max-width: 900px) {
+        /* === RESPONSIVE FIX === */
+        @media (max-width: 992px) {
             .panel-row {
                 flex-direction: column-reverse;
             }
 
             .panel-right {
                 width: 100%;
-                flex: 1 1 0;
+                flex: 1 1 auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .small-box {
+                min-height: 100px;
+                padding: 8px 10px;
+            }
+
+            .small-box .inner h5 {
+                font-size: 1rem;
+            }
+
+            .small-box .inner p {
+                font-size: 0.85rem;
+            }
+
+            .summary-tile {
+                font-size: 0.9rem;
+            }
+
+            .summary-tile .value {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .content {
+                padding: 80px 12px 16px;
+            }
+
+            .small-box {
+                min-height: 90px;
+            }
+
+            .panel-right,
+            .panel-left {
+                width: 100%;
             }
         }
     </style>
+
+
 </head>
 
 <body>
     <div class="content">
-        <div class="page-header">
-            <div class="title">Dashboard Admin</div>
-        </div>
         <div class="container-big">
             <div class="big-box">
                 <div class="row g-3">
@@ -312,7 +336,16 @@ $recentLogs = array_slice($logs, 0, 5);
                             'OLT_BAGONG' => 'bg-olt-bagong',
                             'OLT_SOREANG' => 'bg-olt-soreang',
                             default => 'bg-primary'
-                        }; ?>
+                        };
+
+                        // ✅ Ganti link ke versi user
+                        $olt_link = match ($olt) {
+                            'OLT_MSN' => '/DataUserODP/OLT_MSN/olt_msn_user.php',
+                            'OLT_BAGONG' => '/DataUserODP/OLT_BAGONG/olt_bagong_user.php',
+                            'OLT_SOREANG' => '/DataUserODP/OLT_SOREANG/olt_soreang_user.php',
+                            default => '#'
+                        };
+                    ?>
                         <div class="col-lg-4 col-md-6">
                             <div class="small-box <?= $bg_class ?>">
                                 <div class="inner">
@@ -320,7 +353,7 @@ $recentLogs = array_slice($logs, 0, 5);
                                     <p><i class="fa-solid fa-sitemap"></i> PON: <strong><?= $totals['pon'] ?></strong></p>
                                     <p><i class="fa-solid fa-box"></i> ODP: <strong><?= $totals['odp'] ?></strong></p>
                                     <p><i class="fa-solid fa-users"></i> Users: <strong><?= $totals['users'] ?></strong></p>
-                                    <a href="/DataUserODP/<?= strtolower($olt); ?>/<?= strtolower($olt); ?>.php" class="small-box-footer">
+                                    <a href="<?= $olt_link ?>" class="small-box-footer">
                                         More info <i class="fas fa-arrow-circle-right"></i>
                                     </a>
                                 </div>

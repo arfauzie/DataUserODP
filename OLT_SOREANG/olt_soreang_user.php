@@ -7,14 +7,14 @@ if (!isset($_SESSION['role'])) {
 }
 
 // koneksi & helper
-include 'config.php';
+include 'config3.php';
 include '../Includes/navbar_user.php';
 include 'log_helper.php';
 
-$olt_id      = 1;
-$pon_table   = "pon1";
-$odp_table   = "odp1";
-$users_table = "users1";
+$olt_id      = 3;
+$pon_table   = "pon3 ";
+$odp_table   = "odp3 ";
+$users_table = "users3 ";
 
 $pon_id = $_GET['pon_id'] ?? null;
 $odp_id = $_GET['odp_id'] ?? null;
@@ -24,13 +24,13 @@ $pon_name = '';
 $odp_name = '';
 
 if ($pon_id) {
-    $stmt = $pdo->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
+    $stmt = $pdo3->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
     $stmt->execute([$pon_id]);
     $pon_name = $stmt->fetchColumn() ?? '';
 }
 
 if ($odp_id) {
-    $stmt = $pdo->prepare("SELECT nama_odp FROM $odp_table WHERE id = ?");
+    $stmt = $pdo3->prepare("SELECT nama_odp FROM $odp_table WHERE id = ?");
     $stmt->execute([$odp_id]);
     $odp_name = $stmt->fetchColumn() ?? '';
 }
@@ -43,25 +43,25 @@ if (isset($_POST['tambah_pon'])) {
     $port_max = trim($_POST['port_max']);
 
     // cek duplikat nama PON
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM $pon_table WHERE nama_pon = ?");
+    $stmt = $pdo3->prepare("SELECT COUNT(*) FROM $pon_table WHERE nama_pon = ?");
     $stmt->execute([$nama_pon]);
     $cekNama = $stmt->fetchColumn();
 
     if ($cekNama > 0) {
-        echo "<script>alert('Nama PON sudah ada, gunakan nama lain!'); window.location='olt_msn_user.php';</script>";
+        echo "<script>alert('Nama PON sudah ada, gunakan nama lain!'); window.location='olt_soreang_user.php';</script>";
         exit();
     }
 
-    $stmt = $pdo->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (1, ?, ?)");
+    $stmt = $pdo3->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (3 , ?, ?)");
     if ($stmt->execute([$nama_pon, $port_max])) {
-        $last_id = $pdo->lastInsertId();
-        $log = "ID PON: $last_id | Nama PON: $nama_pon | Port Max: $port_max | OLT ID: 1";
-        tambahRiwayatMSN($pdo, "Tambah PON", $oleh, $log);
+        $last_id = $pdo3->lastInsertId();
+        $log = "ID PON: $last_id | Nama PON: $nama_pon | Port Max: $port_max | OLT ID: 3 ";
+        tambahRiwayatMSN($pdo3, "Tambah PON", $oleh, $log);
 
-        header("Location: olt_msn_user.php?success=pon_added");
+        header("Location: olt_soreang_user.php?success=pon_added");
         exit();
     } else {
-        echo "<script>alert('Gagal menambahkan PON!'); window.location='olt_msn_user.php';</script>";
+        echo "<script>alert('Gagal menambahkan PON!'); window.location='olt_soreang_user.php';</script>";
         exit();
     }
 }
@@ -75,12 +75,12 @@ if (isset($_POST['tambah_odp'])) {
     $longitude = trim($_POST['longitude']);
 
     if (!is_numeric($latitude) || !is_numeric($longitude)) {
-        echo "<script>alert('Latitude & Longitude harus angka!'); window.location='olt_msn_user.php?pon_id={$pon_id}';</script>";
+        echo "<script>alert('Latitude & Longitude harus angka!'); window.location='olt_soreang_user.php?pon_id={$pon_id}';</script>";
         exit();
     }
 
     // hitung jumlah ODP saat ini
-    $stmt = $pdo->prepare("
+    $stmt = $pdo3->prepare("
         SELECT port_max, 
                (SELECT COUNT(*) FROM $odp_table WHERE pon_id = ?) as jumlah_odp 
         FROM $pon_table 
@@ -90,26 +90,26 @@ if (isset($_POST['tambah_odp'])) {
     $result = $stmt->fetch();
 
     if ($result && $result['jumlah_odp'] < $result['port_max']) {
-        $stmt = $pdo->prepare("
+        $stmt = $pdo3->prepare("
             INSERT INTO $odp_table (pon_id, nama_odp, port_max, latitude, longitude) 
             VALUES (?, ?, ?, ?, ?)
         ");
         if ($stmt->execute([$pon_id, $nama_odp, $port_max, $latitude, $longitude])) {
-            $stmtPon = $pdo->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
+            $stmtPon = $pdo3->prepare("SELECT nama_pon FROM $pon_table WHERE id = ?");
             $stmtPon->execute([$pon_id]);
             $nama_pon = $stmtPon->fetchColumn() ?? '(unknown)';
             $log = "Nama ODP: $nama_odp | Port Max: $port_max | PON: $nama_pon | Lat: $latitude | Long: $longitude";
 
-            tambahRiwayatMSN($pdo, "Tambah ODP", $oleh, $log);
+            tambahRiwayatMSN($pdo3, "Tambah ODP", $oleh, $log);
 
-            header("Location: olt_msn_user.php?pon_id={$pon_id}&success=odp_added");
+            header("Location: olt_soreang_user.php?pon_id={$pon_id}&success=odp_added");
             exit();
         } else {
-            echo "<script>alert('Gagal menambahkan ODP!'); window.location='olt_msn_user.php?pon_id={$pon_id}';</script>";
+            echo "<script>alert('Gagal menambahkan ODP!'); window.location='olt_soreang_user.php?pon_id={$pon_id}';</script>";
             exit();
         }
     } else {
-        echo "<script>alert('Gagal! ODP sudah penuh.'); window.location='olt_msn_user.php?pon_id={$pon_id}';</script>";
+        echo "<script>alert('Gagal! ODP sudah penuh.'); window.location='olt_soreang_user.php?pon_id={$pon_id}';</script>";
         exit();
     }
 }
@@ -121,7 +121,7 @@ if (isset($_POST['tambah_user'])) {
     $nomor_internet = trim($_POST['nomor_internet']);
     $alamat         = trim($_POST['alamat']);
 
-    $stmt = $pdo->prepare("SELECT port_max, COUNT($users_table.id) as jumlah_user 
+    $stmt = $pdo3->prepare("SELECT port_max, COUNT($users_table.id) as jumlah_user 
         FROM $odp_table 
         LEFT JOIN $users_table ON $odp_table.id = $users_table.odp_id 
         WHERE $odp_table.id = ? 
@@ -130,20 +130,20 @@ if (isset($_POST['tambah_user'])) {
     $result = $stmt->fetch();
 
     if (!$result || $result['jumlah_user'] < $result['port_max']) {
-        $stmt = $pdo->prepare("INSERT INTO $users_table (odp_id, nama_user, nomor_internet, alamat) VALUES (?, ?, ?, ?)");
+        $stmt = $pdo3->prepare("INSERT INTO $users_table (odp_id, nama_user, nomor_internet, alamat) VALUES (?, ?, ?, ?)");
         if ($stmt->execute([$odp_id, $nama_user, $nomor_internet, $alamat])) {
-            $stmtOdp = $pdo->prepare("SELECT nama_odp FROM $odp_table WHERE id = ?");
+            $stmtOdp = $pdo3->prepare("SELECT nama_odp FROM $odp_table WHERE id = ?");
             $stmtOdp->execute([$odp_id]);
             $nama_odp = $stmtOdp->fetchColumn() ?? '(unknown)';
 
             $log = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat | ODP: $nama_odp";
-            tambahRiwayatMSN($pdo, "Tambah User", $oleh, $log);
+            tambahRiwayatMSN($pdo3, "Tambah User", $oleh, $log);
 
-            header("Location: olt_msn_user.php?pon_id=$pon_id&odp_id=$odp_id&success=user_added");
+            header("Location: olt_soreang_user.php?pon_id=$pon_id&odp_id=$odp_id&success=user_added");
             exit();
         }
     } else {
-        echo "<script>alert('Gagal! ODP penuh.'); window.location='olt_msn_user.php?odp_id={$odp_id}';</script>";
+        echo "<script>alert('Gagal! ODP penuh.'); window.location='olt_soreang_user.php?odp_id={$odp_id}';</script>";
         exit();
     }
 }
@@ -155,12 +155,12 @@ if (isset($_POST['update_user'])) {
     $nomor_internet = trim($_POST['nomor_internet']);
     $alamat         = trim($_POST['alamat']);
 
-    $stmt = $pdo->prepare("UPDATE $users_table SET nama_user = ?, nomor_internet = ?, alamat = ? WHERE id = ?");
+    $stmt = $pdo3->prepare("UPDATE $users_table SET nama_user = ?, nomor_internet = ?, alamat = ? WHERE id = ?");
     if ($stmt->execute([$nama_user, $nomor_internet, $alamat, $user_id])) {
         $log = "Nama User: $nama_user | Nomor Internet: $nomor_internet | Alamat: $alamat";
-        tambahRiwayatMSN($pdo, "Update User", $oleh, $log);
+        tambahRiwayatMSN($pdo3, "Update User", $oleh, $log);
 
-        echo "<script>alert('Data berhasil diperbarui!'); window.location='olt_msn_user.php?odp_id=" . $_GET['odp_id'] . "';</script>";
+        echo "<script>alert('Data berhasil diperbarui!'); window.location='olt_soreang_user.php?odp_id=" . $_GET['odp_id'] . "';</script>";
         exit();
     } else {
         echo "<script>alert('Gagal memperbarui data!');</script>";
@@ -169,14 +169,13 @@ if (isset($_POST['update_user'])) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OLT MSN</title>
+    <title>OLT SOREANG</title>
     <link rel="icon" href="logo-msn2.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -246,7 +245,10 @@ if (isset($_POST['update_user'])) {
         .custom-breadcrumb li:last-child {
             font-weight: 600;
             color: #5b4bdb;
+            /* warna ungu untuk yang aktif */
         }
+
+
 
         /* Bungkus utama */
         .main-wrapper {
@@ -378,14 +380,14 @@ if (isset($_POST['update_user'])) {
     <div class="container mt-4">
         <div class="content">
             <?php
-            echo '<h1><i class="fas fa-server me-2"></i>OLT MSN</h1>';
+            echo '<h1><i class="fas fa-server me-2"></i>OLT SOREANG </h1>';
             $pon_id = isset($_GET['pon_id']) ? (int)$_GET['pon_id'] : null;
             $odp_id = isset($_GET['odp_id']) ? $_GET['odp_id'] : null;
 
             /*siapkan $pon_name untuk dipakai di bawah */
             $pon_name = null;
             if ($pon_id) {
-                $stmtPon = $pdo->prepare("SELECT nama_pon FROM pon1 WHERE id = ?");
+                $stmtPon = $pdo3->prepare("SELECT nama_pon FROM pon3 WHERE id = ?");
                 $stmtPon->execute([$pon_id]);
                 $pon_name = $stmtPon->fetchColumn();
             }
@@ -402,7 +404,7 @@ if (isset($_POST['update_user'])) {
                     timer: 1500,
                     showConfirmButton: false
                 }).then(() => {
-                    window.location = 'olt_msn_user.php';
+                    window.location = 'olt_soreang_user.php';
                 });
             });
         </script>";
@@ -433,38 +435,10 @@ if (isset($_POST['update_user'])) {
             ?>
                 <div class="card-box">
                     <h4 class="mt-5">Data PON</h4>
-                    <div class="card-box2">
-                        <div class="d-flex align-items-center mb-3 gap-2">
-                            <a href="riwayat_user.php" class="btn btn-warning">
-                                <i class="fas fa-history"></i> Riwayat
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="modal fade" id="modalTambahPON" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <form method="POST" class="modal-content border-0 shadow rounded-3">
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="nama_pon" class="form-label">Nama PON</label>
-                                        <input type="text" id="nama_pon" name="nama_pon" class="form-control" placeholder="Nama PON" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="port_max" class="form-label">Maksimal Port</label>
-                                        <select id="port_max" name="port_max" class="form-control" required>
-                                            <option disabled selected>Pilih Maks Port</option>
-                                            <option value="2">2 Port</option>
-                                            <option value="4">4 Port</option>
-                                            <option value="8">8 Port</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="modal-footer border-0">
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                                    <button type="submit" name="tambah_pon" class="btn btn-primary">Simpan</button>
-                                </div>
-                            </form>
-                        </div>
+                    <div class="d-flex align-items-center mb-3 gap-2">
+                        <a href="riwayat3_user.php" class="btn btn-warning">
+                            <i class="fas fa-history"></i> Riwayat
+                        </a>
                     </div>
 
                     <div class="table-responsive mt-3">
@@ -478,7 +452,7 @@ if (isset($_POST['update_user'])) {
                             </thead>
                             <tbody>
                                 <?php
-                                $stmt = $pdo->query("SELECT pon1.*, (SELECT COUNT(*) FROM odp1 WHERE odp1.pon_id = pon1.id) AS jumlah_odp FROM pon1 ORDER BY CAST(TRIM(REPLACE(nama_pon, 'PON', '')) AS UNSIGNED)");
+                                $stmt = $pdo3->query("SELECT pon3.*, (SELECT COUNT(*) FROM odp3 WHERE odp3.pon_id = pon3.id) AS jumlah_odp FROM pon3 ORDER BY CAST(TRIM(REPLACE(nama_pon, 'PON', '')) AS UNSIGNED)");
                                 while ($row = $stmt->fetch()) {
                                     $port_info = $row['jumlah_odp'] . '/' . $row['port_max'];
                                     $port_color = 'text-success';
@@ -491,8 +465,7 @@ if (isset($_POST['update_user'])) {
                             <td>{$row['nama_pon']}</td>
                             <td class='$port_color'><strong>$port_info</strong></td>
                             <td>
-                                <a href='olt_msn_user.php?pon_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat ODP</a>
-                                
+                                <a href='olt_soreang_user.php?pon_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat ODP</a>
                             </td>
                         </tr>";
                                 }
@@ -516,7 +489,7 @@ if (isset($_POST['update_user'])) {
                     timer: 1500,
                     showConfirmButton: false
                 }).then(() => {
-                    window.location = 'olt_msn_user.php?pon_id={$pon_id}';
+                    window.location = 'olt_soreang_user.php?pon_id={$pon_id}';
                 });
             });
         </script>";
@@ -526,7 +499,7 @@ if (isset($_POST['update_user'])) {
                 <div class="card-box">
                     <h4 class="mt-5">Data ODP</h4>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <a href="olt_msn_user.php" class="btn btn-secondary">Kembali</a>
+                        <a href="olt_soreang_user.php" class="btn btn-secondary">Kembali</a>
                     </div>
 
                     <!-- Modal Tambah ODP -->
@@ -591,7 +564,7 @@ if (isset($_POST['update_user'])) {
                             </thead>
                             <tbody>
                                 <?php
-                                $stmt = $pdo->prepare("SELECT odp1.*, (SELECT COUNT(*) FROM users1 WHERE users1.odp_id = odp1.id) AS jumlah_user FROM odp1 WHERE odp1.pon_id = ?");
+                                $stmt = $pdo3->prepare("SELECT odp3.*, (SELECT COUNT(*) FROM users3 WHERE users3.odp_id = odp3.id) AS jumlah_user FROM odp3 WHERE odp3.pon_id = ?");
                                 $stmt->execute([$pon_id]);
                                 while ($row = $stmt->fetch()) {
                                     $port_info = $row['jumlah_user'] . '/' . $row['port_max'];
@@ -611,7 +584,7 @@ if (isset($_POST['update_user'])) {
                             <td>$lat</td>
                             <td>$lon</td>
                             <td>
-                                <a href='olt_msn_user.php?pon_id={$pon_id}&odp_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat User</a>
+                                <a href='olt_soreang_user.php?pon_id={$pon_id}&odp_id={$row['id']}' class='btn btn-primary btn-sm'>Lihat User</a>
                             </td>
                         </tr>";
                                 }
@@ -629,7 +602,7 @@ if (isset($_POST['update_user'])) {
                     $latitude = $_POST['latitude'];
                     $longitude = $_POST['longitude'];
 
-                    $stmt = $pdo->prepare("INSERT INTO odp1 (pon_id, nama_odp, port_max, latitude, longitude) VALUES (?, ?, ?, ?, ?)");
+                    $stmt = $pdo3->prepare("INSERT INTO odp3 (pon_id, nama_odp, port_max, latitude, longitude) VALUES (?, ?, ?, ?, ?)");
                     $stmt->execute([$pon_id, $nama_odp, $port_max, $latitude, $longitude]);
 
                     echo "<script>
@@ -640,7 +613,7 @@ if (isset($_POST['update_user'])) {
                 timer: 1500,
                 showConfirmButton: false
             }).then(() => {
-                window.location.href = 'olt_msn_user.php?pon_id={$pon_id}';
+                window.location.href = 'olt_soreang_user.php?pon_id={$pon_id}';
             });
         </script>";
                 }
@@ -661,7 +634,7 @@ if (isset($_POST['update_user'])) {
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
-                            window.location = 'olt_msn_user.php?pon_id=$pon_id&odp_id=$odp_id';
+                            window.location = 'olt_soreang_user.php?pon_id=$pon_id&odp_id=$odp_id';
                         });
                     });
                 </script>";
@@ -671,7 +644,7 @@ if (isset($_POST['update_user'])) {
                 <div class="card-box">
                     <h4 class="mt-5">Data User</h4>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <a href="olt_msn_user.php?pon_id=<?= $pon_id ?>" class="btn btn-secondary">Kembali</a>
+                        <a href="olt_soreang_user.php?pon_id=<?= $pon_id ?>" class="btn btn-secondary">Kembali</a>
                     </div>
 
                     <div class="modal fade" id="modalTambahUser" tabindex="-1" aria-hidden="true">
@@ -735,7 +708,7 @@ if (isset($_POST['update_user'])) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $stmt = $pdo->prepare("SELECT * FROM users1 WHERE odp_id = ?");
+                                    $stmt = $pdo3->prepare("SELECT * FROM users3 WHERE odp_id = ?");
                                     $stmt->execute([$odp_id]);
                                     while ($row = $stmt->fetch()) {
                                         $user_json = htmlspecialchars(json_encode([
