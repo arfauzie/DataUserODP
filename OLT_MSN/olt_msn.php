@@ -35,7 +35,7 @@ if ($odp_id) {
     $odp_name = $stmt->fetchColumn() ?? '';
 }
 
-$oleh = is_array($_SESSION['role']) ? ($_SESSION['role']['username'] ?? 'role') : $_SESSION['role'];
+$oleh = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'Unknown';
 
 // Tambah PON
 if (isset($_POST['tambah_pon'])) {
@@ -169,7 +169,6 @@ if (isset($_POST['update_user'])) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -199,9 +198,9 @@ if (isset($_POST['update_user'])) {
             height: 100%;
             width: 100%;
             background-color: #f8fcff;
-            /* abu full */
         }
 
+        /* Content wrapper */
         .content {
             position: relative;
             margin-left: 200px;
@@ -213,6 +212,7 @@ if (isset($_POST['update_user'])) {
             background-color: #f8fcff;
         }
 
+        /* Breadcrumb */
         .custom-breadcrumb {
             background: #fff;
             padding: 8px 16px;
@@ -246,15 +246,6 @@ if (isset($_POST['update_user'])) {
         .custom-breadcrumb li:last-child {
             font-weight: 600;
             color: #5b4bdb;
-            /* warna ungu untuk yang aktif */
-        }
-
-
-
-        /* Bungkus utama */
-        .main-wrapper {
-            display: flex;
-            width: 100%;
         }
 
         /* Card */
@@ -267,7 +258,7 @@ if (isset($_POST['update_user'])) {
             overflow-x: auto;
         }
 
-        /* ===== Tabel ===== */
+        /* Table */
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -311,17 +302,102 @@ if (isset($_POST['update_user'])) {
         .table td:last-child,
         .table th:last-child {
             border-right: none !important;
+            white-space: nowrap;
         }
 
+        /* Tombol aksi tetap berjajar horizontal */
+        .table td:last-child .btn {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 4px;
+        }
+
+        .table td:last-child .btn:last-child {
+            margin-right: 0;
+        }
+
+        /* ===== MEDIA QUERIES ===== */
+
+        /* Medium screens */
+        @media (max-width: 992px) {
+            .content {
+                margin-left: 150px;
+                width: calc(100% - 150px);
+                padding: 40px;
+            }
+        }
+
+        /* Tablet / Mobile */
         @media (max-width: 768px) {
             .main-wrapper {
                 flex-direction: column;
             }
 
             .content {
-                margin-left: 0;
-                width: 100%;
-                padding: 20px;
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 40px 20px;
+            }
+
+            .content h1 {
+                font-size: 22px;
+            }
+
+            .card-box {
+                padding: 14px 16px;
+                margin-bottom: 15px;
+            }
+
+            .table th,
+            .table td {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+
+            /* Kolom aksi tetap horizontal dengan scroll bila sempit */
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            .table td:last-child {
+                display: flex;
+                flex-wrap: nowrap;
+                /* pastikan horizontal */
+                justify-content: flex-start;
+                gap: 4px;
+            }
+
+            .table td:last-child .btn {
+                flex: 0 0 auto;
+                /* jangan mengecil */
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+        }
+
+        /* Small mobile */
+        @media (max-width: 480px) {
+            .content {
+                padding: 40px 10px;
+            }
+
+            .content h1 {
+                font-size: 20px;
+            }
+
+            .custom-breadcrumb {
+                display: block;
+                text-align: center;
+                margin: 0 auto 12px;
+            }
+
+            .table {
+                font-size: 12px;
+            }
+
+            .btn {
+                padding: 5px 10px;
+                font-size: 12px;
             }
         }
     </style>

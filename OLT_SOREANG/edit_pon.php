@@ -7,7 +7,7 @@ if (!isset($_SESSION['role'])) {
 
 require_once 'config3.php';          // koneksi ke database $pdo3
 require_once 'log_helper.php';      // untuk tambahRiwayatSoreang
-include '../navbar.php';
+include '../Includes/navbar.php';
 
 // Validasi ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -43,9 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
         $stmt = $pdo3->prepare("UPDATE pon3 SET nama_pon = ?, port_max = ? WHERE id = ?");
         $stmt->execute([$nama_pon, $port_max, $id]);
 
-        // Ambil nama role
-        $oleh = is_array($_SESSION['role']) ? ($_SESSION['role']['username'] ?? 'role') : $_SESSION['role'];
-
+        $oleh = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'Unknown';
         // Simpan log menggunakan tambahRiwayatSoreang
         $log_keterangan = implode(" | ", $perubahan);
         tambahRiwayatSoreang($pdo3, "Edit PON", $oleh, $log_keterangan);

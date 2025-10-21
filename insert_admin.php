@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // ==========================
-// Koneksi ke Database
+// Koneksi Database
 // ==========================
 $host = "localhost";
 $dbname = "msn_db";
@@ -22,12 +22,12 @@ try {
 }
 
 // ==========================
-// Variabel untuk notifikasi
+// Variabel notifikasi
 // ==========================
 $message = "";
 
 // ==========================
-// Proses form tambah admin
+// Proses form tambah admin/user
 // ==========================
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nama_lengkap = trim($_POST['nama_lengkap']);
@@ -37,35 +37,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validasi input
     if (!empty($nama_lengkap) && !empty($username) && !empty($password) && !empty($role)) {
-        // Cek apakah username sudah ada
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM admin WHERE username = ?");
-        $stmt->execute([$username]);
-        $userExists = $stmt->fetchColumn();
-
-        if ($userExists) {
-            $message = "<div class='alert alert-danger mt-3 text-center'>
-                <i class='fas fa-exclamation-circle'></i> Username sudah digunakan!
-            </div>";
+        // Pastikan role valid
+        if (!in_array($role, ['admin', 'user'])) {
+            $message = "<div class='alert alert-warning text-center mt-3'>Role tidak valid!</div>";
         } else {
-            // Enkripsi password
-            $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+            // Cek username sudah ada atau belum
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM login_user WHERE username = ?");
+            $stmt->execute([$username]);
+            $userExists = $stmt->fetchColumn();
 
-            // Masukkan data baru ke tabel admin
-            $stmt = $pdo->prepare("INSERT INTO admin (nama_lengkap, username, password, role) VALUES (?, ?, ?, ?)");
-            if ($stmt->execute([$nama_lengkap, $username, $hashed_password, $role])) {
-                $message = "<div class='alert alert-success mt-3 text-center'>
-                    <i class='fas fa-check-circle'></i> Admin berhasil ditambahkan!
-                </div>";
+            if ($userExists) {
+                $message = "<div class='alert alert-danger text-center mt-3'>Username sudah digunakan!</div>";
             } else {
-                $message = "<div class='alert alert-danger mt-3 text-center'>
-                    <i class='fas fa-times-circle'></i> Gagal menambahkan admin.
-                </div>";
+                // Hash password
+                $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+                // Insert ke tabel login_user
+                $stmt = $pdo->prepare("INSERT INTO login_user (nama_lengkap, username, password, role) VALUES (?, ?, ?, ?)");
+                if ($stmt->execute([$nama_lengkap, $username, $hashed_password, $role])) {
+                    $message = "<div class='alert alert-success text-center mt-3'>User berhasil ditambahkan!</div>";
+                } else {
+                    $message = "<div class='alert alert-danger text-center mt-3'>Gagal menambahkan user.</div>";
+                }
             }
         }
     } else {
-        $message = "<div class='alert alert-warning mt-3 text-center'>
-            <i class='fas fa-exclamation-triangle'></i> Semua kolom wajib diisi!
-        </div>";
+        $message = "<div class='alert alert-warning text-center mt-3'>Semua kolom wajib diisi!</div>";
     }
 }
 ?>
@@ -75,71 +72,84 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
     <meta charset="UTF-8">
-    <title>Tambah Admin</title>
+    <title>Tambah User/Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-image: url('bg-login.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #007bff, #03d5ff);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
         }
 
         .card {
-            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+            background-color: white;
             border-radius: 12px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.96);
-            max-width: 480px;
+            padding: 30px;
+            max-width: 450px;
             width: 100%;
-            animation: fadeIn 0.5s ease-in-out;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         .form-label {
             font-weight: 600;
-            color: #333;
         }
 
-        .btn-success {
-            background: linear-gradient(to right, #00625f, #009688);
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .btn-submit {
+            border-radius: 10px;
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            font-weight: 600;
+            padding: 10px;
+            margin-top: 10px;
             border: none;
-            transition: all 0.3s;
         }
 
-        .btn-success:hover {
-            background: linear-gradient(to right, #004d47, #00796b);
-            transform: scale(1.03);
+        .btn-submit:hover {
+            background-color: #0056b3;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .text-center a {
+            text-decoration: none;
+            color: #007bff;
         }
 
+        /* Responsive */
         @media (max-width: 576px) {
             .card {
-                padding: 25px;
+                padding: 20px;
+            }
+
+            .form-control,
+            .form-select {
+                font-size: 14px;
+            }
+
+            .btn-submit {
+                font-size: 14px;
+                padding: 8px;
             }
         }
     </style>
 </head>
 
-<body class="d-flex justify-content-center align-items-center vh-100" style="background-color: #f8f9fa;">
+<body>
     <div class="card">
-        <h3 class="text-center mb-3"><b>Tambah Admin Baru</b></h3>
+        <h3 class="text-center mb-3">Tambah User/Admin</h3>
         <hr>
         <?php echo $message; ?>
-
         <form method="POST">
             <div class="mb-3">
                 <label class="form-label">Nama Lengkap</label>
@@ -173,24 +183,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <option value="">-- Pilih Role --</option>
                         <option value="admin">Admin</option>
                         <option value="user">User</option>
-                        <option value="teknisi">Teknisi</option>
                     </select>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-success w-100">
-                <i class="fas fa-user-plus"></i> Tambah Admin
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-user-plus"></i> Tambah User
             </button>
 
             <div class="text-center mt-3">
-                <a href="index.php" class="text-decoration-none">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
-                </a>
+                <a href="index.php"><i class="fas fa-arrow-left"></i> Kembali ke Dashboard</a>
             </div>
         </form>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

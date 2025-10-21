@@ -145,9 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $ok = $upd->execute([$nama_user, $nomor_internet, $alamat, $odp_id_new, $id]);
 
                     if ($ok) {
-                        // Logging
-                        $oleh = $_SESSION['role']['username'] ?? 'unknown';
-                        $log_parts = [];
+                        $oleh = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'Unknown';
 
                         if ($user['nama_user'] !== $nama_user) {
                             $log_parts[] = "Nama: {$user['nama_user']} → $nama_user";
@@ -257,19 +255,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background-color: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
         }
 
+        /* ===== CONTENT WRAPPER ===== */
         .content {
             margin-left: 260px;
-            padding: 40px 20px;
+            /* Sesuai navbar desktop */
+            padding: 100px 40px 40px 40px;
+            /* padding-top untuk topbar */
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            /* card mulai di bawah navbar */
             min-height: 100vh;
+            width: calc(100% - 260px);
+            transition: padding 0.3s;
         }
 
+        /* Card */
         .card-box {
             background: #fff;
             border-radius: 10px;
@@ -279,17 +292,82 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
+        /* Form label */
         .form-label {
             font-weight: 600;
         }
 
+        /* Tombol spacing */
+        .d-flex .btn {
+            min-width: 100px;
+        }
+
+        /* ===== MEDIA QUERIES ===== */
+
+        /* Tablet besar */
+        @media (max-width: 992px) {
+            .content {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+                padding: 100px 30px 30px 30px;
+            }
+        }
+
+        /* Tablet / Mobile */
         @media (max-width: 768px) {
             .content {
-                margin-left: 0;
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 80px 20px 20px 20px;
+                /* lebih nyaman untuk mobile */
+            }
+
+            .card-box {
                 padding: 20px;
+                width: 100%;
+                /* full-width di mobile */
+            }
+
+            .form-label {
+                font-size: 14px;
+            }
+
+            .d-flex .btn {
+                font-size: 13px;
+                padding: 8px 12px;
+                flex: 1;
+                /* tombol melebar full container */
+                margin: 2px;
+            }
+
+            .d-flex {
+                flex-direction: column;
+                /* tombol stack vertical di mobile */
+                gap: 6px;
+            }
+        }
+
+        /* Small mobile */
+        @media (max-width: 480px) {
+            .content {
+                padding: 80px 10px 20px 10px;
+            }
+
+            .card-box {
+                padding: 16px;
+            }
+
+            .form-label {
+                font-size: 13px;
+            }
+
+            .d-flex .btn {
+                font-size: 12px;
+                padding: 6px 10px;
             }
         }
     </style>
+
 </head>
 
 <body>

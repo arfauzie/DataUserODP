@@ -24,59 +24,52 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             background-color: #f4f5f7;
         }
 
-        /* ===== TOPBAR ===== */
+        /* TOPBAR */
         .top-bar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 60px;
+            height: 54px;
             background: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 18px;
+            padding: 0 10px;
         }
 
         .topbar-left {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .topbar-left img {
-            height: 42px;
+            height: 44px;
             width: auto;
             object-fit: contain;
+            margin-top: -2px;
         }
 
-        /* Tombol menu sidebar */
-        .menu-button {
-            border: none;
-            background: transparent;
-            font-size: 1.5rem;
-            color: #212529;
-            cursor: pointer;
-        }
-
-        /* Search bar (desktop only) */
+        /* Search bar di kiri */
         .search-form {
             display: flex;
             align-items: center;
             background: #f1f3f5;
-            border-radius: 6px;
-            padding: 4px 10px;
+            border-radius: 5px;
+            padding: 3px 8px;
             border: 1px solid #dee2e6;
+            margin-left: 10px;
         }
 
         .search-form input {
             border: none;
             outline: none;
             background: transparent;
-            width: 160px;
-            font-size: 0.95rem;
+            width: 150px;
+            font-size: 0.9rem;
         }
 
         .search-form button {
@@ -90,10 +83,21 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             color: #0d6efd;
         }
 
+        /* Tombol menu sidebar */
+        .menu-button {
+            border: none;
+            background: transparent;
+            font-size: 1.3rem;
+            color: #212529;
+            cursor: pointer;
+            flex-shrink: 0;
+            padding: 2px;
+        }
+
         .admin-container {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 8px;
         }
 
         .dropdown-toggle {
@@ -101,15 +105,41 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
+            max-width: 180px;
         }
 
+        /* Nama admin full tanpa ... */
         .admin-name {
             white-space: nowrap;
-            font-size: 0.95rem;
+            overflow-x: auto;
+            overflow-y: hidden;
+            text-overflow: unset;
+            max-width: 100%;
+            font-size: 0.9rem;
+            flex-shrink: 1;
+            scrollbar-width: none;
         }
 
-        /* ===== SIDEBAR ===== */
+        .admin-name::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Avatar admin */
+        .profile-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #dee2e6;
+            color: #495057;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        /* SIDEBAR */
         .sidebar {
             width: 230px;
             background: #fff;
@@ -117,7 +147,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             position: fixed;
             top: 0;
             left: 0;
-            padding-top: 70px;
+            padding-top: 60px;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
             transition: 0.3s;
             z-index: 999;
@@ -139,9 +169,8 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             padding: 80px 24px;
         }
 
-        /* ===== MOBILE ===== */
+        /* MOBILE (JANGAN DIUBAH) */
         @media (max-width: 768px) {
-
             .search-form {
                 display: none !important;
             }
@@ -150,7 +179,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
                 width: 100%;
                 height: auto;
                 top: 10px;
-                left: 0;
                 transform: translateY(-100%);
                 opacity: 0;
                 visibility: hidden;
@@ -168,41 +196,62 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             }
 
             .sidebar .search-mobile {
-                padding: 10px 15px;
+                padding: 8px 14px;
                 border-bottom: 1px solid #f1f1f1;
             }
 
             .sidebar .search-mobile input {
                 width: 100%;
-                padding: 8px;
+                padding: 7px;
                 border: 1px solid #ddd;
                 border-radius: 6px;
-                font-size: 0.95rem;
+                font-size: 0.9rem;
             }
 
             .content {
                 margin-left: 0;
-                padding: 80px 16px;
+                padding: 70px 14px;
+            }
+
+            .profile-avatar {
+                display: none;
             }
 
             .admin-name {
-                font-size: 0.9rem;
+                font-size: 0.88rem;
+            }
+
+            .topbar-left img {
+                height: 42px;
+            }
+
+            .top-bar {
+                height: 50px;
+                padding: 0 8px;
+            }
+
+            .dropdown-toggle {
+                gap: 3px;
+            }
+
+            .menu-button {
+                font-size: 1.2rem;
             }
         }
 
         @media (max-width: 375px) {
             .topbar-left img {
-                height: 36px;
+                height: 40px;
             }
 
             .admin-name {
-                font-size: 0.85rem;
+                font-size: 0.83rem;
             }
         }
 
         @media (max-width: 320px) {
             .topbar-left img {
-                height: 32px;
+                height: 36px;
             }
 
             .admin-name {
@@ -217,29 +266,31 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
     <div class="top-bar">
         <div class="topbar-left">
             <img src="/DataUserODP/logo-msn.png" alt="Logo">
-        </div>
 
-        <div class="admin-container">
-            <!-- Search untuk desktop -->
-            <form action="/DataUserODP/search.php" method="GET" class="search-form d-none d-md-flex">
+            <!-- Search desktop pindah ke kiri -->
+            <form action="/DataUserODP/search_search.php" method="GET" class="search-form d-none d-md-flex">
                 <input type="text" name="query" placeholder="Cari..." required />
                 <button type="submit"><i class="fas fa-search"></i></button>
             </form>
+        </div>
 
-            <!-- Dropdown Akun -->
+        <div class="admin-container">
+            <!-- Dropdown -->
             <div class="dropdown">
-                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                <a href="#" class="dropdown-toggle" id="dropdownAdmin" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="profile-avatar"><i class="fas fa-user"></i></div>
                     <span class="admin-name"><?php echo htmlspecialchars($nama_lengkap); ?></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item text-danger" href="/DataUserODP/logout.php">
+                    <li>
+                        <a class="dropdown-item text-danger" href="/DataUserODP/logout.php">
                             <i class="fas fa-sign-out-alt me-2"></i>Logout
                         </a>
                     </li>
                 </ul>
             </div>
 
-            <!-- Tombol menu sidebar (dipisah, tidak satu area klik) -->
+            <!-- Tombol menu -->
             <button class="menu-button d-md-none" id="menuToggle" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
@@ -248,9 +299,8 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
 
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
-        <!-- Search bar khusus mobile -->
         <div class="search-mobile d-md-none">
-            <form action="/DataUserODP/search.php" method="GET">
+            <form action="/DataUserODP/search_user.php" method="GET">
                 <input type="text" name="query" placeholder="Cari..." required />
             </form>
         </div>
@@ -268,7 +318,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             sidebar.classList.toggle("active");
         }
 
-        // Tutup sidebar otomatis di mobile
         document.querySelectorAll('.sidebar a').forEach(link => {
             link.addEventListener('click', function() {
                 if (window.innerWidth <= 768) {

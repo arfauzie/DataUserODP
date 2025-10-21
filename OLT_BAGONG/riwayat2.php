@@ -21,6 +21,7 @@ $riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        /* ================= Desktop ================= */
         body {
             background-color: #f8f9fa;
         }
@@ -39,10 +40,12 @@ $riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
         }
 
         /* Styling tabel ala transaction log */
         .table {
+            width: 100%;
             border-collapse: separate;
             border-spacing: 0 6px;
         }
@@ -53,6 +56,7 @@ $riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
             font-weight: 600;
             color: #495057;
             text-align: left;
+            padding: 12px;
         }
 
         .table tbody tr {
@@ -72,8 +76,89 @@ $riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
             background-color: #f8f9fa;
         }
 
+        /* Tombol desktop */
         .btn-sm {
             padding: 0.25rem 0.5rem;
+            font-size: 14px;
+        }
+
+        /* ================= Responsif Tablet ================= */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                margin-left: 0;
+                padding: 20px 10px;
+            }
+
+            .card {
+                padding: 12px 10px;
+            }
+
+            .table tbody td {
+                padding: 6px 8px;
+                font-size: 13px;
+            }
+
+            .table thead th {
+                font-size: 13px;
+            }
+
+            h2 {
+                font-size: 18px;
+                text-align: center;
+            }
+
+            /* Tombol Kembali & Hapus Semua lebih kecil tablet */
+            .btn-back,
+            .btn-hapus-semua {
+                padding: 0.2rem 0.3rem;
+                font-size: 12px;
+            }
+
+            /* Tombol Hapus tetap desktop */
+            .btn-delete {
+                padding: 0.25rem 0.5rem;
+                font-size: 14px;
+            }
+        }
+
+        /* ================= Responsif Mobile Kecil ================= */
+        @media (max-width: 480px) {
+            .content-wrapper {
+                padding: 30px 6px;
+            }
+
+            .card {
+                padding: 6px 4px;
+            }
+
+            .table tbody td {
+                padding: 3px 4px;
+                font-size: 12px;
+            }
+
+            .table thead th {
+                font-size: 12px;
+                padding: 3px 4px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            /* Tombol Kembali & Hapus Semua super kecil mobile */
+            .btn-back,
+            .btn-hapus-semua {
+                padding: 60px 4px;
+                font-size: 10px;
+                line-height: 1.2;
+                white-space: normal;
+                word-break: break-word;
+            }
+
+            .btn-delete {
+                padding: 0.25rem 0.5rem;
+                font-size: 14px;
+            }
         }
     </style>
 </head>

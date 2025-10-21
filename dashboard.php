@@ -117,11 +117,12 @@ $recentLogs = array_slice($logs, 0, 5);
             background-color: #f8fcff;
             font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
             margin: 0;
+            overflow-x: hidden;
         }
 
         .content {
             margin-left: var(--sidebar-width);
-            padding: var(--page-padding);
+            padding: calc(var(--page-padding) + 60px) var(--page-padding) var(--page-padding);
             width: calc(100% - var(--sidebar-width));
             box-sizing: border-box;
         }
@@ -130,18 +131,8 @@ $recentLogs = array_slice($logs, 0, 5);
             .content {
                 margin-left: 0;
                 width: 100%;
-                padding: 16px;
+                padding: 60px 16px 16px;
             }
-        }
-
-        .page-header {
-            background: linear-gradient(90deg, #0555e9d6, #2004beff);
-            padding: 60px var(--page-padding);
-            color: white;
-            margin: 0;
-            width: calc(100% + var(--page-padding) * 2);
-            margin-left: calc(-1 * var(--page-padding));
-            margin-right: calc(-1 * var(--page-padding));
         }
 
         .page-header .title {
@@ -150,17 +141,10 @@ $recentLogs = array_slice($logs, 0, 5);
             margin: 10px 0 4px 0;
         }
 
-        .big-box {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
-            padding: 20px;
-            margin-top: -28px;
-        }
-
+        /* === BOX OLT === */
         .small-box {
-            border-radius: 10px;
-            padding: 18px;
+            border-radius: 8px;
+            padding: 10px 12px;
             color: white;
             position: relative;
             overflow: hidden;
@@ -174,14 +158,14 @@ $recentLogs = array_slice($logs, 0, 5);
 
         .small-box .inner h5 {
             margin: 0 0 6px 0;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 700;
         }
 
         .small-box .inner p {
             margin: 0;
-            font-size: 0.8rem;
-            opacity: 0.8;
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
 
         .small-box .icon {
@@ -215,11 +199,13 @@ $recentLogs = array_slice($logs, 0, 5);
             background: linear-gradient(135deg, #3498db, #1e3799);
         }
 
+        /* === PANEL === */
         .panel-row {
             margin-top: 22px;
             display: flex;
             gap: 20px;
             align-items: flex-start;
+            flex-wrap: wrap;
         }
 
         .panel-left {
@@ -283,14 +269,53 @@ $recentLogs = array_slice($logs, 0, 5);
             font-weight: 700;
         }
 
-        @media (max-width: 900px) {
+        /* === RESPONSIVE FIX === */
+        @media (max-width: 992px) {
             .panel-row {
                 flex-direction: column-reverse;
             }
 
             .panel-right {
                 width: 100%;
-                flex: 1 1 0;
+                flex: 1 1 auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .small-box {
+                min-height: 100px;
+                padding: 8px 10px;
+            }
+
+            .small-box .inner h5 {
+                font-size: 1rem;
+            }
+
+            .small-box .inner p {
+                font-size: 0.85rem;
+            }
+
+            .summary-tile {
+                font-size: 0.9rem;
+            }
+
+            .summary-tile .value {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .content {
+                padding: 80px 12px 16px;
+            }
+
+            .small-box {
+                min-height: 90px;
+            }
+
+            .panel-right,
+            .panel-left {
+                width: 100%;
             }
         }
     </style>
@@ -298,9 +323,6 @@ $recentLogs = array_slice($logs, 0, 5);
 
 <body>
     <div class="content">
-        <div class="page-header">
-            <div class="title">Dashboard Admin</div>
-        </div>
         <div class="container-big">
             <div class="big-box">
                 <div class="row g-3">

@@ -43,8 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
         $stmt = $pdo2->prepare("UPDATE pon2 SET nama_pon = ?, port_max = ? WHERE id = ?");
         $stmt->execute([$nama_pon, $port_max, $id]);
 
-        // Ambil nama role
-        $oleh = is_array($_SESSION['role']) ? ($_SESSION['role']['username'] ?? 'role') : $_SESSION['role'];
+        $oleh = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'Unknown';
 
         // Simpan log menggunakan tambahRiwayatMSN
         $log_keterangan = implode(" | ", $perubahan);

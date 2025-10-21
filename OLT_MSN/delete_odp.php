@@ -37,10 +37,7 @@ require_once 'log_helper.php'; // helper baru khusus OLT_MSN
             // Siapkan keterangan log
             $log_keterangan = "Nama ODP: $nama_odp | Port Maksimum: $port_odp";
 
-            // Ambil nama role
-            $oleh = is_array($_SESSION['role'])
-                ? ($_SESSION['role']['username'] ?? 'role')
-                : $_SESSION['role'];
+            $oleh = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'Unknown';
 
             // Hapus ODP
             $stmt = $pdo->prepare("DELETE FROM odp1 WHERE id = ?");

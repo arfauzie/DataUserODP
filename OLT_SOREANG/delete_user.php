@@ -39,10 +39,7 @@ require_once 'log_helper.php'; // fungsi tambahRiwayat
             exit();
         }
 
-        // Ambil nama role dari session (handle array/string)
-        $oleh = is_array($_SESSION['role'])
-            ? ($_SESSION['role']['username'] ?? 'role')
-            : $_SESSION['role'];
+        $oleh = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'Unknown';
 
         // Siapkan log dengan format konsisten
         $nama_user      = $user['nama_user'] ?? '(kosong)';

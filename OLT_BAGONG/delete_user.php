@@ -5,8 +5,8 @@ if (!isset($_SESSION['role'])) {
     exit();
 }
 
-require_once 'config2.php'; // koneksi database $pdo2
-require_once 'log_helper.php'; // fungsi tambahRiwayatBagong
+require_once 'config2.php';
+require_once 'log_helper.php';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -39,10 +39,7 @@ require_once 'log_helper.php'; // fungsi tambahRiwayatBagong
             exit();
         }
 
-        // Ambil nama role dari session (handle array/string)
-        $oleh = is_array($_SESSION['role'])
-            ? ($_SESSION['role']['username'] ?? 'role')
-            : $_SESSION['role'];
+        $oleh = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'Unknown';
 
         // Siapkan log dengan format konsisten
         $nama_user      = $user['nama_user'] ?? '(kosong)';
