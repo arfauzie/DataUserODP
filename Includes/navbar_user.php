@@ -30,45 +30,48 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             top: 0;
             left: 0;
             width: 100%;
-            height: 54px;
-            background: #fff;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            height: 60px;
+            background: linear-gradient(to right, #0d60dc 230px, #0d6efd 230px);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 10px;
+            padding: 0 16px;
         }
 
         .topbar-left {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .topbar-left img {
-            height: 44px;
+            height: 40px;
             width: auto;
             object-fit: contain;
-            margin-top: -2px;
+            margin-left: 8px;
+            position: relative;
+            top: 1px;
         }
 
-        /* Search bar di kiri */
+        /* SEARCH FORM DESKTOP */
         .search-form {
             display: flex;
             align-items: center;
             background: #f1f3f5;
-            border-radius: 5px;
-            padding: 3px 8px;
+            border-radius: 6px;
+            padding: 4px 10px;
             border: 1px solid #dee2e6;
-            margin-left: 10px;
+            transition: all 0.2s ease;
+            margin-right: 16px;
         }
 
         .search-form input {
             border: none;
             outline: none;
             background: transparent;
-            width: 150px;
+            width: 180px;
             font-size: 0.9rem;
         }
 
@@ -83,33 +86,22 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             color: #0d6efd;
         }
 
-        /* Tombol menu sidebar */
-        .menu-button {
-            border: none;
-            background: transparent;
-            font-size: 1.3rem;
-            color: #212529;
-            cursor: pointer;
-            flex-shrink: 0;
-            padding: 2px;
-        }
-
+        /* ADMIN INFO */
         .admin-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .dropdown-toggle {
-            color: #212529;
+            color: #fff;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 5px;
-            max-width: 180px;
+            gap: 6px;
+            max-width: 200px;
         }
 
-        /* Nama admin full tanpa ... */
         .admin-name {
             white-space: nowrap;
             overflow-x: auto;
@@ -117,7 +109,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             text-overflow: unset;
             max-width: 100%;
             font-size: 0.9rem;
-            flex-shrink: 1;
             scrollbar-width: none;
         }
 
@@ -125,89 +116,173 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             display: none;
         }
 
-        /* Avatar admin */
         .profile-avatar {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            background-color: #dee2e6;
-            color: #495057;
+            background-color: rgba(255, 255, 255, 0.25);
+            color: #fff;
             font-size: 0.95rem;
             flex-shrink: 0;
         }
 
-        /* SIDEBAR */
+        /* MENU BUTTON */
+        .menu-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .menu-button:focus {
+            outline: none;
+        }
+
+        /* SIDEBAR DESKTOP */
         .sidebar {
             width: 230px;
-            background: #fff;
+            background-color: #fff;
             height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
-            padding-top: 60px;
-            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+            padding-top: 80px;
+            box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
             transition: 0.3s;
             z-index: 999;
         }
 
         .sidebar a {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             padding: 12px 20px;
-            color: #212529;
+            color: #000;
             text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .sidebar a i {
+            width: 20px;
+            text-align: center;
+            color: #000;
         }
 
         .sidebar a:hover {
-            background: #e7f1ff;
+            background-color: #1e282c;
+            color: #fff;
         }
 
+        .sidebar a:hover i {
+            color: #fff;
+        }
+
+        /* KONTEN */
         .content {
             margin-left: 230px;
-            padding: 80px 24px;
+            padding: 85px 24px;
         }
 
-        /* MOBILE (JANGAN DIUBAH) */
+        /* ========================================
+   RESPONSIVE FIX (MOBILE RAPAT DAN DEKAT TOPBAR)
+=========================================*/
         @media (max-width: 768px) {
-            .search-form {
-                display: none !important;
+
+            /* Topbar biru solid */
+            .top-bar {
+                background-color: #0d6efd !important;
             }
 
+            /* Tombol hamburger putih tanpa background */
+            .menu-button {
+                color: #fff !important;
+                background: none !important;
+                border: none;
+                font-size: 1.6rem;
+                padding: 6px;
+            }
+
+            /* Sidebar putih, muncul menempel tepat di bawah topbar */
             .sidebar {
                 width: 100%;
                 height: auto;
-                top: 10px;
+                top: 0;
+                background: #ffffff !important;
                 transform: translateY(-100%);
                 opacity: 0;
                 visibility: hidden;
-                transition: 0.3s;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                border-top: 1px solid #dee2e6;
+                padding-top: 0;
+                /* hapus ruang kosong di atas */
             }
 
+            /* Posisi aktif — menempel lebih dekat ke bawah topbar */
             .sidebar.active {
-                transform: translateY(0);
+                transform: translateY(54px);
+                /* turun sejajar tinggi topbar */
                 opacity: 1;
                 visibility: visible;
             }
 
-            .sidebar a {
-                border-bottom: 1px solid #f1f1f1;
+            /* Search bar — rapat ke top */
+            .search-mobile {
+                padding: 6px 10px;
+                /* sempit dari 12px */
+                background: #fff;
+                text-align: center;
+                border-bottom: 1px solid #dee2e6;
+                margin-top: 0;
+                /* hilangkan jarak ke atas */
             }
 
-            .sidebar .search-mobile {
-                padding: 8px 14px;
-                border-bottom: 1px solid #f1f1f1;
-            }
-
-            .sidebar .search-mobile input {
-                width: 100%;
-                padding: 7px;
-                border: 1px solid #ddd;
+            .search-mobile input {
+                width: 88%;
                 border-radius: 6px;
-                font-size: 0.9rem;
+                border: 1px solid #ced4da;
+                padding: 6px 9px;
+                font-size: 0.88rem;
+                outline: none;
+                background: #fff;
+                color: #000;
+                text-align: left;
             }
 
+            .sidebar a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 20px;
+                color: #000 !important;
+                border-bottom: 1px solid #f1f1f1;
+                font-size: 0.92rem;
+                line-height: 1.2;
+                background: #fff;
+            }
+
+            .sidebar a i {
+                color: #000000ff !important;
+                font-size: 1rem;
+            }
+
+            .sidebar a:hover {
+                background: #f1f5ff;
+                color: #0d6efd;
+            }
+
+            /* Hilangkan search desktop */
+            .search-form {
+                display: none !important;
+            }
+
+            /* Konten */
             .content {
                 margin-left: 0;
                 padding: 70px 14px;
@@ -222,26 +297,18 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             }
 
             .topbar-left img {
-                height: 42px;
+                height: 34px;
             }
 
             .top-bar {
-                height: 50px;
-                padding: 0 8px;
-            }
-
-            .dropdown-toggle {
-                gap: 3px;
-            }
-
-            .menu-button {
-                font-size: 1.2rem;
+                height: 54px;
+                padding: 0 10px;
             }
         }
 
         @media (max-width: 375px) {
             .topbar-left img {
-                height: 40px;
+                height: 32px;
             }
 
             .admin-name {
@@ -251,7 +318,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
 
         @media (max-width: 320px) {
             .topbar-left img {
-                height: 36px;
+                height: 30px;
             }
 
             .admin-name {
@@ -259,23 +326,27 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             }
         }
     </style>
+
+
+
+
 </head>
 
 <body>
     <!-- TOPBAR -->
     <div class="top-bar">
+        <!-- KIRI: LOGO -->
         <div class="topbar-left">
-            <img src="/DataUserODP/logo-msn.png" alt="Logo">
+            <img src="/DataUserODP/logo-msn3.png" alt="Logo">
+        </div>
 
-            <!-- Search desktop pindah ke kiri -->
-            <form action="/DataUserODP/search_search.php" method="GET" class="search-form d-none d-md-flex">
+        <!-- KANAN: SEARCH + ADMIN -->
+        <div class="admin-container">
+            <form action="/DataUserODP/search_user.php" method="GET" class="search-form d-none d-md-flex">
                 <input type="text" name="query" placeholder="Cari..." required />
                 <button type="submit"><i class="fas fa-search"></i></button>
             </form>
-        </div>
 
-        <div class="admin-container">
-            <!-- Dropdown -->
             <div class="dropdown">
                 <a href="#" class="dropdown-toggle" id="dropdownAdmin" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="profile-avatar"><i class="fas fa-user"></i></div>
@@ -290,7 +361,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
                 </ul>
             </div>
 
-            <!-- Tombol menu -->
+            <!-- Tombol menu (mobile) -->
             <button class="menu-button d-md-none" id="menuToggle" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
@@ -305,11 +376,11 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             </form>
         </div>
 
-        <a href="/DataUserODP/dashboard_user.php"><i class="fas fa-home me-2"></i>Dashboard</a>
-        <a href="/DataUserODP/OLT_MSN/olt_msn_user.php"><i class="fas fa-server me-2"></i>OLT MSN</a>
-        <a href="/DataUserODP/OLT_BAGONG/olt_bagong_user.php"><i class="fas fa-server me-2"></i>OLT Bagong</a>
-        <a href="/DataUserODP/OLT_SOREANG/olt_soreang_user.php"><i class="fas fa-server me-2"></i>OLT Soreang</a>
-        <a href="/DataUserODP/CHECK_AVG/check_avg_user.php"><i class="fas fa-location-dot me-2"></i>Check AVG</a>
+        <a href="/DataUserODP/dashboard_user.php"><i class="fas fa-home"></i>Dashboard</a>
+        <a href="/DataUserODP/OLT_MSN/olt_msn_user.php"><i class="fas fa-server"></i>OLT MSN</a>
+        <a href="/DataUserODP/OLT_BAGONG/olt_bagong_user.php"><i class="fas fa-server"></i>OLT Bagong</a>
+        <a href="/DataUserODP/OLT_SOREANG/olt_soreang_user.php"><i class="fas fa-server"></i>OLT Soreang</a>
+        <a href="/DataUserODP/CHECK_COVERAGE/check_coverage_user.php"><i class="fas fa-location-dot"></i>Check Coverage</a>
     </div>
 
     <script>

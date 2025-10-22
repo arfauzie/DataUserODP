@@ -156,6 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
             <?php endif; ?>
         </div>
     </div>
+    <?php include '../Includes/footer.php'; ?>
 </body>
 
 </html>

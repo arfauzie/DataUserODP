@@ -192,7 +192,7 @@ if (isset($_POST['update_user'])) {
             box-sizing: border-box;
         }
 
-        /* Background abu full */
+        /* Background */
         html,
         body {
             height: 100%;
@@ -200,11 +200,12 @@ if (isset($_POST['update_user'])) {
             background-color: #f8fcff;
         }
 
-        /* Content wrapper */
+        /* Konten utama */
         .content {
             position: relative;
             margin-left: 200px;
-            padding: 40px;
+            padding: 40px 40px 40px;
+            /* tambah padding atas agar tulisan OLT MSN tidak menempel topbar */
             min-height: 100vh;
             width: calc(100% - 200px);
             flex: 1;
@@ -248,86 +249,114 @@ if (isset($_POST['update_user'])) {
             color: #5b4bdb;
         }
 
-        /* Card */
+        /* Bungkus utama */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Card utama */
         .card-box {
-            background-color: white;
+            background-color: #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 20px;
+            padding: 15px 20px 20px;
+            margin-top: 10px;
             margin-bottom: 20px;
             width: 100%;
             overflow-x: auto;
+            /* tanpa border-radius sesuai permintaan */
+            border-radius: 0;
         }
 
-        /* Table */
+        .card-box h4 {
+            margin-top: 5px !important;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Sub-card seperti area tombol "Riwayat" */
+        .card-box2 {
+            margin-top: 5px;
+        }
+
+        /* ===== TABEL FIX SESUAI CONTOH ===== */
         .table {
             width: 100%;
             border-collapse: collapse;
             background-color: #fff;
+            border: 1px solid #ddd;
+            /* border luar tabel */
         }
 
         .table th,
         .table td {
             padding: 10px 15px;
             text-align: center;
-            border-top: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #eee;
+            /* border semua sisi */
             vertical-align: middle;
             font-size: 14px;
         }
 
         .table th {
-            background-color: #fff;
+            background-color: #ffffffff;
+            /* header sedikit abu seperti contoh */
             font-weight: bold;
-            color: #333;
-            border-top: none;
+            color: #000000ff;
         }
 
-        .table tbody tr:hover {
-            background-color: #e5e5e5;
-        }
-
+        /* Baris selang-seling seperti contoh */
         .table tbody tr:nth-child(odd) {
-            background-color: #f2f2f2;
-        }
-
-        .table tbody tr:nth-child(even) {
             background-color: #ffffff;
         }
 
-        .table td:first-child,
-        .table th:first-child {
-            border-left: none !important;
+        .table tbody tr:nth-child(even) {
+            background-color: #f7f7f7;
         }
 
-        .table td:last-child,
-        .table th:last-child {
-            border-right: none !important;
-            white-space: nowrap;
+        .table tbody tr:hover {
+            background-color: #e8e8e8;
+            /* hover abu lembut */
         }
 
-        /* Tombol aksi tetap berjajar horizontal */
-        .table td:last-child .btn {
-            display: inline-flex;
-            align-items: center;
-            margin-right: 4px;
+        /* Tombol di tabel */
+        .btn {
+            border-radius: 4px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border: none;
+            cursor: pointer;
         }
 
-        .table td:last-child .btn:last-child {
-            margin-right: 0;
+        .btn-edit {
+            background-color: #f0ad4e;
+            color: #fff;
         }
 
-        /* ===== MEDIA QUERIES ===== */
+        .btn-edit:hover {
+            background-color: #ec9a33;
+        }
 
-        /* Medium screens */
+        .btn-delete {
+            background-color: #d9534f;
+            color: #fff;
+        }
+
+        .btn-delete:hover {
+            background-color: #c9302c;
+        }
+
+        /* Responsif 992px */
         @media (max-width: 992px) {
             .content {
                 margin-left: 150px;
                 width: calc(100% - 150px);
-                padding: 40px;
+                padding: 50px 30px 30px;
             }
         }
 
-        /* Tablet / Mobile */
+        /* Responsif tablet */
         @media (max-width: 768px) {
             .main-wrapper {
                 flex-direction: column;
@@ -336,7 +365,7 @@ if (isset($_POST['update_user'])) {
             .content {
                 margin-left: 0 !important;
                 width: 100% !important;
-                padding: 40px 20px;
+                padding: 50px 20px 30px;
             }
 
             .content h1 {
@@ -353,32 +382,12 @@ if (isset($_POST['update_user'])) {
                 padding: 8px 10px;
                 font-size: 13px;
             }
-
-            /* Kolom aksi tetap horizontal dengan scroll bila sempit */
-            .table-responsive {
-                overflow-x: auto;
-            }
-
-            .table td:last-child {
-                display: flex;
-                flex-wrap: nowrap;
-                /* pastikan horizontal */
-                justify-content: flex-start;
-                gap: 4px;
-            }
-
-            .table td:last-child .btn {
-                flex: 0 0 auto;
-                /* jangan mengecil */
-                font-size: 12px;
-                padding: 4px 8px;
-            }
         }
 
-        /* Small mobile */
+        /* Responsif hp */
         @media (max-width: 480px) {
             .content {
-                padding: 40px 10px;
+                padding: 40px 10px 30px;
             }
 
             .content h1 {
@@ -914,6 +923,7 @@ if (isset($_POST['update_user'])) {
                 });
             }
         </script>
+        <?php include '../Includes/footer.php'; ?>
 </body>
 
 </html>

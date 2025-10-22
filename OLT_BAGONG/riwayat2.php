@@ -21,9 +21,9 @@ $riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* ================= Desktop ================= */
+        /* Desktop */
         body {
-            background-color: #f8f9fa;
+            background-color: #f8fcff;
         }
 
         .content-wrapper {
@@ -82,7 +82,7 @@ $riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
             font-size: 14px;
         }
 
-        /* ================= Responsif Tablet ================= */
+        /* Responsif Tablet */
         @media (max-width: 768px) {
             .content-wrapper {
                 margin-left: 0;
@@ -121,7 +121,7 @@ $riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
             }
         }
 
-        /* ================= Responsif Mobile Kecil ================= */
+        /* Responsif Mobile Kecil */
         @media (max-width: 480px) {
             .content-wrapper {
                 padding: 30px 6px;
@@ -299,6 +299,7 @@ $riwayat = getRiwayatBagong($pdo2); // gunakan fungsi khusus OLT BAGONG
             <?php endif; ?>
         });
     </script>
+    <?php include '../Includes/footer.php'; ?>
 </body>
 
 </html>

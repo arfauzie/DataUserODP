@@ -23,7 +23,7 @@ $riwayat = getRiwayatMSN($pdo); // gunakan fungsi khusus OLT MSN
     <style>
         /* ================= Desktop ================= */
         body {
-            background-color: #f8f9fa;
+            background-color: #f8fcff;
         }
 
         .content-wrapper {
@@ -299,6 +299,7 @@ $riwayat = getRiwayatMSN($pdo); // gunakan fungsi khusus OLT MSN
             <?php endif; ?>
         });
     </script>
+    <?php include '../Includes/footer.php'; ?>
 </body>
 
 </html>

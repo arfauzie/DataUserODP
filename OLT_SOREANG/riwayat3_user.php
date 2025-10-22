@@ -23,7 +23,7 @@ $riwayat = getRiwayatSoreang($pdo3); // gunakan fungsi khusus OLT Soreang
     <style>
         /* ================= Desktop ================= */
         body {
-            background-color: #f8f9fa;
+            background-color: #f8fcff;
         }
 
         .content-wrapper {

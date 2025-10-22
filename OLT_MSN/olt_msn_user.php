@@ -193,19 +193,19 @@ if (isset($_POST['update_user'])) {
             box-sizing: border-box;
         }
 
-        /* Background abu full */
+        /* Background */
         html,
         body {
             height: 100%;
             width: 100%;
             background-color: #f8fcff;
-            /* abu full */
         }
 
+        /* Konten utama */
         .content {
             position: relative;
             margin-left: 200px;
-            padding: 40px;
+            padding: 40px 40px 40px;
             min-height: 100vh;
             width: calc(100% - 200px);
             flex: 1;
@@ -213,6 +213,7 @@ if (isset($_POST['update_user'])) {
             background-color: #f8fcff;
         }
 
+        /* Breadcrumb */
         .custom-breadcrumb {
             background: #fff;
             padding: 8px 16px;
@@ -254,70 +255,104 @@ if (isset($_POST['update_user'])) {
             width: 100%;
         }
 
-        /* Card */
+        /* Card utama */
         .card-box {
-            background-color: white;
+            background-color: #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 20px;
+            padding: 15px 20px 20px;
+            margin-top: 10px;
             margin-bottom: 20px;
             width: 100%;
             overflow-x: auto;
+            border-radius: 0;
         }
 
-        /* ===== Tabel ===== */
+        .card-box h4 {
+            margin-top: 5px !important;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Sub-card seperti area tombol "Riwayat" */
+        .card-box2 {
+            margin-top: 5px;
+        }
+
+        /* ===== TABEL ===== */
         .table {
             width: 100%;
             border-collapse: collapse;
             background-color: #fff;
+            border: 1px solid #ddd;
         }
 
         .table th,
         .table td {
             padding: 10px 15px;
             text-align: center;
-            border-top: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #eee;
             vertical-align: middle;
             font-size: 14px;
+            word-wrap: break-word;
         }
 
         .table th {
-            background-color: #fff;
+            background-color: #ffffff;
             font-weight: bold;
-            color: #333;
-            border-top: none;
-        }
-
-        .table tbody tr:hover {
-            background-color: #e5e5e5;
+            color: #000000;
         }
 
         .table tbody tr:nth-child(odd) {
-            background-color: #f2f2f2;
-        }
-
-        .table tbody tr:nth-child(even) {
             background-color: #ffffff;
         }
 
-        .table td:first-child,
-        .table th:first-child {
-            border-left: none !important;
+        .table tbody tr:nth-child(even) {
+            background-color: #f7f7f7;
         }
 
-        .table td:last-child,
-        .table th:last-child {
-            border-right: none !important;
+        .table tbody tr:hover {
+            background-color: #e8e8e8;
         }
 
+        /* Tombol di tabel */
+        .btn {
+            border-radius: 4px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-edit {
+            background-color: #f0ad4e;
+            color: #fff;
+        }
+
+        .btn-edit:hover {
+            background-color: #ec9a33;
+        }
+
+        .btn-delete {
+            background-color: #d9534f;
+            color: #fff;
+        }
+
+        .btn-delete:hover {
+            background-color: #c9302c;
+        }
+
+        /* RESPONSIF 992px */
         @media (max-width: 992px) {
             .content {
                 margin-left: 150px;
                 width: calc(100% - 150px);
-                padding: 40px;
+                padding: 50px 30px 30px;
             }
         }
 
+        /* RESPONSIF TABLET */
         @media (max-width: 768px) {
             .main-wrapper {
                 flex-direction: column;
@@ -326,7 +361,7 @@ if (isset($_POST['update_user'])) {
             .content {
                 margin-left: 0 !important;
                 width: 100% !important;
-                padding: 40px 20px;
+                padding: 50px 20px 30px;
             }
 
             .content h1 {
@@ -345,32 +380,132 @@ if (isset($_POST['update_user'])) {
             }
         }
 
+        /* === RESPONSIF HP (480px) === */
         @media (max-width: 480px) {
             .content {
-                padding: 40px 10px;
-                /* 20px atas/bawah, 10px kiri/kanan */
+                padding: 55px 8px 25px;
             }
 
             .content h1 {
-                font-size: 20px;
+                font-size: 18px;
+                text-align: left;
+                margin-bottom: 10px;
+                padding-left: 10px;
             }
 
             .custom-breadcrumb {
                 display: block;
                 text-align: center;
+                font-size: 13px;
                 margin: 0 auto 12px;
+                padding: 6px 10px;
             }
 
             .table {
-                font-size: 12px;
+                font-size: 11.5px;
+                width: 100%;
+                border: 1px solid #ddd;
+            }
+
+            .table th,
+            .table td {
+                padding: 6px 8px;
+                word-wrap: break-word;
             }
 
             .btn {
-                padding: 5px 10px;
+                padding: 4px 8px;
+                font-size: 11px;
+                border-radius: 3px;
+            }
+
+            .card-box {
+                padding: 10px 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .card-box::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .card-box::-webkit-scrollbar-thumb {
+                background: #ccc;
+                border-radius: 3px;
+            }
+
+            .content::after {
+                content: "";
+                display: block;
+                height: 30px;
+            }
+        }
+
+        /* === HP KECIL BANGET (320px - FULL FIX) === */
+        @media (max-width: 380px) {
+            .content {
+                padding: 50px 6px 20px;
+            }
+
+            .content h1 {
+                font-size: 16px;
+                text-align: left;
+                margin-bottom: 8px;
+                padding-left: 6px;
+            }
+
+            .custom-breadcrumb {
                 font-size: 12px;
+                padding: 5px 8px;
+            }
+
+            .card-box {
+                padding: 8px 10px;
+            }
+
+            .table {
+                font-size: 10.5px;
+                border: 1px solid #ccc;
+            }
+
+            .table th,
+            .table td {
+                padding: 4px 6px;
+                line-height: 1.3;
+                word-wrap: break-word;
+                white-space: normal;
+            }
+
+            .btn {
+                padding: 3px 6px;
+                font-size: 10px;
+                border-radius: 3px;
+                display: inline-block;
+            }
+
+            .btn+.btn {
+                margin-top: 3px;
+                /* jika ada lebih dari 1 tombol, agar tidak menumpuk */
+            }
+
+            .card-box::-webkit-scrollbar {
+                height: 5px;
+            }
+
+            .card-box::-webkit-scrollbar-thumb {
+                background: #bbb;
+                border-radius: 2px;
+            }
+
+            .content::after {
+                content: "";
+                display: block;
+                height: 25px;
             }
         }
     </style>
+
+
+
 </head>
 
 <body>
@@ -846,6 +981,8 @@ if (isset($_POST['update_user'])) {
                 });
             }
         </script>
+        <?php include '../Includes/footer.php'; ?>
+
 </body>
 
 </html>

@@ -254,6 +254,7 @@ foreach ($databases as $nama_db => $db_info) {
 
         </div>
     </div>
+    <?php include __DIR__ . '../Includes/footer.php'; ?>
 </body>
 
 </html>

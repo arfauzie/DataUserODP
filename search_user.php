@@ -114,6 +114,7 @@ function highlightMatch($text, $query)
             }
         }
 
+        /* ===== TABLET RESPONSIVE ===== */
         @media (max-width: 768px) {
             .content {
                 margin-left: 0;
@@ -130,6 +131,7 @@ function highlightMatch($text, $query)
             }
         }
 
+        /* ===== DESKTOP STYLES ===== */
         .table thead {
             background-color: #00625F;
             color: white;
@@ -202,7 +204,90 @@ function highlightMatch($text, $query)
         .btn-secondary:hover {
             background-color: #555f66;
         }
+
+        /* ===== MOBILE FULL FIX (≤480px) ===== */
+        @media (max-width: 480px) {
+            .content {
+                margin-left: 0;
+                padding: 60px 10px 25px;
+            }
+
+            .header-box {
+                padding: 10px 12px;
+                border-radius: 8px;
+            }
+
+            .header-box h3 {
+                font-size: 16px;
+                text-align: center;
+                line-height: 1.4;
+            }
+
+            .mt-4 a.btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .btn {
+                font-size: 11.5px;
+                padding: 5px 9px;
+                border-radius: 4px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 8px;
+            }
+
+            .table {
+                font-size: 12px;
+                width: 100%;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+            }
+
+            .table th,
+            .table td {
+                padding: 6px 8px;
+                vertical-align: middle;
+                word-wrap: break-word;
+                white-space: nowrap;
+            }
+
+            .table thead th {
+                font-size: 12px;
+                padding: 7px;
+            }
+
+            .table td i {
+                font-size: 11px;
+                margin-right: 4px;
+            }
+
+            .badge-olt {
+                font-size: 10px;
+                padding: 4px 6px;
+                border-radius: 6px;
+            }
+
+            mark {
+                background-color: #fff6a3;
+                border-radius: 2px;
+                padding: 0 2px;
+            }
+
+            /* jarak bawah agar tidak menempel ke footer */
+            .content::after {
+                content: "";
+                display: block;
+                height: 25px;
+            }
+        }
     </style>
+
 </head>
 
 <body>
@@ -269,6 +354,7 @@ function highlightMatch($text, $query)
 
         </div>
     </div>
+    <?php include __DIR__ . '../Includes/footer.php'; ?>
 </body>
 
 </html>
