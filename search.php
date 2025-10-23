@@ -83,14 +83,13 @@ foreach ($databases as $nama_db => $db_info) {
             flex-direction: column;
             min-height: 100vh;
             background-color: #f8fcff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .content {
             margin-left: 260px;
             padding: 40px;
             flex: 1;
-            animation: fadeIn 0.4s ease-in-out;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         @keyframes fadeIn {
@@ -105,6 +104,7 @@ foreach ($databases as $nama_db => $db_info) {
             }
         }
 
+        /* ===== TABLET RESPONSIVE ===== */
         @media (max-width: 768px) {
             .content {
                 margin-left: 0;
@@ -121,14 +121,7 @@ foreach ($databases as $nama_db => $db_info) {
             }
         }
 
-        .header-box {
-            background-color: #fff;
-            border-left: 5px solid #00625F;
-            border-radius: 10px;
-            padding: 15px 20px;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
-        }
-
+        /* ===== DESKTOP STYLES ===== */
         .table thead {
             background-color: #00625F;
             color: white;
@@ -160,6 +153,30 @@ foreach ($databases as $nama_db => $db_info) {
             background-color: #28a745;
         }
 
+        mark {
+            background-color: #ffe780;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+
+        .table th,
+        .table td {
+            padding: 14px;
+            vertical-align: middle;
+        }
+
+        .table td i {
+            margin-right: 6px;
+        }
+
+        .header-box {
+            background-color: #fff;
+            border-left: 5px solid #00625F;
+            border-radius: 10px;
+            padding: 15px 20px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+        }
+
         .btn-primary {
             background-color: #0078D7;
             border: none;
@@ -178,14 +195,86 @@ foreach ($databases as $nama_db => $db_info) {
             background-color: #555f66;
         }
 
-        .table th,
-        .table td {
-            padding: 14px;
-            vertical-align: middle;
-        }
+        /* ===== MOBILE FULL FIX (≤480px) ===== */
+        @media (max-width: 480px) {
+            .content {
+                margin-left: 0;
+                padding: 60px 10px 25px;
+            }
 
-        .table td i {
-            margin-right: 6px;
+            .header-box {
+                padding: 10px 12px;
+                border-radius: 8px;
+            }
+
+            .header-box h3 {
+                font-size: 16px;
+                text-align: center;
+                line-height: 1.4;
+            }
+
+            .mt-4 a.btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .btn {
+                font-size: 11.5px;
+                padding: 5px 9px;
+                border-radius: 4px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 8px;
+            }
+
+            .table {
+                font-size: 12px;
+                width: 100%;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+            }
+
+            .table th,
+            .table td {
+                padding: 6px 8px;
+                vertical-align: middle;
+                word-wrap: break-word;
+                white-space: nowrap;
+            }
+
+            .table thead th {
+                font-size: 12px;
+                padding: 7px;
+            }
+
+            .table td i {
+                font-size: 11px;
+                margin-right: 4px;
+            }
+
+            .badge-olt {
+                font-size: 10px;
+                padding: 4px 6px;
+                border-radius: 6px;
+            }
+
+            mark {
+                background-color: #fff6a3;
+                border-radius: 2px;
+                padding: 0 2px;
+            }
+
+            /* jarak bawah agar tidak menempel ke footer */
+            .content::after {
+                content: "";
+                display: block;
+                height: 25px;
+            }
         }
     </style>
 </head>

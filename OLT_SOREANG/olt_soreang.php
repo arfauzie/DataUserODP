@@ -205,7 +205,6 @@ if (isset($_POST['update_user'])) {
             position: relative;
             margin-left: 200px;
             padding: 40px 40px 40px;
-            /* tambah padding atas agar tulisan OLT MSN tidak menempel topbar */
             min-height: 100vh;
             width: calc(100% - 200px);
             flex: 1;
@@ -264,7 +263,6 @@ if (isset($_POST['update_user'])) {
             margin-bottom: 20px;
             width: 100%;
             overflow-x: auto;
-            /* tanpa border-radius sesuai permintaan */
             border-radius: 0;
         }
 
@@ -280,13 +278,12 @@ if (isset($_POST['update_user'])) {
             margin-top: 5px;
         }
 
-        /* ===== TABEL FIX SESUAI CONTOH ===== */
+        /* ===== TABEL ===== */
         .table {
             width: 100%;
             border-collapse: collapse;
             background-color: #fff;
             border: 1px solid #ddd;
-            /* border luar tabel */
         }
 
         .table th,
@@ -294,19 +291,17 @@ if (isset($_POST['update_user'])) {
             padding: 10px 15px;
             text-align: center;
             border: 1px solid #eee;
-            /* border semua sisi */
             vertical-align: middle;
             font-size: 14px;
+            word-wrap: break-word;
         }
 
         .table th {
-            background-color: #ffffffff;
-            /* header sedikit abu seperti contoh */
+            background-color: #ffffff;
             font-weight: bold;
-            color: #000000ff;
+            color: #000000;
         }
 
-        /* Baris selang-seling seperti contoh */
         .table tbody tr:nth-child(odd) {
             background-color: #ffffff;
         }
@@ -317,7 +312,6 @@ if (isset($_POST['update_user'])) {
 
         .table tbody tr:hover {
             background-color: #e8e8e8;
-            /* hover abu lembut */
         }
 
         /* Tombol di tabel */
@@ -327,6 +321,7 @@ if (isset($_POST['update_user'])) {
             padding: 6px 12px;
             border: none;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         .btn-edit {
@@ -347,7 +342,7 @@ if (isset($_POST['update_user'])) {
             background-color: #c9302c;
         }
 
-        /* Responsif 992px */
+        /* RESPONSIF 992px */
         @media (max-width: 992px) {
             .content {
                 margin-left: 150px;
@@ -356,7 +351,7 @@ if (isset($_POST['update_user'])) {
             }
         }
 
-        /* Responsif tablet */
+        /* RESPONSIF TABLET */
         @media (max-width: 768px) {
             .main-wrapper {
                 flex-direction: column;
@@ -384,32 +379,147 @@ if (isset($_POST['update_user'])) {
             }
         }
 
-        /* Responsif hp */
+        /* === RESPONSIF HP (480px) === */
         @media (max-width: 480px) {
             .content {
-                padding: 40px 10px 30px;
+                padding: 55px 8px 25px;
             }
 
             .content h1 {
-                font-size: 20px;
+                font-size: 18px;
+                text-align: left;
+                margin-bottom: 10px;
+                padding-left: 10px;
             }
 
             .custom-breadcrumb {
                 display: block;
                 text-align: center;
+                font-size: 13px;
                 margin: 0 auto 12px;
+                padding: 6px 10px;
+            }
+
+            .card-box {
+                padding: 10px 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                overflow-x: auto;
             }
 
             .table {
+                font-size: 11.5px;
+                border: 1px solid #ddd;
+                min-width: 600px;
+                /* agar bisa discroll */
+            }
+
+            .table th,
+            .table td {
+                padding: 6px 8px;
+                word-wrap: break-word;
+            }
+
+            /* Tombol di kolom aksi sejajar */
+            .table td {
+                white-space: nowrap;
+            }
+
+            .table td button,
+            .table td a.btn {
+                display: inline-block;
+                margin: 2px 3px;
+                padding: 4px 7px;
+                font-size: 11px;
+                border-radius: 3px;
+            }
+
+            .card-box::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .card-box::-webkit-scrollbar-thumb {
+                background: #ccc;
+                border-radius: 3px;
+            }
+
+            .content::after {
+                content: "";
+                display: block;
+                height: 30px;
+            }
+        }
+
+        /* === HP KECIL BANGET (380px - FULL FIX) === */
+        @media (max-width: 380px) {
+            .content {
+                padding: 50px 6px 20px;
+            }
+
+            .content h1 {
+                font-size: 16px;
+                text-align: left;
+                margin-bottom: 8px;
+                padding-left: 6px;
+            }
+
+            .custom-breadcrumb {
                 font-size: 12px;
+                padding: 5px 8px;
+            }
+
+            .card-box {
+                padding: 8px 10px;
+                overflow-x: auto;
+            }
+
+            .table {
+                font-size: 10.5px;
+                border: 1px solid #ccc;
+                min-width: 650px;
+                /* tetap bisa scroll kalau kolom banyak */
+            }
+
+            .table th,
+            .table td {
+                padding: 4px 6px;
+                line-height: 1.3;
+                white-space: nowrap;
+            }
+
+            .table td button,
+            .table td a.btn {
+                display: inline-block;
+                margin: 2px 2px;
+                padding: 3px 6px;
+                font-size: 10px;
+                border-radius: 3px;
+                vertical-align: middle;
             }
 
             .btn {
-                padding: 5px 10px;
-                font-size: 12px;
+                padding: 3px 6px;
+                font-size: 10px;
+                border-radius: 3px;
+                display: inline-block;
+            }
+
+            .card-box::-webkit-scrollbar {
+                height: 5px;
+            }
+
+            .card-box::-webkit-scrollbar-thumb {
+                background: #bbb;
+                border-radius: 2px;
+            }
+
+            .content::after {
+                content: "";
+                display: block;
+                height: 25px;
             }
         }
     </style>
+
 </head>
 
 <body>

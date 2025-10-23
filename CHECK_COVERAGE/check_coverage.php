@@ -205,6 +205,7 @@ $file_mapping = [
             </script>
         <?php } ?>
     </div>
+    <?php include "../Includes/footer.php"; ?>
 </body>
 
 </html>

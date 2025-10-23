@@ -141,10 +141,10 @@ $recentLogs = array_slice($logs, 0, 5);
             margin: 10px 0 4px 0;
         }
 
-        /* === BOX OLT === */
+        /*BOX OLT*/
         .small-box {
-            border-radius: 8px;
-            padding: 10px 12px;
+            border-radius: 3px;
+            padding: 6px 8px;
             color: white;
             position: relative;
             overflow: hidden;
@@ -199,7 +199,7 @@ $recentLogs = array_slice($logs, 0, 5);
             background: linear-gradient(135deg, #3498db, #1e3799);
         }
 
-        /* === PANEL === */
+        /*PANEL*/
         .panel-row {
             margin-top: 22px;
             display: flex;
@@ -269,7 +269,7 @@ $recentLogs = array_slice($logs, 0, 5);
             font-weight: 700;
         }
 
-        /* === RESPONSIVE FIX === */
+        /*RESPONSIVE FIX*/
         @media (max-width: 992px) {
             .panel-row {
                 flex-direction: column-reverse;
@@ -281,41 +281,97 @@ $recentLogs = array_slice($logs, 0, 5);
             }
         }
 
+        /* --- PERBAIKAN UNTUK MOBILE ONLY --- */
         @media (max-width: 480px) {
+            .content {
+                padding: 90px 35px 12px;
+            }
+
+            /* Kotak OLT lebih kecil */
             .small-box {
-                min-height: 100px;
-                padding: 8px 10px;
+                min-height: 80px;
+                padding: 6px 10px;
+                border-radius: 6px;
+                margin-bottom: 14px;
             }
 
             .small-box .inner h5 {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                margin-bottom: 4px;
             }
 
             .small-box .inner p {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
+                margin: 0 0 2px 0;
+            }
+
+            .small-box-footer {
+                font-size: 0.8rem;
+                padding: 4px 8px;
+                margin-top: 6px;
+            }
+
+            .small-box .icon {
+                top: -4px;
+                right: 6px;
+                font-size: 48px;
+                opacity: 0.12;
+            }
+
+            /* Kartu ringkasan & riwayat */
+            .summary-card,
+            .history-card {
+                padding: 12px;
+                border-radius: 8px;
             }
 
             .summary-tile {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                padding: 10px;
             }
 
             .summary-tile .value {
                 font-size: 1rem;
             }
+
+            .history-item {
+                padding: 6px 4px;
+                gap: 8px;
+            }
+
+            .history-item div {
+                font-size: 0.85rem;
+            }
+
+            .history-empty {
+                font-size: 0.9rem;
+                padding: 12px 0;
+            }
         }
 
+        /* --- EXTRA SMALL SCREEN FIX (≤360px) --- */
         @media (max-width: 360px) {
             .content {
-                padding: 80px 12px 16px;
+                padding: 80px 30px 10px;
+                /* tambah sedikit juga kiri-kanan */
             }
 
             .small-box {
-                min-height: 90px;
+                min-height: 75px;
+                padding: 5px 7px;
             }
 
-            .panel-right,
-            .panel-left {
-                width: 100%;
+            .small-box .inner h5 {
+                font-size: 0.9rem;
+            }
+
+            .small-box .inner p {
+                font-size: 0.75rem;
+            }
+
+            .small-box-footer {
+                font-size: 0.75rem;
+                padding: 3px 6px;
             }
         }
     </style>
@@ -403,7 +459,7 @@ $recentLogs = array_slice($logs, 0, 5);
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <?php include '../Includes/footer.php'; ?>
+    <?php include __DIR__ . '../Includes/footer.php'; ?>
 </body>
 
 </html>
