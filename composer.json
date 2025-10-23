@@ -1,0 +1,7 @@
+{
+  "name": "datauserodp/app",
+  "description": "Simple PHP project for DataUserODP",
+  "require": {
+    "php": "^8.0"
+  }
+}
