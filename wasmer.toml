@@ -1,0 +1,11 @@
+[package]
+name = "datauserodp"
+version = "1.0.0"
+description = "A PHP native OLT/ODP management system"
+language = "php"
+
+[dependencies]
+php = ">=8.2"
+
+[script]
+start = "php -S 0.0.0.0:8080 -t ."
