@@ -1,11 +1,20 @@
 [package]
-name = "datauserodp"
-version = "1.0.0"
-description = "A PHP native OLT/ODP management system"
-language = "php"
+entrypoint = "start"
 
 [dependencies]
-php = ">=8.2"
+"php/php-32" = "=8.3.2102"
 
-[script]
-start = "php -S 0.0.0.0:8080 -t ."
+[command]
+name = "start"
+module = "php/php-32:php"
+runner = "wasi"
+
+[command.annotations.wasi]
+cwd = "/app"
+main-args = [
+  "-S",
+  "0.0.0.0:8080",
+  "-t",
+  "/app",
+  "index.php"
+]
