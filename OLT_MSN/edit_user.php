@@ -265,7 +265,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         body {
-            background-color: #f8f9fa;
+            background-color: #f8fcff;
             font-family: 'Segoe UI', sans-serif;
         }
 

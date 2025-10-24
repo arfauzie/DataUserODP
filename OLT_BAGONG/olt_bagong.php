@@ -383,6 +383,8 @@ if (isset($_POST['update_user'])) {
         @media (max-width: 480px) {
             .content {
                 padding: 55px 8px 25px;
+                min-height: 100dvh;
+                /* ✅ FIX: gunakan dynamic viewport agar footer pas */
             }
 
             .content h1 {
@@ -410,7 +412,6 @@ if (isset($_POST['update_user'])) {
                 font-size: 11.5px;
                 border: 1px solid #ddd;
                 min-width: 600px;
-                /* agar bisa discroll */
             }
 
             .table th,
@@ -419,7 +420,6 @@ if (isset($_POST['update_user'])) {
                 word-wrap: break-word;
             }
 
-            /* Tombol di kolom aksi sejajar */
             .table td {
                 white-space: nowrap;
             }
@@ -445,7 +445,8 @@ if (isset($_POST['update_user'])) {
             .content::after {
                 content: "";
                 display: block;
-                height: 30px;
+                height: 10px;
+                /* ✅ dikurangi agar tidak ada ruang kosong besar */
             }
         }
 
@@ -453,6 +454,8 @@ if (isset($_POST['update_user'])) {
         @media (max-width: 380px) {
             .content {
                 padding: 50px 6px 20px;
+                min-height: 100dvh;
+                /* ✅ tetap responsive ke tinggi layar */
             }
 
             .content h1 {
@@ -476,7 +479,6 @@ if (isset($_POST['update_user'])) {
                 font-size: 10.5px;
                 border: 1px solid #ccc;
                 min-width: 650px;
-                /* tetap bisa scroll kalau kolom banyak */
             }
 
             .table th,
@@ -515,10 +517,12 @@ if (isset($_POST['update_user'])) {
             .content::after {
                 content: "";
                 display: block;
-                height: 25px;
+                height: 8px;
+                /* ✅ dikurangi lagi agar footer nempel pas */
             }
         }
     </style>
+
 
 </head>
 

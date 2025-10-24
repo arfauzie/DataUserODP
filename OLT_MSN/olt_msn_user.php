@@ -186,14 +186,12 @@ if (isset($_POST['update_user'])) {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        /* Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Background */
         html,
         body {
             height: 100%;
@@ -201,7 +199,6 @@ if (isset($_POST['update_user'])) {
             background-color: #f8fcff;
         }
 
-        /* Konten utama */
         .content {
             position: relative;
             margin-left: 200px;
@@ -255,7 +252,6 @@ if (isset($_POST['update_user'])) {
             width: 100%;
         }
 
-        /* Card utama */
         .card-box {
             background-color: #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -274,12 +270,11 @@ if (isset($_POST['update_user'])) {
             color: #333;
         }
 
-        /* Sub-card seperti area tombol "Riwayat" */
         .card-box2 {
             margin-top: 5px;
         }
 
-        /* ===== TABEL ===== */
+        /* TABEL */
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -343,7 +338,6 @@ if (isset($_POST['update_user'])) {
             background-color: #c9302c;
         }
 
-        /* RESPONSIF 992px */
         @media (max-width: 992px) {
             .content {
                 margin-left: 150px;
@@ -352,7 +346,6 @@ if (isset($_POST['update_user'])) {
             }
         }
 
-        /* RESPONSIF TABLET */
         @media (max-width: 768px) {
             .main-wrapper {
                 flex-direction: column;
@@ -380,10 +373,10 @@ if (isset($_POST['update_user'])) {
             }
         }
 
-        /* === RESPONSIF HP (480px) === */
         @media (max-width: 480px) {
             .content {
                 padding: 55px 8px 25px;
+                min-height: 100dvh;
             }
 
             .content h1 {
@@ -401,10 +394,16 @@ if (isset($_POST['update_user'])) {
                 padding: 6px 10px;
             }
 
+            .card-box {
+                padding: 10px 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                overflow-x: auto;
+            }
+
             .table {
                 font-size: 11.5px;
-                width: 100%;
                 border: 1px solid #ddd;
+                min-width: 600px;
             }
 
             .table th,
@@ -413,15 +412,17 @@ if (isset($_POST['update_user'])) {
                 word-wrap: break-word;
             }
 
-            .btn {
-                padding: 4px 8px;
-                font-size: 11px;
-                border-radius: 3px;
+            .table td {
+                white-space: nowrap;
             }
 
-            .card-box {
-                padding: 10px 12px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            .table td button,
+            .table td a.btn {
+                display: inline-block;
+                margin: 2px 3px;
+                padding: 4px 7px;
+                font-size: 11px;
+                border-radius: 3px;
             }
 
             .card-box::-webkit-scrollbar {
@@ -436,14 +437,14 @@ if (isset($_POST['update_user'])) {
             .content::after {
                 content: "";
                 display: block;
-                height: 30px;
+                height: 10px;
             }
         }
 
-        /* === HP KECIL BANGET (320px - FULL FIX) === */
         @media (max-width: 380px) {
             .content {
                 padding: 50px 6px 20px;
+                min-height: 100dvh;
             }
 
             .content h1 {
@@ -460,19 +461,30 @@ if (isset($_POST['update_user'])) {
 
             .card-box {
                 padding: 8px 10px;
+                overflow-x: auto;
             }
 
             .table {
                 font-size: 10.5px;
                 border: 1px solid #ccc;
+                min-width: 650px;
             }
 
             .table th,
             .table td {
                 padding: 4px 6px;
                 line-height: 1.3;
-                word-wrap: break-word;
-                white-space: normal;
+                white-space: nowrap;
+            }
+
+            .table td button,
+            .table td a.btn {
+                display: inline-block;
+                margin: 2px 2px;
+                padding: 3px 6px;
+                font-size: 10px;
+                border-radius: 3px;
+                vertical-align: middle;
             }
 
             .btn {
@@ -480,11 +492,6 @@ if (isset($_POST['update_user'])) {
                 font-size: 10px;
                 border-radius: 3px;
                 display: inline-block;
-            }
-
-            .btn+.btn {
-                margin-top: 3px;
-                /* jika ada lebih dari 1 tombol, agar tidak menumpuk */
             }
 
             .card-box::-webkit-scrollbar {
@@ -499,13 +506,10 @@ if (isset($_POST['update_user'])) {
             .content::after {
                 content: "";
                 display: block;
-                height: 25px;
+                height: 8px;
             }
         }
     </style>
-
-
-
 </head>
 
 <body>

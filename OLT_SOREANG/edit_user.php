@@ -262,16 +262,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         body {
-            background-color: #f8f9fa;
+            background-color: #f8fcff;
             font-family: 'Segoe UI', sans-serif;
         }
 
         /* ===== CONTENT WRAPPER ===== */
         .content {
             margin-left: 260px;
-            /* Sesuai navbar desktop */
             padding: 100px 40px 40px 40px;
-            /* padding-top untuk topbar */
             display: flex;
             justify-content: center;
             align-items: flex-start;

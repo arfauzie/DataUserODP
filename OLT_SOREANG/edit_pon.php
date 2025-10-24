@@ -5,8 +5,8 @@ if (!isset($_SESSION['role'])) {
     exit();
 }
 
-require_once 'config3.php';          // koneksi ke database $pdo3
-require_once 'log_helper.php';      // untuk tambahRiwayatSoreang
+require_once 'config3.php';
+require_once 'log_helper.php';
 include '../Includes/navbar.php';
 
 // Validasi ID
@@ -44,7 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
         $stmt->execute([$nama_pon, $port_max, $id]);
 
         $oleh = $_SESSION['nama_lengkap'] ?? $_SESSION['username'] ?? 'Unknown';
-        // Simpan log menggunakan tambahRiwayatSoreang
         $log_keterangan = implode(" | ", $perubahan);
         tambahRiwayatSoreang($pdo3, "Edit PON", $oleh, $log_keterangan);
 
@@ -89,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f8fcff;
         }
 
         .content {

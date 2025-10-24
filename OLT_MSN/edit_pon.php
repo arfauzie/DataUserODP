@@ -90,7 +90,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($pon)) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f8fcff;
+            ;
         }
 
         .content {

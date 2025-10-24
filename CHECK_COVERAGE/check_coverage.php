@@ -25,12 +25,32 @@ $file_mapping = [
     <link rel="icon" href="logo-msn2.png">
 
     <style>
+        /* Global Style */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8fcff;
+            color: black;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
         .content {
+            flex: 1;
+            /* isi mendorong footer ke bawah */
             margin-left: 250px;
             padding: 20px;
             margin-top: 60px;
         }
 
+        /* Form Wrapper */
         .form-wrapper {
             display: flex;
             justify-content: center;
@@ -42,6 +62,11 @@ $file_mapping = [
         .form-card {
             max-width: 450px;
             width: 100%;
+            background: white;
+            color: black;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
         }
 
         .form-label {
@@ -50,10 +75,18 @@ $file_mapping = [
         }
 
         .form-control {
-            padding: 8px 10px;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        /* 🔹 Fix modal biar auto tinggi untuk 2 ODP, tapi tetap ada scroll kalau lebih banyak */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        /* Modal Fix */
         .modal-dialog {
             max-width: 600px;
             margin: 1.75rem auto;
@@ -68,12 +101,81 @@ $file_mapping = [
             overflow-y: auto;
         }
 
+        /* Responsif untuk Tablet (<=992px) */
+        @media (max-width: 992px) {
+            .content {
+                margin-left: 200px;
+                padding: 20px;
+            }
+
+            .form-card {
+                max-width: 400px;
+            }
+        }
+
+        /* Responsif untuk Tablet kecil / Phablet (<=768px) */
         @media (max-width: 768px) {
             .content {
                 margin-left: 0;
                 padding: 15px;
                 margin-top: 80px;
             }
+
+            .form-wrapper {
+                padding: 15px;
+            }
+
+            .form-card {
+                max-width: 90%;
+                margin: 0 auto;
+            }
+        }
+
+        /* Responsif untuk Mobile (<=576px) */
+        @media (max-width: 576px) {
+            .content {
+                margin-top: 70px;
+                padding: 10px;
+            }
+
+            .form-card {
+                max-width: 95%;
+                padding: 15px;
+            }
+
+            .btn {
+                width: 100%;
+                /* tombol full di layar kecil */
+            }
+        }
+
+        /* Responsif untuk Mobile S (<=400px) */
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            .form-card {
+                padding: 12px;
+            }
+
+            .form-control {
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Sticky Footer */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 10px 0;
+            background-color: transparent;
+            color: #555;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -205,7 +307,6 @@ $file_mapping = [
             </script>
         <?php } ?>
     </div>
-    <?php include "../Includes/footer.php"; ?>
 </body>
 
 </html>

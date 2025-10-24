@@ -42,16 +42,6 @@ if (isset($_POST['tambah_pon'])) {
     $nama_pon = trim($_POST['nama_pon']);
     $port_max = trim($_POST['port_max']);
 
-    // cek duplikat nama PON
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM $pon_table WHERE nama_pon = ?");
-    $stmt->execute([$nama_pon]);
-    $cekNama = $stmt->fetchColumn();
-
-    if ($cekNama > 0) {
-        echo "<script>alert('Nama PON sudah ada, gunakan nama lain!'); window.location='olt_msn.php';</script>";
-        exit();
-    }
-
     $stmt = $pdo->prepare("INSERT INTO $pon_table (olt_id, nama_pon, port_max) VALUES (1, ?, ?)");
     if ($stmt->execute([$nama_pon, $port_max])) {
         $last_id = $pdo->lastInsertId();
@@ -185,14 +175,12 @@ if (isset($_POST['update_user'])) {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        /* Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Background */
         html,
         body {
             height: 100%;
@@ -200,7 +188,6 @@ if (isset($_POST['update_user'])) {
             background-color: #f8fcff;
         }
 
-        /* Konten utama */
         .content {
             position: relative;
             margin-left: 200px;
@@ -254,7 +241,6 @@ if (isset($_POST['update_user'])) {
             width: 100%;
         }
 
-        /* Card utama */
         .card-box {
             background-color: #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -273,12 +259,11 @@ if (isset($_POST['update_user'])) {
             color: #333;
         }
 
-        /* Sub-card seperti area tombol "Riwayat" */
         .card-box2 {
             margin-top: 5px;
         }
 
-        /* ===== TABEL ===== */
+        /* TABEL */
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -342,7 +327,6 @@ if (isset($_POST['update_user'])) {
             background-color: #c9302c;
         }
 
-        /* RESPONSIF 992px */
         @media (max-width: 992px) {
             .content {
                 margin-left: 150px;
@@ -351,7 +335,6 @@ if (isset($_POST['update_user'])) {
             }
         }
 
-        /* RESPONSIF TABLET */
         @media (max-width: 768px) {
             .main-wrapper {
                 flex-direction: column;
@@ -379,10 +362,10 @@ if (isset($_POST['update_user'])) {
             }
         }
 
-        /* === RESPONSIF HP (480px) === */
         @media (max-width: 480px) {
             .content {
                 padding: 55px 8px 25px;
+                min-height: 100dvh;
             }
 
             .content h1 {
@@ -410,7 +393,6 @@ if (isset($_POST['update_user'])) {
                 font-size: 11.5px;
                 border: 1px solid #ddd;
                 min-width: 600px;
-                /* agar bisa discroll */
             }
 
             .table th,
@@ -419,7 +401,6 @@ if (isset($_POST['update_user'])) {
                 word-wrap: break-word;
             }
 
-            /* Tombol di kolom aksi sejajar */
             .table td {
                 white-space: nowrap;
             }
@@ -445,14 +426,14 @@ if (isset($_POST['update_user'])) {
             .content::after {
                 content: "";
                 display: block;
-                height: 30px;
+                height: 10px;
             }
         }
 
-        /* === HP KECIL BANGET (380px - FULL FIX) === */
         @media (max-width: 380px) {
             .content {
                 padding: 50px 6px 20px;
+                min-height: 100dvh;
             }
 
             .content h1 {
@@ -476,7 +457,6 @@ if (isset($_POST['update_user'])) {
                 font-size: 10.5px;
                 border: 1px solid #ccc;
                 min-width: 650px;
-                /* tetap bisa scroll kalau kolom banyak */
             }
 
             .table th,
@@ -515,11 +495,10 @@ if (isset($_POST['update_user'])) {
             .content::after {
                 content: "";
                 display: block;
-                height: 25px;
+                height: 8px;
             }
         }
     </style>
-
 </head>
 
 <body>

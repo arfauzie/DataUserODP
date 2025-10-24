@@ -273,7 +273,7 @@ foreach ($databases as $nama_db => $db_info) {
             .content::after {
                 content: "";
                 display: block;
-                height: 25px;
+                height: 5px;
             }
         }
     </style>
