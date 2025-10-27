@@ -47,7 +47,7 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
         }
 
         .topbar-left img {
-            height: 40px;
+            height: 37px;
             width: auto;
             object-fit: contain;
             margin-left: 8px;
@@ -221,7 +221,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
                 box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
                 border-top: 1px solid #dee2e6;
                 padding-top: 0;
-                /* hapus ruang kosong di atas */
             }
 
             /* Posisi aktif — menempel lebih dekat ke bawah topbar */
