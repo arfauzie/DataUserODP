@@ -108,7 +108,7 @@ foreach ($databases as $nama_db => $db_info) {
         @media (max-width: 768px) {
             .content {
                 margin-left: 0;
-                padding: 70px 18px;
+                padding: 70px 18px  ;
             }
 
             .table {

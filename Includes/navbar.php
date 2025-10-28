@@ -24,7 +24,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             background-color: #f4f5f7;
         }
 
-        /* TOPBAR */
         .top-bar {
             position: fixed;
             top: 0;
