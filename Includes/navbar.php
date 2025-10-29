@@ -54,7 +54,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             top: 1px;
         }
 
-        /* SEARCH FORM DESKTOP */
         .search-form {
             display: flex;
             align-items: center;
