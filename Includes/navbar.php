@@ -84,7 +84,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             color: #0d6efd;
         }
 
-        /* ADMIN INFO */
         .admin-container {
             display: flex;
             align-items: center;
