@@ -231,7 +231,6 @@ $nama_lengkap = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : '
             /* Search bar — rapat ke top */
             .search-mobile {
                 padding: 6px 10px;
-                /* sempit dari 12px */
                 background: #fff;
                 text-align: center;
                 border-bottom: 1px solid #dee2e6;
