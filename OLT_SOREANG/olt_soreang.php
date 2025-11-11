@@ -663,7 +663,7 @@ if (isset($_POST['update_user'])) {
                 </div>
 
             <?php
-            } // endif !$pon_id && !$odp_id
+            }
 
             if ($pon_id && !$odp_id) {
                 if (isset($_GET['success']) && $_GET['success'] == 'odp_added') {
