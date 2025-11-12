@@ -692,7 +692,6 @@ if (isset($_POST['update_user'])) {
                         <a href="olt_soreang.php" class="btn btn-secondary">Kembali</a>
                     </div>
 
-                    <!-- Modal Tambah ODP -->
                     <div class="modal fade" id="modalTambahODP" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <form method="POST" class="modal-content border-0 shadow rounded-3">
