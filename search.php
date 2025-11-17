@@ -104,11 +104,11 @@ foreach ($databases as $nama_db => $db_info) {
             }
         }
 
-        /* ===== TABLET RESPONSIVE ===== */
+        /*TABLET RESPONSIVE*/
         @media (max-width: 768px) {
             .content {
                 margin-left: 0;
-                padding: 70px 18px  ;
+                padding: 70px 18px;
             }
 
             .table {
@@ -121,7 +121,7 @@ foreach ($databases as $nama_db => $db_info) {
             }
         }
 
-        /* ===== DESKTOP STYLES ===== */
+        /*DESKTOP STYLES*/
         .table thead {
             background-color: #00625F;
             color: white;
@@ -195,7 +195,7 @@ foreach ($databases as $nama_db => $db_info) {
             background-color: #555f66;
         }
 
-        /* ===== MOBILE FULL FIX (≤480px) ===== */
+        /*MOBILE FULL FIX (≤480px)*/
         @media (max-width: 480px) {
             .content {
                 margin-left: 0;
